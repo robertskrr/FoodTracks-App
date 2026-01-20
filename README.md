@@ -1,2 +1,2 @@
-# Void-Food-App
-Repositorio del borrador del proyecto Intermodular de DAM
+# FoodTracks App
+Repositorio del proyecto Intermodular de DAM
