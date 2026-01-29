@@ -7,6 +7,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
+/**
+ * @author Robert
+ */
 public class MainActivity extends AppCompatActivity {
     private FirebaseFirestore mFirestore; // TRABAJARA CON LOS DATOS
 
@@ -15,6 +18,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toast.makeText(getApplicationContext(), "HOLAAA BUENAS TARDES", Toast.LENGTH_SHORT).show();
+
+        asignarComponentes();
     }
 
     private void asignarComponentes() {
