@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FoodTracks">
         <activity
-            android:name=".RegisterActivity"
+            android:name=".gui.RegisterClienteActivity"
             android:exported="false"
             android:theme="@style/Theme.FoodTracks" />
         <activity

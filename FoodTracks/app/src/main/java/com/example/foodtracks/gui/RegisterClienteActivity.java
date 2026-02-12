@@ -1,27 +1,19 @@
-package com.example.foodtracks;
+package com.example.foodtracks.gui;
 
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.example.foodtracks.MainActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.view.View;
 import android.widget.Toast;
 
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-import androidx.navigation.ui.NavigationUI;
-
-import com.example.foodtracks.databinding.ActivityRegisterBinding;
-import com.google.firebase.Firebase;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -32,8 +24,9 @@ import java.util.Map;
 
 /**
  * @author Robert
+ * @since 01/02
  */
-public class RegisterActivity extends AppCompatActivity {
+public class RegisterClienteActivity extends AppCompatActivity {
     FirebaseFirestore mFirestore;
     FirebaseAuth mAuth;
 
@@ -69,13 +62,13 @@ public class RegisterActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(Void unused) {
                                 finish();
-                                startActivity(new Intent(RegisterActivity.this, MainActivity.class));
-                                Toast.makeText(RegisterActivity.this, "Usuario registrado con éxito", Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(RegisterClienteActivity.this, MainActivity.class));
+                                Toast.makeText(RegisterClienteActivity.this, "Usuario registrado con éxito", Toast.LENGTH_SHORT).show();
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(RegisterActivity.this, "Error al guardar", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(RegisterClienteActivity.this, "Error al guardar", Toast.LENGTH_SHORT).show();
                             }
                         });
             }
