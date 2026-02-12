@@ -1,5 +1,6 @@
 package com.example.foodtracks;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -18,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toast.makeText(getApplicationContext(), "HOLAAA BUENAS TARDES", Toast.LENGTH_SHORT).show();
+        startActivity(new Intent(MainActivity.this, RegisterActivity.class));
 
         asignarComponentes();
     }

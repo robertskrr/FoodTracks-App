@@ -25,6 +25,7 @@ import com.google.firebase.Firebase;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -52,28 +53,31 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 // Recogemos el UID del usuario
-                String id = mAuth.getCurrentUser().getUid();
+                String uid = mAuth.getCurrentUser().getUid();
                 // Mapa con los datos del usuario para la BBDD
                 Map<String, Object> map = new HashMap<>(); // <Nombre campo, valor>
-                map.put("id", id);
+                map.put("id", uid);
                 map.put("nombre", nombre);
                 map.put("username", userName);
                 map.put("email", userEmail);
                 map.put("password", userPass);
                 // Lo guardamos en la colección de clientes
-                mFirestore.collection("usuarioCliente").document(id).set(map).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        finish();
-                        startActivity(new Intent(RegisterActivity.this, MainActivity.class));
-                        Toast.makeText(RegisterActivity.this, "Usuario registrado con éxito", Toast.LENGTH_SHORT).show();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(RegisterActivity.this, "Error al guardar", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                mFirestore.collection("usuarioCliente")
+                        .document(uid)
+                        .set(map, SetOptions.merge())
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                finish();
+                                startActivity(new Intent(RegisterActivity.this, MainActivity.class));
+                                Toast.makeText(RegisterActivity.this, "Usuario registrado con éxito", Toast.LENGTH_SHORT).show();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(RegisterActivity.this, "Error al guardar", Toast.LENGTH_SHORT).show();
+                            }
+                        });
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
