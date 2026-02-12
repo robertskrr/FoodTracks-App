@@ -19,9 +19,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toast.makeText(getApplicationContext(), "HOLAAA BUENAS TARDES", Toast.LENGTH_SHORT).show();
-        startActivity(new Intent(MainActivity.this, RegisterActivity.class));
-
         asignarComponentes();
+
+        //startActivity(new Intent(MainActivity.this, RegisterActivity.class));
+
     }
 
     private void asignarComponentes() {
