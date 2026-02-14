@@ -21,18 +21,29 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toast.makeText(getApplicationContext(), "HOLAAA BUENAS TARDES", Toast.LENGTH_SHORT).show();
+
         asignarComponentes();
     }
 
+    /**
+     * Asigna los componentes de la interfaz
+     */
     private void asignarComponentes() {
         mFirestore = FirebaseFirestore.getInstance();
     }
 
+    /**
+     * Muestra el fragment con los datos de inicio de sesión
+     * @param view
+     */
     public void login(View view){
 
     }
 
+    /**
+     * Muestra las opciones de registro en un fragment
+     * @param view
+     */
     public void register(View view){
         TipoRegistroFragment fm = new TipoRegistroFragment();
         fm.show(getSupportFragmentManager(), "Navegar a fragment");

@@ -41,6 +41,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
         android:backgroundTint="@color/tertiary"
+        android:onClick="register"
         android:text="@string/registrarse"
         app:cornerRadius="5dp"
         app:layout_constraintEnd_toEndOf="parent"
