@@ -42,21 +42,22 @@ public class RegisterClienteActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
     }
 
-    private void registrarUsuario(String nombre, String userName, String userEmail, String userPass) {
-        mAuth.createUserWithEmailAndPassword(userEmail, userPass).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+    private void registrarUsuario(String nombre, String userName, String userEmail, String userPassword) {
+        mAuth.createUserWithEmailAndPassword(userEmail, userPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 // Recogemos el UID del usuario
                 String uid = mAuth.getCurrentUser().getUid();
                 // Mapa con los datos del usuario para la BBDD
                 Map<String, Object> map = new HashMap<>(); // <Nombre campo, valor>
-                map.put("id", uid);
+                map.put("uid", uid);
                 map.put("nombre", nombre);
                 map.put("username", userName);
                 map.put("email", userEmail);
-                map.put("password", userPass);
+                map.put("password", userPassword);
+                map.put("rol", "cliente");
                 // Lo guardamos en la colección de clientes
-                mFirestore.collection("usuarioCliente")
+                mFirestore.collection("usuarios")
                         .document(uid)
                         .set(map, SetOptions.merge())
                         .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -69,14 +70,14 @@ public class RegisterClienteActivity extends AppCompatActivity {
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
                             public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(RegisterClienteActivity.this, "Error al guardar", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(RegisterClienteActivity.this, "Error al registrar", Toast.LENGTH_SHORT).show();
                             }
                         });
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-
+                Toast.makeText(RegisterClienteActivity.this, "Error con la BBDD", Toast.LENGTH_SHORT).show();
             }
         });
     }
