@@ -13,6 +13,8 @@ import com.google.android.gms.tasks.Task;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.firebase.auth.AuthResult;
@@ -31,17 +33,66 @@ public class RegisterClienteActivity extends AppCompatActivity {
     FirebaseFirestore mFirestore;
     FirebaseAuth mAuth;
 
+    EditText nombre;
+    EditText username;
+    EditText email;
+    EditText password;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_cliente);
+
+        asignarComponentes();
     }
 
+    /**
+     * Asigna los componentes de la interfaz
+     */
     private void asignarComponentes() {
         mFirestore = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
+
+        // Campos
+        nombre = findViewById(R.id.txtNombre);
+        username = findViewById(R.id.txtUsername);
+        email = findViewById(R.id.txtEmail);
+        password = findViewById(R.id.txtPassword);
     }
 
+    /**
+     * Acción al pulsar el registrar
+     *
+     * @param view
+     */
+    public void registro(View view) {
+        String nombreReg = nombre.getText().toString().trim();
+        String usernameReg = username.getText().toString().trim();
+        String emailReg = email.getText().toString().trim();
+        String passwordReg = password.getText().toString().trim();
+        // Si faltan campos por rellenar no registra
+        if (nombreReg.isEmpty() || usernameReg.isEmpty() || emailReg.isEmpty() || passwordReg.isEmpty()) {
+            Toast.makeText(RegisterClienteActivity.this, "Complete todos los campos", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (passwordReg.length() < 8){
+            Toast.makeText(RegisterClienteActivity.this, "La contraseña debe tener mínimo 8 caracteres", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Registramos el usuario en firebase
+        registrarUsuario(nombreReg, usernameReg, emailReg, passwordReg);
+    }
+
+    /**
+     * Registra el usuario en la base de datos de Firebase
+     *
+     * @param nombre
+     * @param userName
+     * @param userEmail
+     * @param userPassword
+     */
     private void registrarUsuario(String nombre, String userName, String userEmail, String userPassword) {
         mAuth.createUserWithEmailAndPassword(userEmail, userPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
@@ -54,7 +105,6 @@ public class RegisterClienteActivity extends AppCompatActivity {
                 map.put("nombre", nombre);
                 map.put("username", userName);
                 map.put("email", userEmail);
-                map.put("password", userPassword);
                 map.put("rol", "cliente");
                 // Lo guardamos en la colección de clientes
                 mFirestore.collection("usuarios")
@@ -66,6 +116,14 @@ public class RegisterClienteActivity extends AppCompatActivity {
                                 finish();
                                 startActivity(new Intent(RegisterClienteActivity.this, MainActivity.class));
                                 Toast.makeText(RegisterClienteActivity.this, "Usuario registrado con éxito", Toast.LENGTH_SHORT).show();
+
+                                Intent intent = new Intent(RegisterClienteActivity.this, MainActivity.class);
+
+                                // Limpiamos historial de activities para que no pueda volver atrás
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+                                startActivity(intent);
+                                finish(); // Cerramos la activity
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
