@@ -14,6 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -33,10 +34,18 @@ public class RegisterClienteActivity extends AppCompatActivity {
     FirebaseFirestore mFirestore;
     FirebaseAuth mAuth;
 
+    // Elementos de registro
     EditText nombre;
     EditText username;
     EditText email;
     EditText password;
+
+    CheckBox esVegano;
+    CheckBox esVegetariano;
+    CheckBox sinLactosa;
+    CheckBox esCeliaco;
+    CheckBox otraPreferencia;
+    EditText especifiqueOtro;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +53,7 @@ public class RegisterClienteActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register_cliente);
 
         asignarComponentes();
+        mostrarOtraPreferencia();
     }
 
     /**
@@ -58,6 +68,28 @@ public class RegisterClienteActivity extends AppCompatActivity {
         username = findViewById(R.id.txtUsername);
         email = findViewById(R.id.txtEmail);
         password = findViewById(R.id.txtPassword);
+
+        // Preferencias alimenticias
+        esVegano = findViewById(R.id.cbVegano);
+        esVegetariano = findViewById(R.id.cbVegetariano);
+        sinLactosa = findViewById(R.id.cbLactosa);
+        esCeliaco = findViewById(R.id.cbCeliaco);
+        otraPreferencia = findViewById(R.id.cbOtro);
+        especifiqueOtro = findViewById(R.id.txtEspecifiqueOtro);
+    }
+
+    /**
+     * Si se marca otra preferencia muestra el campo de texto para escribirla
+     */
+    private void mostrarOtraPreferencia() {
+        otraPreferencia.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                especifiqueOtro.setVisibility(View.VISIBLE);
+            } else {
+                especifiqueOtro.setVisibility(View.GONE);
+                especifiqueOtro.setText("");
+            }
+        });
     }
 
     /**
@@ -76,7 +108,7 @@ public class RegisterClienteActivity extends AppCompatActivity {
             return;
         }
 
-        if (passwordReg.length() < 8){
+        if (passwordReg.length() < 8) {
             Toast.makeText(RegisterClienteActivity.this, "La contraseña debe tener mínimo 8 caracteres", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -97,45 +129,62 @@ public class RegisterClienteActivity extends AppCompatActivity {
         mAuth.createUserWithEmailAndPassword(userEmail, userPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                // Recogemos el UID del usuario
-                String uid = mAuth.getCurrentUser().getUid();
-                // Mapa con los datos del usuario para la BBDD
-                Map<String, Object> map = new HashMap<>(); // <Nombre campo, valor>
-                map.put("uid", uid);
-                map.put("nombre", nombre);
-                map.put("username", userName);
-                map.put("email", userEmail);
-                map.put("rol", "cliente");
-                // Lo guardamos en la colección de clientes
-                mFirestore.collection("usuarios")
-                        .document(uid)
-                        .set(map, SetOptions.merge())
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
-                                finish();
-                                startActivity(new Intent(RegisterClienteActivity.this, MainActivity.class));
-                                Toast.makeText(RegisterClienteActivity.this, "Usuario registrado con éxito", Toast.LENGTH_SHORT).show();
+                // Si se completó correctamente guardamos los datos del nuevo usuario
+                if (task.isSuccessful()) {
+                    // Recogemos el UID del usuario
+                    String uid = mAuth.getCurrentUser().getUid();
+                    // Mapa con los datos del usuario para la BBDD
+                    Map<String, Object> map = new HashMap<>(); // <Nombre campo, valor>
+                    map.put("uid", uid);
+                    map.put("nombre", nombre);
+                    map.put("username", userName);
+                    map.put("email", userEmail);
+                    map.put("rol", "cliente");
 
-                                Intent intent = new Intent(RegisterClienteActivity.this, MainActivity.class);
+                    // Preferencias alimenticias
+                    map.put("esVegano", esVegano.isChecked());
+                    map.put("esVegetariano", esVegetariano.isChecked());
+                    map.put("sinLactosa", sinLactosa.isChecked());
+                    map.put("esCeliaco", esCeliaco.isChecked());
+                    if (otraPreferencia.isChecked()) {
+                        String preferenciaAlternativa = especifiqueOtro.getText().toString().trim();
+                        // Si ha marcado la casilla pero no ha puesto nada se da por hecho que no tiene otra
+                        if (preferenciaAlternativa.isEmpty()) {
+                            map.put("otraPreferencia", false);
+                        } else {
+                            map.put("otraPreferencia", preferenciaAlternativa.toLowerCase());
+                        }
+                    } else {
+                        map.put("otraPreferencia", false);
+                    }
 
-                                // Limpiamos historial de activities para que no pueda volver atrás
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    // Lo guardamos en la colección de clientes
+                    mFirestore.collection("usuarios")
+                            .document(uid)
+                            .set(map, SetOptions.merge())
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    Toast.makeText(RegisterClienteActivity.this, "Usuario registrado con éxito", Toast.LENGTH_SHORT).show();
 
-                                startActivity(intent);
-                                finish(); // Cerramos la activity
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(RegisterClienteActivity.this, "Error al registrar", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                                    Intent intent = new Intent(RegisterClienteActivity.this, MainActivity.class);
+                                    // Limpiamos historial de activities para que no pueda volver atrás
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    startActivity(intent);
+                                    finish(); // Cerramos la activity
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(RegisterClienteActivity.this, "Error al registrar", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                }
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(RegisterClienteActivity.this, "Error con la BBDD", Toast.LENGTH_SHORT).show();
+                Toast.makeText(RegisterClienteActivity.this, "Error al crear la cuenta de usuario", Toast.LENGTH_SHORT).show();
             }
         });
     }
