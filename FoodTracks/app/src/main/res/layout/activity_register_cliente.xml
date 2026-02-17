@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/fondo"
     android:fitsSystemWindows="true"
-    tools:context=".gui.RegisterClienteActivity">
+    tools:context=".gui.users.cliente.RegisterClienteActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

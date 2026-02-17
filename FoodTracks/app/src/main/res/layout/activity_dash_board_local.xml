@@ -5,24 +5,24 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/fondo"
-    tools:context=".gui.users.cliente.HomeActivity">
+    android:background="@color/primary"
+    tools:context=".gui.users.local.DashBoardLocalActivity">
 
     <TextView
-        android:id="@+id/txtPrueba"
+        android:id="@+id/txtDashBoard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="116dp"
-        android:text="HOME"
-        android:textSize="34sp"
+        android:fontFamily="sans-serif-black"
+        android:text="DASHBOARD LOCAL"
+        android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/btnLogOutCliente"
+        android:id="@+id/btnLogOutLocal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="88dp"
@@ -30,24 +30,35 @@
         android:onClick="logOut"
         android:text="Cerrar sesión"
         app:cornerRadius="5dp"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.251"
+        app:layout_constraintHorizontal_bias="0.305"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/btnPerfilCliente"
+        android:id="@+id/btnPerfilLocal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="36dp"
         android:layout_marginBottom="88dp"
         android:backgroundTint="@color/secondary"
         android:onClick="miPerfil"
         android:text="Perfil"
-        android:visibility="gone"
         app:cornerRadius="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.416"
-        app:layout_constraintStart_toEndOf="@+id/btnLogOutCliente" />
+        app:layout_constraintHorizontal_bias="0.492"
+        app:layout_constraintStart_toEndOf="@+id/btnLogOutLocal" />
+
+    <TextView
+        android:id="@+id/txtLocal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="156dp"
+        android:fontFamily="sans-serif-condensed-light"
+        android:text="Nombre Local"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

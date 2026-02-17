@@ -3,14 +3,14 @@ package com.example.foodtracks;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.foodtracks.gui.HomeActivity;
-import com.example.foodtracks.gui.RegisterClienteActivity;
+import com.example.foodtracks.gui.users.admin.AdminActivity;
+import com.example.foodtracks.gui.users.cliente.HomeActivity;
 import com.example.foodtracks.gui.fragments.LoginFragment;
 import com.example.foodtracks.gui.fragments.TipoRegistroFragment;
+import com.example.foodtracks.gui.users.local.DashBoardLocalActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -57,17 +57,43 @@ public class MainActivity extends AppCompatActivity {
         fm.show(getSupportFragmentManager(), "Fragment registro");
     }
 
+    /**
+     * Acceso como invitado
+     * @param view
+     */
+    public void invitado(View view){
+        startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+    }
+
 
     @Override
     protected void onStart(){
         super.onStart();
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null){
-            Intent intent = new Intent(MainActivity.this, HomeActivity.class);
-            // Limpiamos historial de activities para que no pueda volver atrás
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish(); // Cerramos la activity
+            // Dependiendo del tipo de usuario abre una activity u otra
+            String uid = mAuth.getCurrentUser().getUid();
+            // Consultamos el tipo de usuario en la colección
+            mFirestore.collection("usuarios")
+                    .document(uid)
+                    .get()
+                    .addOnSuccessListener(document -> {
+                        String rol = document.getString("rol");
+                        Intent intent;
+
+                        if (rol.equals("admin")) {
+                            intent = new Intent(getApplicationContext(), AdminActivity.class);
+                        } else if (rol.equals("local")) {
+                            intent = new Intent(getApplicationContext(), DashBoardLocalActivity.class);
+                        } else {
+                            intent = new Intent(getApplicationContext(), HomeActivity.class);
+                        }
+
+                        // Limpiamos historial de activities para que no pueda volver atrás
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        startActivity(intent);
+                        finish();
+                    });
         }
     }
 

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/fondo"
     android:fitsSystemWindows="true"
-    tools:context=".gui.RegisterLocalActivity">
+    tools:context=".gui.users.local.RegisterLocalActivity">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -98,6 +98,20 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPostalAddress" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:hint="Teléfono">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/txtTelefonoLocal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="phone" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView

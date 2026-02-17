@@ -1,25 +1,22 @@
-package com.example.foodtracks.gui;
+package com.example.foodtracks.gui.users.cliente;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-
-import com.example.foodtracks.MainActivity;
 import com.example.foodtracks.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.view.View;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.Toast;
+
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -30,22 +27,21 @@ import java.util.Map;
 
 /**
  * @author Robert
- * @since 14/02
+ * @since 01/02
  */
-public class RegisterLocalActivity extends AppCompatActivity {
+public class RegisterClienteActivity extends AppCompatActivity {
     private FirebaseFirestore mFirestore;
     private FirebaseAuth mAuth;
 
     // Elementos de registro
-    private EditText nombre, username, email, password, direccion, especifiqueOtro;
-    private CheckBox esVegano, esVegetariano, sinLactosa, esCeliaco, otraPreferencia;
+    private EditText nombre, username, email, password, especifiqueOtro;
 
+    private CheckBox esVegano, esVegetariano, sinLactosa, esCeliaco, otraPreferencia;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_register_local);
+        setContentView(R.layout.activity_register_cliente);
 
         asignarComponentes();
         mostrarOtraPreferencia();
@@ -59,20 +55,18 @@ public class RegisterLocalActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         // Campos
-        nombre = findViewById(R.id.txtNombreLocal);
-        username = findViewById(R.id.txtUsernameLocal);
-        email = findViewById(R.id.txtEmailLocal);
-        password = findViewById(R.id.txtPasswordLocal);
-        direccion = findViewById(R.id.txtDireccionLocal);
+        nombre = findViewById(R.id.txtNombre);
+        username = findViewById(R.id.txtUsername);
+        email = findViewById(R.id.txtEmail);
+        password = findViewById(R.id.txtPassword);
 
-
-        // Opciones alimenticias
-        esVegano = findViewById(R.id.cbVeganoLocal);
-        esVegetariano = findViewById(R.id.cbVegetarianoLocal);
-        sinLactosa = findViewById(R.id.cbLactosaLocal);
-        esCeliaco = findViewById(R.id.cbCeliacoLocal);
-        otraPreferencia = findViewById(R.id.cbOtroLocal);
-        especifiqueOtro = findViewById(R.id.txtEspecifiqueOtroLocal);
+        // Preferencias alimenticias
+        esVegano = findViewById(R.id.cbVegano);
+        esVegetariano = findViewById(R.id.cbVegetariano);
+        sinLactosa = findViewById(R.id.cbLactosa);
+        esCeliaco = findViewById(R.id.cbCeliaco);
+        otraPreferencia = findViewById(R.id.cbOtro);
+        especifiqueOtro = findViewById(R.id.txtEspecifiqueOtro);
     }
 
     /**
@@ -94,26 +88,25 @@ public class RegisterLocalActivity extends AppCompatActivity {
      *
      * @param view
      */
-    public void registroLocal(View view) {
+    public void registroCliente(View view) {
         String nombreReg = nombre.getText().toString().trim();
         String usernameReg = username.getText().toString().trim();
         String emailReg = email.getText().toString().trim();
         String passwordReg = password.getText().toString().trim();
-        String direccionReg = direccion.getText().toString().trim();
 
         // Si faltan campos por rellenar no registra
-        if (nombreReg.isEmpty() || usernameReg.isEmpty() || emailReg.isEmpty() || passwordReg.isEmpty() || direccionReg.isEmpty()) {
-            Toast.makeText(RegisterLocalActivity.this, "Complete todos los campos", Toast.LENGTH_SHORT).show();
+        if (nombreReg.isEmpty() || usernameReg.isEmpty() || emailReg.isEmpty() || passwordReg.isEmpty()) {
+            Toast.makeText(getApplicationContext(), "Complete todos los campos", Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (passwordReg.length() < 8) {
-            Toast.makeText(RegisterLocalActivity.this, "La contraseña debe tener mínimo 8 caracteres", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getApplicationContext(), "La contraseña debe tener mínimo 8 caracteres", Toast.LENGTH_SHORT).show();
             return;
         }
 
         // Registramos el usuario en firebase
-        registrarUsuarioLocal(nombreReg, usernameReg, emailReg, passwordReg, direccionReg);
+        registrarUsuarioCliente(nombreReg, usernameReg, emailReg, passwordReg);
     }
 
     /**
@@ -123,9 +116,8 @@ public class RegisterLocalActivity extends AppCompatActivity {
      * @param userName
      * @param userEmail
      * @param userPassword
-     * @param userDireccion
      */
-    private void registrarUsuarioLocal(String nombre, String userName, String userEmail, String userPassword, String userDireccion) {
+    private void registrarUsuarioCliente(String nombre, String userName, String userEmail, String userPassword) {
         mAuth.createUserWithEmailAndPassword(userEmail, userPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -139,8 +131,7 @@ public class RegisterLocalActivity extends AppCompatActivity {
                     map.put("nombre", nombre);
                     map.put("username", userName);
                     map.put("email", userEmail);
-                    map.put("direccion", userDireccion);
-                    map.put("rol", "local");
+                    map.put("rol", "cliente");
 
                     // Preferencias alimenticias
                     map.put("esVegano", esVegano.isChecked());
@@ -166,9 +157,9 @@ public class RegisterLocalActivity extends AppCompatActivity {
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void unused) {
-                                    Toast.makeText(RegisterLocalActivity.this, "Usuario registrado con éxito", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getApplicationContext(), "Usuario registrado con éxito", Toast.LENGTH_SHORT).show();
 
-                                    Intent intent = new Intent(RegisterLocalActivity.this, HomeActivity.class);
+                                    Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
                                     // Limpiamos historial de activities para que no pueda volver atrás
                                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     startActivity(intent);
@@ -177,7 +168,7 @@ public class RegisterLocalActivity extends AppCompatActivity {
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(RegisterLocalActivity.this, "Error al registrar", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getApplicationContext(), "Error al registrar", Toast.LENGTH_SHORT).show();
                                 }
                             });
                 }
@@ -185,8 +176,9 @@ public class RegisterLocalActivity extends AppCompatActivity {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(RegisterLocalActivity.this, "Error al crear la cuenta de usuario", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Error al crear la cuenta de usuario", Toast.LENGTH_SHORT).show();
             }
         });
     }
+
 }

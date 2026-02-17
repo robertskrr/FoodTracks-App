@@ -55,6 +55,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="84dp"
         android:backgroundTint="@color/secondary"
+        android:onClick="invitado"
         android:text="Invitado"
         app:cornerRadius="5dp"
         app:layout_constraintEnd_toEndOf="parent"

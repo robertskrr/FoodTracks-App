@@ -5,7 +5,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,18 +16,20 @@ import android.widget.Toast;
 
 import com.example.foodtracks.MainActivity;
 import com.example.foodtracks.R;
-import com.example.foodtracks.gui.HomeActivity;
-import com.example.foodtracks.gui.RegisterClienteActivity;
+import com.example.foodtracks.gui.users.admin.AdminActivity;
+import com.example.foodtracks.gui.users.cliente.HomeActivity;
+import com.example.foodtracks.gui.users.local.DashBoardLocalActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 
 /**
  * @author Robert
- * @since  17/02
+ * @since 17/02
  */
 public class LoginFragment extends DialogFragment {
 
@@ -36,10 +37,26 @@ public class LoginFragment extends DialogFragment {
     private TextView irARegistro;
     private Button btnLogin;
     private FirebaseAuth mAuth;
+    private FirebaseFirestore mFirestore;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    /**
+     * Asigna los componentes a la interfaz
+     *
+     * @param v
+     */
+    private void asignarComponentes(View v) {
+        btnLogin = v.findViewById(R.id.btnAcceder);
+        email = v.findViewById(R.id.txtLoginEmail);
+        password = v.findViewById(R.id.txtLoginPassword);
+        irARegistro = v.findViewById(R.id.txtVolverARegistro);
+
+        mAuth = FirebaseAuth.getInstance();
+        mFirestore = FirebaseFirestore.getInstance();
     }
 
     @Override
@@ -47,13 +64,7 @@ public class LoginFragment extends DialogFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_login, container, false);
-
-        btnLogin = v.findViewById(R.id.btnAcceder);
-        email = v.findViewById(R.id.txtLoginEmail);
-        password = v.findViewById(R.id.txtLoginPassword);
-        irARegistro = v.findViewById(R.id.txtVolverARegistro);
-
-        mAuth = FirebaseAuth.getInstance();
+        asignarComponentes(v);
 
         irARegistro.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,11 +101,29 @@ public class LoginFragment extends DialogFragment {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    Intent intent = new Intent(getContext(), MainActivity.class);
-                    // Limpiamos historial de activities para que no pueda volver atrás
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    dismiss();
-                    startActivity(intent);
+                    String uid = mAuth.getCurrentUser().getUid();
+
+                    // Consultamos el tipo de usuario en la colección
+                    mFirestore.collection("usuarios")
+                            .document(uid)
+                            .get()
+                            .addOnSuccessListener(document -> {
+                                String rol = document.getString("rol");
+                                Intent intent;
+
+                                if (rol.equals("admin")) {
+                                    intent = new Intent(getContext(), AdminActivity.class);
+                                } else if (rol.equals("local")) {
+                                    intent = new Intent(getContext(), DashBoardLocalActivity.class);
+                                } else {
+                                    intent = new Intent(getContext(), HomeActivity.class);
+                                }
+
+                                // Limpiamos historial de activities para que no pueda volver atrás
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                dismiss();
+                                startActivity(intent);
+                            });
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {

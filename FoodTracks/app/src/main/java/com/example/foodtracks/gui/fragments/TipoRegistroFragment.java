@@ -11,8 +11,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.foodtracks.R;
-import com.example.foodtracks.gui.RegisterClienteActivity;
-import com.example.foodtracks.gui.RegisterLocalActivity;
+import com.example.foodtracks.gui.users.cliente.RegisterClienteActivity;
+import com.example.foodtracks.gui.users.local.RegisterLocalActivity;
 
 /**
  * @author Robert
