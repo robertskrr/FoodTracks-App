@@ -31,21 +31,13 @@ import java.util.Map;
  * @since 01/02
  */
 public class RegisterClienteActivity extends AppCompatActivity {
-    FirebaseFirestore mFirestore;
-    FirebaseAuth mAuth;
+    private FirebaseFirestore mFirestore;
+    private FirebaseAuth mAuth;
 
     // Elementos de registro
-    EditText nombre;
-    EditText username;
-    EditText email;
-    EditText password;
+    private EditText nombre, username, email, password, especifiqueOtro;
 
-    CheckBox esVegano;
-    CheckBox esVegetariano;
-    CheckBox sinLactosa;
-    CheckBox esCeliaco;
-    CheckBox otraPreferencia;
-    EditText especifiqueOtro;
+    private CheckBox esVegano, esVegetariano, sinLactosa, esCeliaco, otraPreferencia;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,11 +89,12 @@ public class RegisterClienteActivity extends AppCompatActivity {
      *
      * @param view
      */
-    public void registro(View view) {
+    public void registroCliente(View view) {
         String nombreReg = nombre.getText().toString().trim();
         String usernameReg = username.getText().toString().trim();
         String emailReg = email.getText().toString().trim();
         String passwordReg = password.getText().toString().trim();
+
         // Si faltan campos por rellenar no registra
         if (nombreReg.isEmpty() || usernameReg.isEmpty() || emailReg.isEmpty() || passwordReg.isEmpty()) {
             Toast.makeText(RegisterClienteActivity.this, "Complete todos los campos", Toast.LENGTH_SHORT).show();
@@ -114,18 +107,18 @@ public class RegisterClienteActivity extends AppCompatActivity {
         }
 
         // Registramos el usuario en firebase
-        registrarUsuario(nombreReg, usernameReg, emailReg, passwordReg);
+        registrarUsuarioCliente(nombreReg, usernameReg, emailReg, passwordReg);
     }
 
     /**
-     * Registra el usuario en la base de datos de Firebase
+     * Registra el usuario cliente en la base de datos de Firebase
      *
      * @param nombre
      * @param userName
      * @param userEmail
      * @param userPassword
      */
-    private void registrarUsuario(String nombre, String userName, String userEmail, String userPassword) {
+    private void registrarUsuarioCliente(String nombre, String userName, String userEmail, String userPassword) {
         mAuth.createUserWithEmailAndPassword(userEmail, userPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -167,7 +160,7 @@ public class RegisterClienteActivity extends AppCompatActivity {
                                 public void onSuccess(Void unused) {
                                     Toast.makeText(RegisterClienteActivity.this, "Usuario registrado con éxito", Toast.LENGTH_SHORT).show();
 
-                                    Intent intent = new Intent(RegisterClienteActivity.this, MainActivity.class);
+                                    Intent intent = new Intent(RegisterClienteActivity.this, HomeActivity.class);
                                     // Limpiamos historial de activities para que no pueda volver atrás
                                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     startActivity(intent);

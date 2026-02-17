@@ -23,8 +23,9 @@
             android:id="@+id/textViewTitulo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="casual"
             android:text="Registro cliente"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/tertiary"
             android:textSize="34sp"
             android:textStyle="bold" />
 
@@ -157,7 +158,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:backgroundTint="@color/primary"
-            android:onClick="registro"
+            android:onClick="registroCliente"
             android:text="Crear cuenta" />
 
     </LinearLayout>

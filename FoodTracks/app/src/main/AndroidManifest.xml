@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FoodTracks">
         <activity
+            android:name=".gui.HomeActivity"
+            android:exported="false" />
+        <activity
             android:name=".gui.RegisterLocalActivity"
             android:exported="false" />
         <activity

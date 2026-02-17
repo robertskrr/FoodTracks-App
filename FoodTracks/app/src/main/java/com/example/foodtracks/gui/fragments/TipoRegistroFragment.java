@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,7 +35,7 @@ public class TipoRegistroFragment extends DialogFragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_tipo_registro, container, false);
 
-        btnCliente = v.findViewById(R.id.btnRegistroCliente);
+        btnCliente = v.findViewById(R.id.btnIniciarSesion);
         btnLocal = v.findViewById(R.id.btnRegistroLocal);
 
         btnCliente.setOnClickListener(new View.OnClickListener() {
