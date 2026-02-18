@@ -39,11 +39,6 @@ public class LoginFragment extends DialogFragment {
     private FirebaseAuth mAuth;
     private FirebaseFirestore mFirestore;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
     /**
      * Asigna los componentes a la interfaz
      *

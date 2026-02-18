@@ -17,7 +17,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
  */
 public class PerfilLocalActivity extends AppCompatActivity {
 
-    private TextView tvNombre, tvUsername, tvEmail, tvDir, tvTlf, tvOpciones;
+    private TextView tvNombre, tvUsername, tvEmail, tvDireccion, tvTelefono, tvOpciones;
     private String uidLocal;
     private FirebaseFirestore mFirestore;
     private FirebaseAuth mAuth;
@@ -44,8 +44,8 @@ public class PerfilLocalActivity extends AppCompatActivity {
         tvNombre = findViewById(R.id.tvNombreLocal);
         tvUsername = findViewById(R.id.tvUsernameLocal);
         tvEmail = findViewById(R.id.tvEmailLocal);
-        tvDir = findViewById(R.id.tvDirLocal);
-        tvTlf = findViewById(R.id.tvTlfLocal);
+        tvDireccion = findViewById(R.id.tvDirLocal);
+        tvTelefono = findViewById(R.id.tvTlfLocal);
         tvOpciones = findViewById(R.id.tvOpcionesLocal);
     }
 
@@ -63,8 +63,8 @@ public class PerfilLocalActivity extends AppCompatActivity {
                         tvNombre.setText(document.getString("nombre"));
                         tvUsername.setText(document.getString("username"));
                         tvEmail.setText(document.getString("email"));
-                        tvDir.setText(document.getString("direccion"));
-                        tvTlf.setText(document.getString("telefono"));
+                        tvDireccion.setText(document.getString("direccion"));
+                        tvTelefono.setText(document.getString("telefono"));
 
                         // Opciones alimenticias con StringBuilder
                         StringBuilder sb = new StringBuilder();

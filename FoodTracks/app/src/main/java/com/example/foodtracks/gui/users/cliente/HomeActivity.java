@@ -1,7 +1,6 @@
 package com.example.foodtracks.gui.users.cliente;
 
 import android.content.Intent;
-import android.opengl.Visibility;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -34,7 +33,7 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         asignarComponentes();
-        mostrarInterfaz();
+        mostrarInterfazCliente();
     }
 
     /**
@@ -50,7 +49,7 @@ public class HomeActivity extends AppCompatActivity {
     /**
      * Si no es un invitado muestra la interfaz de usuario
      */
-    private void mostrarInterfaz(){
+    private void mostrarInterfazCliente(){
         if (mAuth.getCurrentUser() != null){
             btnLogOut.setVisibility(View.VISIBLE);
             btnPerfil.setVisibility(View.VISIBLE);
