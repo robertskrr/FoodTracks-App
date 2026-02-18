@@ -77,7 +77,7 @@ public class HomeActivity extends AppCompatActivity {
      * @param view
      */
     public void miPerfil(View view){
-
+        startActivity(new Intent(getApplicationContext(), PerfilClienteActivity.class));
     }
 
 }

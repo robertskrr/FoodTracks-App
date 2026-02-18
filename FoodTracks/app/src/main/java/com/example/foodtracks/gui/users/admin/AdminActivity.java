@@ -13,6 +13,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.foodtracks.MainActivity;
 import com.example.foodtracks.R;
+import com.example.foodtracks.gui.users.cliente.PerfilClienteActivity;
 import com.example.foodtracks.gui.users.local.DashBoardLocalActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -38,7 +39,7 @@ public class AdminActivity extends AppCompatActivity {
     /**
      * Asigna los componentes a la interfaz
      */
-    private void asignarComponentes(){
+    private void asignarComponentes() {
         mFirestore = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
     }
@@ -61,9 +62,10 @@ public class AdminActivity extends AppCompatActivity {
 
     /**
      * Visualizar el perfil
+     *
      * @param view
      */
     public void miPerfil(View view) {
-
+        startActivity(new Intent(getApplicationContext(), PerfilClienteActivity.class));
     }
 }

@@ -50,20 +50,21 @@ public class DashBoardLocalActivity extends AppCompatActivity {
     /**
      * Muestra los datos del local en el Dash Board
      */
-    private void mostrarDatosLocal(){
+    private void mostrarDatosLocal() {
         ponerNombreEnTexto(txtLocal);
     }
 
     /**
      * Pone el nombre del local en el TextView
+     *
      * @param tv
      */
-    private void ponerNombreEnTexto(TextView tv){
+    private void ponerNombreEnTexto(TextView tv) {
         mFirestore.collection("usuarios")
                 .document(uidLocal)
                 .get()
                 .addOnSuccessListener(document -> {
-                   tv.setText(document.getString("nombre"));
+                    tv.setText(document.getString("nombre"));
                 });
     }
 
@@ -85,9 +86,10 @@ public class DashBoardLocalActivity extends AppCompatActivity {
 
     /**
      * Visualizar el perfil
+     *
      * @param view
      */
     public void miPerfil(View view) {
-
+        startActivity(new Intent(getApplicationContext(), PerfilLocalActivity.class));
     }
 }
