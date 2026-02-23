@@ -1,16 +1,16 @@
-package com.example.foodtracks.gui.users.cliente;
+package com.foodtracks.app.gui.users.admin;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.foodtracks.MainActivity;
-import com.example.foodtracks.R;
+import com.foodtracks.app.MainActivity;
+import com.foodtracks.app.R;
+import com.foodtracks.app.gui.users.cliente.PerfilClienteActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -18,51 +18,36 @@ import com.google.firebase.firestore.FirebaseFirestore;
  * @author Robert
  * @since 17/02
  */
-public class HomeActivity extends AppCompatActivity {
+public class AdminActivity extends AppCompatActivity {
 
     private FirebaseFirestore mFirestore;
     private FirebaseAuth mAuth;
-
-    private Button btnLogOut;
-    private Button btnPerfil;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_home);
+        setContentView(R.layout.activity_admin);
 
         asignarComponentes();
-        mostrarInterfazCliente();
     }
 
     /**
-     * Asigna los componentes de la interfaz
+     * Asigna los componentes a la interfaz
      */
-    private void asignarComponentes(){
+    private void asignarComponentes() {
         mFirestore = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
-        btnLogOut = findViewById(R.id.btnLogOutCliente);
-        btnPerfil = findViewById(R.id.btnPerfilCliente);
-    }
-
-    /**
-     * Si no es un invitado muestra la interfaz de usuario
-     */
-    private void mostrarInterfazCliente(){
-        if (mAuth.getCurrentUser() != null){
-            btnLogOut.setVisibility(View.VISIBLE);
-            btnPerfil.setVisibility(View.VISIBLE);
-        }
     }
 
     /**
      * Cierra la sesión del usuario
+     *
      * @param view
      */
-    public void logOut(View view){
+    public void logOut(View view) {
         mAuth.signOut();
-        Intent intent = new Intent(HomeActivity.this, MainActivity.class);
+        Intent intent = new Intent(AdminActivity.this, MainActivity.class);
 
         // Limpiamos historial de activities para que no pueda volver atrás
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -73,10 +58,10 @@ public class HomeActivity extends AppCompatActivity {
 
     /**
      * Visualizar el perfil
+     *
      * @param view
      */
-    public void miPerfil(View view){
+    public void miPerfil(View view) {
         startActivity(new Intent(getApplicationContext(), PerfilClienteActivity.class));
     }
-
 }

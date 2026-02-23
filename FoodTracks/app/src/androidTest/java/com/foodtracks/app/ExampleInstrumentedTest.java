@@ -1,4 +1,4 @@
-package com.example.foodtracks;
+package com.foodtracks.app;
 
 import android.content.Context;
 

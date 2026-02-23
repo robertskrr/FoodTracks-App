@@ -1,4 +1,4 @@
-package com.example.foodtracks.model;
+package com.foodtracks.app.model;
 
 public class UsuarioLocal extends Usuario{
 }

@@ -1,4 +1,4 @@
-package com.example.foodtracks;
+package com.foodtracks.app;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,11 +6,11 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.foodtracks.gui.users.admin.AdminActivity;
-import com.example.foodtracks.gui.users.cliente.HomeActivity;
-import com.example.foodtracks.gui.fragments.LoginFragment;
-import com.example.foodtracks.gui.fragments.TipoRegistroFragment;
-import com.example.foodtracks.gui.users.local.DashBoardLocalActivity;
+import com.foodtracks.app.gui.users.admin.AdminActivity;
+import com.foodtracks.app.gui.users.cliente.HomeActivity;
+import com.foodtracks.app.gui.fragments.LoginFragment;
+import com.foodtracks.app.gui.fragments.TipoRegistroFragment;
+import com.foodtracks.app.gui.users.local.DashBoardLocalActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -20,7 +20,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
  * @since 20/01
  */
 public class MainActivity extends AppCompatActivity {
-    private FirebaseFirestore mFirestore; // TRABAJARA CON LOS DATOS
+    private FirebaseFirestore mFirestore;
     private FirebaseAuth mAuth;
 
     @Override

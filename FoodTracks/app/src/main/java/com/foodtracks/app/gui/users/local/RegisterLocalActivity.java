@@ -1,22 +1,21 @@
-package com.example.foodtracks.gui.users.cliente;
+package com.foodtracks.app.gui.users.local;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import com.example.foodtracks.R;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.foodtracks.app.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -27,21 +26,22 @@ import java.util.Map;
 
 /**
  * @author Robert
- * @since 01/02
+ * @since 14/02
  */
-public class RegisterClienteActivity extends AppCompatActivity {
+public class RegisterLocalActivity extends AppCompatActivity {
     private FirebaseFirestore mFirestore;
     private FirebaseAuth mAuth;
 
     // Elementos de registro
-    private EditText nombre, username, email, password, especifiqueOtro;
-
+    private EditText nombre, username, email, password, direccion, telefono, especifiqueOtro;
     private CheckBox esVegano, esVegetariano, sinLactosa, esCeliaco, otraPreferencia;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register_cliente);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_register_local);
 
         asignarComponentes();
         mostrarOtraPreferencia();
@@ -55,18 +55,21 @@ public class RegisterClienteActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         // Campos
-        nombre = findViewById(R.id.txtNombre);
-        username = findViewById(R.id.txtUsername);
-        email = findViewById(R.id.txtEmail);
-        password = findViewById(R.id.txtPassword);
+        nombre = findViewById(R.id.txtNombreLocal);
+        username = findViewById(R.id.txtUsernameLocal);
+        email = findViewById(R.id.txtEmailLocal);
+        password = findViewById(R.id.txtPasswordLocal);
+        direccion = findViewById(R.id.txtDireccionLocal);
+        telefono = findViewById(R.id.txtTelefonoLocal);
 
-        // Preferencias alimenticias
-        esVegano = findViewById(R.id.cbVegano);
-        esVegetariano = findViewById(R.id.cbVegetariano);
-        sinLactosa = findViewById(R.id.cbLactosa);
-        esCeliaco = findViewById(R.id.cbCeliaco);
-        otraPreferencia = findViewById(R.id.cbOtro);
-        especifiqueOtro = findViewById(R.id.txtEspecifiqueOtro);
+
+        // Opciones alimenticias
+        esVegano = findViewById(R.id.cbVeganoLocal);
+        esVegetariano = findViewById(R.id.cbVegetarianoLocal);
+        sinLactosa = findViewById(R.id.cbLactosaLocal);
+        esCeliaco = findViewById(R.id.cbCeliacoLocal);
+        otraPreferencia = findViewById(R.id.cbOtroLocal);
+        especifiqueOtro = findViewById(R.id.txtEspecifiqueOtroLocal);
     }
 
     /**
@@ -88,15 +91,18 @@ public class RegisterClienteActivity extends AppCompatActivity {
      *
      * @param view
      */
-    public void registroCliente(View view) {
+    public void registroLocal(View view) {
         String nombreReg = nombre.getText().toString().trim();
         String usernameReg = username.getText().toString().trim();
         String emailReg = email.getText().toString().trim();
         String passwordReg = password.getText().toString().trim();
+        String direccionReg = direccion.getText().toString().trim();
+        String telefonoReg = telefono.getText().toString().trim();
 
         // Si faltan campos por rellenar no registra
-        if (nombreReg.isEmpty() || usernameReg.isEmpty() || emailReg.isEmpty() || passwordReg.isEmpty()) {
-            Toast.makeText(getApplicationContext(), "Complete todos los campos", Toast.LENGTH_SHORT).show();
+        if (nombreReg.isEmpty() || usernameReg.isEmpty() || emailReg.isEmpty()
+                || passwordReg.isEmpty() || direccionReg.isEmpty() || telefonoReg.isEmpty()) {
+            Toast.makeText(RegisterLocalActivity.this, "Complete todos los campos", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -105,8 +111,13 @@ public class RegisterClienteActivity extends AppCompatActivity {
             return;
         }
 
+        if (telefonoReg.length() != 9)
+        {
+            Toast.makeText(getApplicationContext(), "El teléfono debe tener 9 dígitos", Toast.LENGTH_SHORT).show();
+            return;
+        }
         // Registramos el usuario en firebase
-        registrarUsuarioCliente(nombreReg, usernameReg, emailReg, passwordReg);
+        registrarUsuarioLocal(nombreReg, usernameReg, emailReg, passwordReg, direccionReg, telefonoReg);
     }
 
     /**
@@ -116,8 +127,9 @@ public class RegisterClienteActivity extends AppCompatActivity {
      * @param userName
      * @param userEmail
      * @param userPassword
+     * @param userDireccion
      */
-    private void registrarUsuarioCliente(String nombre, String userName, String userEmail, String userPassword) {
+    private void registrarUsuarioLocal(String nombre, String userName, String userEmail, String userPassword, String userDireccion, String userTelefono) {
         mAuth.createUserWithEmailAndPassword(userEmail, userPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -131,7 +143,9 @@ public class RegisterClienteActivity extends AppCompatActivity {
                     map.put("nombre", nombre);
                     map.put("username", userName);
                     map.put("email", userEmail);
-                    map.put("rol", "cliente");
+                    map.put("direccion", userDireccion);
+                    map.put("telefono", userTelefono);
+                    map.put("rol", "local");
 
                     // Preferencias alimenticias
                     map.put("esVegano", esVegano.isChecked());
@@ -159,7 +173,7 @@ public class RegisterClienteActivity extends AppCompatActivity {
                                 public void onSuccess(Void unused) {
                                     Toast.makeText(getApplicationContext(), "Usuario registrado con éxito", Toast.LENGTH_SHORT).show();
 
-                                    Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
+                                    Intent intent = new Intent(getApplicationContext(), DashBoardLocalActivity.class);
                                     // Limpiamos historial de activities para que no pueda volver atrás
                                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     startActivity(intent);
@@ -180,5 +194,4 @@ public class RegisterClienteActivity extends AppCompatActivity {
             }
         });
     }
-
 }

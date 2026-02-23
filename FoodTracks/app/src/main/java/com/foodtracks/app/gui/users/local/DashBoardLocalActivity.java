@@ -1,4 +1,4 @@
-package com.example.foodtracks.gui.users.local;
+package com.foodtracks.app.gui.users.local;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,8 +9,8 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.foodtracks.MainActivity;
-import com.example.foodtracks.R;
+import com.foodtracks.app.MainActivity;
+import com.foodtracks.app.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 

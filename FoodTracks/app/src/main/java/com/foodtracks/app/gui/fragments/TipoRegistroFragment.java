@@ -1,4 +1,4 @@
-package com.example.foodtracks.gui.fragments;
+package com.foodtracks.app.gui.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,9 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.example.foodtracks.R;
-import com.example.foodtracks.gui.users.cliente.RegisterClienteActivity;
-import com.example.foodtracks.gui.users.local.RegisterLocalActivity;
+import com.foodtracks.app.R;
+import com.foodtracks.app.gui.users.cliente.RegisterClienteActivity;
+import com.foodtracks.app.gui.users.local.RegisterLocalActivity;
 
 /**
  * @author Robert

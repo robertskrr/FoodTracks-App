@@ -1,4 +1,4 @@
-package com.example.foodtracks.gui.fragments;
+package com.foodtracks.app.gui.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,11 +14,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.foodtracks.MainActivity;
-import com.example.foodtracks.R;
-import com.example.foodtracks.gui.users.admin.AdminActivity;
-import com.example.foodtracks.gui.users.cliente.HomeActivity;
-import com.example.foodtracks.gui.users.local.DashBoardLocalActivity;
+import com.foodtracks.app.R;
+import com.foodtracks.app.gui.users.admin.AdminActivity;
+import com.foodtracks.app.gui.users.cliente.HomeActivity;
+import com.foodtracks.app.gui.users.local.DashBoardLocalActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
