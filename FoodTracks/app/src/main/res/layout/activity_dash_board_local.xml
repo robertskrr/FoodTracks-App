@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/primary"
-    tools:context=".gui.users.local.DashBoardLocalActivity">
+    tools:context=".gui.activities.local.DashBoardLocalActivity">
 
     <TextView
         android:id="@+id/txtDashBoard"

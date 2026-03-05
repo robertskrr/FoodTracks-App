@@ -6,11 +6,11 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.foodtracks.app.gui.users.admin.AdminActivity;
-import com.foodtracks.app.gui.users.cliente.HomeActivity;
+import com.foodtracks.app.gui.activities.admin.AdminActivity;
+import com.foodtracks.app.gui.activities.cliente.HomeActivity;
 import com.foodtracks.app.gui.fragments.LoginFragment;
 import com.foodtracks.app.gui.fragments.TipoRegistroFragment;
-import com.foodtracks.app.gui.users.local.DashBoardLocalActivity;
+import com.foodtracks.app.gui.activities.local.DashBoardLocalActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;

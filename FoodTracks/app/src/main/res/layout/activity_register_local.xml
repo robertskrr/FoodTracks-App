@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/fondo"
     android:fitsSystemWindows="true"
-    tools:context=".gui.users.local.RegisterLocalActivity">
+    tools:context=".gui.activities.local.RegisterLocalActivity">
 
     <ScrollView
         android:layout_width="match_parent"

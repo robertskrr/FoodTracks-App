@@ -1,4 +1,4 @@
-package com.foodtracks.app.gui.users.cliente;
+package com.foodtracks.app.gui.activities.cliente;
 
 import android.content.Intent;
 import android.os.Bundle;

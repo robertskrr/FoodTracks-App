@@ -1,4 +1,4 @@
-package com.foodtracks.app.gui.users.local;
+package com.foodtracks.app.gui.activities.cliente;
 
 import android.os.Bundle;
 import android.widget.TextView;
@@ -15,10 +15,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
  * @author Robert
  * @since 18/02
  */
-public class PerfilLocalActivity extends AppCompatActivity {
+public class PerfilClienteActivity extends AppCompatActivity {
 
-    private TextView tvNombre, tvUsername, tvEmail, tvDireccion, tvTelefono, tvOpciones;
-    private String uidLocal;
+    private TextView tvNombre, tvUsername, tvEmail, tvPreferencias;
+    private String uidCliente;
     private FirebaseFirestore mFirestore;
     private FirebaseAuth mAuth;
 
@@ -26,10 +26,10 @@ public class PerfilLocalActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_perfil_local);
+        setContentView(R.layout.activity_perfil_cliente);
 
         asignarComponentes();
-        mostrarDatosLocal();
+        mostrarDatosCliente();
     }
 
     /**
@@ -39,37 +39,32 @@ public class PerfilLocalActivity extends AppCompatActivity {
         // Firebase
         mFirestore = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
-        uidLocal = mAuth.getCurrentUser().getUid();
-        // TextViews
-        tvNombre = findViewById(R.id.tvNombreLocal);
-        tvUsername = findViewById(R.id.tvUsernameLocal);
-        tvEmail = findViewById(R.id.tvEmailLocal);
-        tvDireccion = findViewById(R.id.tvDirLocal);
-        tvTelefono = findViewById(R.id.tvTlfLocal);
-        tvOpciones = findViewById(R.id.tvOpcionesLocal);
+        uidCliente = mAuth.getCurrentUser().getUid();
+
+        // TextView
+        tvNombre = findViewById(R.id.tvNombreCliente);
+        tvUsername = findViewById(R.id.tvUsernameCliente);
+        tvEmail = findViewById(R.id.tvEmailCliente);
+        tvPreferencias = findViewById(R.id.tvPrefCliente);
     }
 
-
     /**
-     * Mostrar los datos del local
+     * Muestra los datos del cliente
      */
-    private void mostrarDatosLocal() {
+    private void mostrarDatosCliente() {
         mFirestore.collection("usuarios")
-                .document(uidLocal)
+                .document(uidCliente)
                 .get()
                 .addOnSuccessListener(document -> {
-                    if (document.exists()) { // Verificamos que el documento exista
+                    if (document.exists()) {
                         // Datos básicos
                         tvNombre.setText(document.getString("nombre"));
                         tvUsername.setText(document.getString("username"));
                         tvEmail.setText(document.getString("email"));
-                        tvDireccion.setText(document.getString("direccion"));
-                        tvTelefono.setText(document.getString("telefono"));
 
-                        // Opciones alimenticias con StringBuilder
+                        // Preferencias
                         StringBuilder sb = new StringBuilder();
 
-                        // Usamos Boolean.TRUE.equals para evitar NullPointerException
                         if (Boolean.TRUE.equals(document.getBoolean("esVegano")))
                             sb.append("\uD83C\uDF31 Vegano  \n");
                         if (Boolean.TRUE.equals(document.getBoolean("esVegetariano")))
@@ -79,7 +74,7 @@ public class PerfilLocalActivity extends AppCompatActivity {
                         if (Boolean.TRUE.equals(document.getBoolean("esCeliaco")))
                             sb.append("\uD83C\uDF3E Celíaco  \n");
 
-                        // Manejo de otra preferencia marcada
+                        // Manejo de "otraPreferencia"
                         Object otra = document.get("otraPreferencia");
                         if (otra instanceof String) {
                             sb.append("\uD83D\uDCDD ").append(otra.toString());
@@ -87,11 +82,10 @@ public class PerfilLocalActivity extends AppCompatActivity {
 
                         String resultado = sb.toString().trim();
 
-                        // Asigna el texto depende del resultado
-                        if (resultado.isEmpty()){
-                            tvOpciones.setText("Ninguna seleccionada");
+                        if (resultado.isEmpty()) {
+                            tvPreferencias.setText("Ninguna");
                         } else {
-                            tvOpciones.setText(resultado);
+                            tvPreferencias.setText(resultado);
                         }
                     }
                 })
@@ -99,5 +93,4 @@ public class PerfilLocalActivity extends AppCompatActivity {
                     Toast.makeText(this, "Error al cargar tu perfil", Toast.LENGTH_SHORT).show();
                 });
     }
-
 }

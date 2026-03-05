@@ -1,4 +1,4 @@
-package com.foodtracks.app.gui.users.admin;
+package com.foodtracks.app.gui.activities.admin;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.foodtracks.app.MainActivity;
 import com.foodtracks.app.R;
-import com.foodtracks.app.gui.users.cliente.PerfilClienteActivity;
+import com.foodtracks.app.gui.activities.cliente.PerfilClienteActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 

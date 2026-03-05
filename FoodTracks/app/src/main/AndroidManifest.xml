@@ -12,25 +12,25 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FoodTracks">
         <activity
-            android:name=".gui.users.local.PerfilLocalActivity"
+            android:name=".gui.activities.local.PerfilLocalActivity"
             android:exported="false" />
         <activity
-            android:name=".gui.users.cliente.PerfilClienteActivity"
+            android:name=".gui.activities.cliente.PerfilClienteActivity"
             android:exported="false" />
         <activity
-            android:name=".gui.users.admin.AdminActivity"
+            android:name=".gui.activities.admin.AdminActivity"
             android:exported="false" />
         <activity
-            android:name=".gui.users.local.DashBoardLocalActivity"
+            android:name=".gui.activities.local.DashBoardLocalActivity"
             android:exported="false" />
         <activity
-            android:name=".gui.users.cliente.HomeActivity"
+            android:name=".gui.activities.cliente.HomeActivity"
             android:exported="false" />
         <activity
-            android:name=".gui.users.local.RegisterLocalActivity"
+            android:name=".gui.activities.local.RegisterLocalActivity"
             android:exported="false" />
         <activity
-            android:name=".gui.users.cliente.RegisterClienteActivity"
+            android:name=".gui.activities.cliente.RegisterClienteActivity"
             android:exported="false"
             android:theme="@style/Theme.FoodTracks" />
         <activity

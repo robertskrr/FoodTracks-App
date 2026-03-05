@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/tertiary"
-    tools:context=".gui.users.admin.AdminActivity">
+    tools:context=".gui.activities.admin.AdminActivity">
 
     <TextView
         android:id="@+id/txtDashBoard"
