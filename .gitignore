@@ -12,13 +12,7 @@ Thumbs.db
 
 # Android Studio / IntelliJ
 *.iml
-*.idea
-.idea/workspace.xml
-.idea/libraries/
-.idea/modules.xml
-.idea/assetWizardSettings.xml
-.idea/navEditor.xml
-.idea/deploymentTargetDropDown.xml
+.idea/
 captures/
 .externalNativeBuild/
 .cxx/
