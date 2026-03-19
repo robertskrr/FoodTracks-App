@@ -1,4 +1,4 @@
-package com.foodtracks.app.gui.fragments;
+package com.foodtracks.app.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;

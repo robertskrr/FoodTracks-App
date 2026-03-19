@@ -1,4 +1,4 @@
-package com.foodtracks.app.gui.activities.local;
+package com.foodtracks.app.activities.local;
 
 import android.os.Bundle;
 import android.widget.TextView;

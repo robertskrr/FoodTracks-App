@@ -50,6 +50,11 @@ dependencies {
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
+
+    /** ==============================================
+     *                      FIREBASE
+     *  ==============================================
+     */
     // Import the Firebase BoM
     implementation platform('com.google.firebase:firebase-bom:34.8.0')
 
@@ -61,4 +66,11 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage'
     // Add the dependencies for any other desired Firebase products
     // https://firebase.google.com/docs/android/setup#available-libraries
+
+    /** ==============================================
+     *                      LOMBOK
+     *  ==============================================
+     */
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
 }
