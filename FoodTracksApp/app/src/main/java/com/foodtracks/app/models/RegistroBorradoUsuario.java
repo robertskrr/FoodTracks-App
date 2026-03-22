@@ -9,21 +9,23 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author Robert
+ * @since 22/03
+ */
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class Publicacion {
-    @DocumentId
+public class RegistroBorradoUsuario {
+    @DocumentId // Asigna el UID del documento automáticamente
     private String uid;
 
-    private String texto;
-    private String imagen;
-    private String uidCliente;
-    private String uidLocal;
-    @ServerTimestamp
-    private Timestamp fechaHora;
+    private String uidAdmin;
+    private String uidUsuario;
+    private String usernameUsuario;
+    private String motivo;
 
-    @Builder.Default
-    private long numLikes = 0;
+    @ServerTimestamp
+    private Timestamp fecha;
 }

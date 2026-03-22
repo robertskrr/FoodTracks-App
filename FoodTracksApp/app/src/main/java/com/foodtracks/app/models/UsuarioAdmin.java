@@ -16,20 +16,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class UsuarioLocal extends Usuario {
+public class UsuarioAdmin extends Usuario {
     @Builder.Default
-    private String rol = "local";
-
-    private String direccion;
-    private String telefono;
-    private String sitioWeb;
-
-    @Builder.Default
-    private long visitasPerfil = 0;
-
-    @Builder.Default
-    private double puntuacionMedia = 0.0;
-
-    @Builder.Default
-    private long totalValoraciones = 0;
+    private String rol = "admin";
 }

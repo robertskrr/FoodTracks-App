@@ -1,29 +1,25 @@
 package com.foodtracks.app.models;
 
-import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentId;
-import com.google.firebase.firestore.ServerTimestamp;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author Robert
+ * @since 22/03
+ */
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Builder
-public class Publicacion {
-    @DocumentId
+public class ValoracionLocal {
+    @DocumentId // Asigna el UID del documento automáticamente
     private String uid;
 
-    private String texto;
-    private String imagen;
     private String uidCliente;
     private String uidLocal;
-    @ServerTimestamp
-    private Timestamp fechaHora;
-
-    @Builder.Default
-    private long numLikes = 0;
+    private double puntuacion;
 }
