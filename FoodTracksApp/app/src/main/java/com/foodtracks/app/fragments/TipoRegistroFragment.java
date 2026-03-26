@@ -1,18 +1,18 @@
+/** © FoodTracks Project ===robertskrr=== */
+
 package com.foodtracks.app.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.fragment.app.DialogFragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import androidx.fragment.app.DialogFragment;
 
 import com.foodtracks.app.R;
-import com.foodtracks.app.gui.activities.cliente.RegisterClienteActivity;
-import com.foodtracks.app.gui.activities.local.RegisterLocalActivity;
+import com.foodtracks.app.activities.cliente.RegisterClienteActivity;
+import com.foodtracks.app.activities.local.RegisterLocalActivity;
 
 /**
  * @author Robert
@@ -24,27 +24,29 @@ public class TipoRegistroFragment extends DialogFragment {
     private Button btnLocal;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(
+            LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_tipo_registro, container, false);
 
         btnCliente = v.findViewById(R.id.btnIniciarSesion);
         btnLocal = v.findViewById(R.id.btnRegistroLocal);
 
-        btnCliente.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getContext(), RegisterClienteActivity.class));
-            }
-        });
+        btnCliente.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(new Intent(getContext(), RegisterClienteActivity.class));
+                    }
+                });
 
-        btnLocal.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getContext(), RegisterLocalActivity.class));
-            }
-        });
+        btnLocal.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(new Intent(getContext(), RegisterLocalActivity.class));
+                    }
+                });
         return v;
     }
 
@@ -63,5 +65,4 @@ public class TipoRegistroFragment extends DialogFragment {
             getDialog().getWindow().setLayout(desiredWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
     }
-
 }

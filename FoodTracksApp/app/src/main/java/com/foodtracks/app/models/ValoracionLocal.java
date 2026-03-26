@@ -1,7 +1,9 @@
+/** © FoodTracks Project ===robertskrr=== */
+
 package com.foodtracks.app.models;
 
 import com.google.firebase.firestore.DocumentId;
-
+import com.google.firebase.firestore.PropertyName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,7 +21,11 @@ public class ValoracionLocal {
     @DocumentId // Asigna el UID del documento automáticamente
     private String uid;
 
+    @PropertyName("uid_cliente")
     private String uidCliente;
+
+    @PropertyName("uid_local")
     private String uidLocal;
+
     private double puntuacion;
 }
