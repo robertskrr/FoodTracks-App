@@ -1,4 +1,5 @@
-/* © FoodTracks Project ===robertskrr=== */
+/** © FoodTracks Project ===robertskrr=== */
+
 package com.foodtracks.app.models;
 
 import com.google.firebase.Timestamp;

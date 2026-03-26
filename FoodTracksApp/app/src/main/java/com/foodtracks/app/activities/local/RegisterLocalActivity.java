@@ -1,4 +1,5 @@
-/* © FoodTracks Project ===robertskrr=== */
+/** © FoodTracks Project ===robertskrr=== */
+
 package com.foodtracks.app.activities.local;
 
 import java.util.HashMap;

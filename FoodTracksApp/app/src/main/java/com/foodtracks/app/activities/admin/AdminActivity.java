@@ -1,4 +1,5 @@
-/* © FoodTracks Project ===robertskrr=== */
+/** © FoodTracks Project ===robertskrr=== */
+
 package com.foodtracks.app.activities.admin;
 
 import android.content.Intent;
