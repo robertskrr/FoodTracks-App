@@ -1,16 +1,17 @@
+/* © FoodTracks Project ===robertskrr=== */
 package com.foodtracks.app.activities.admin;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.foodtracks.app.activities.MainActivity;
 import com.foodtracks.app.R;
+import com.foodtracks.app.activities.MainActivity;
 import com.foodtracks.app.activities.cliente.PerfilClienteActivity;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -32,9 +33,7 @@ public class AdminActivity extends AppCompatActivity {
         asignarComponentes();
     }
 
-    /**
-     * Asigna los componentes a la interfaz
-     */
+    /** Asigna los componentes a la interfaz */
     private void asignarComponentes() {
         mFirestore = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();

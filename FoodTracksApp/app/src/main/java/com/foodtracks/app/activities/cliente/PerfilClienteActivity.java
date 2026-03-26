@@ -1,13 +1,14 @@
+/* © FoodTracks Project ===robertskrr=== */
 package com.foodtracks.app.activities.cliente;
 
 import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.foodtracks.app.R;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -32,9 +33,7 @@ public class PerfilClienteActivity extends AppCompatActivity {
         mostrarDatosCliente();
     }
 
-    /**
-     * Asigna los componentes a la interfaz
-     */
+    /** Asigna los componentes a la interfaz */
     private void asignarComponentes() {
         // Firebase
         mFirestore = FirebaseFirestore.getInstance();
@@ -48,49 +47,51 @@ public class PerfilClienteActivity extends AppCompatActivity {
         tvPreferencias = findViewById(R.id.tvPrefCliente);
     }
 
-    /**
-     * Muestra los datos del cliente
-     */
+    /** Muestra los datos del cliente */
     private void mostrarDatosCliente() {
-        mFirestore.collection("usuarios")
+        mFirestore
+                .collection("usuarios")
                 .document(uidCliente)
                 .get()
-                .addOnSuccessListener(document -> {
-                    if (document.exists()) {
-                        // Datos básicos
-                        tvNombre.setText(document.getString("nombre"));
-                        tvUsername.setText(document.getString("username"));
-                        tvEmail.setText(document.getString("email"));
+                .addOnSuccessListener(
+                        document -> {
+                            if (document.exists()) {
+                                // Datos básicos
+                                tvNombre.setText(document.getString("nombre"));
+                                tvUsername.setText(document.getString("username"));
+                                tvEmail.setText(document.getString("email"));
 
-                        // Preferencias
-                        StringBuilder sb = new StringBuilder();
+                                // Preferencias
+                                StringBuilder sb = new StringBuilder();
 
-                        if (Boolean.TRUE.equals(document.getBoolean("esVegano")))
-                            sb.append("\uD83C\uDF31 Vegano  \n");
-                        if (Boolean.TRUE.equals(document.getBoolean("esVegetariano")))
-                            sb.append("\uD83C\uDF3F Vegetariano  \n");
-                        if (Boolean.TRUE.equals(document.getBoolean("sinLactosa")))
-                            sb.append("\uD83E\uDD5B Sin Lactosa  \n");
-                        if (Boolean.TRUE.equals(document.getBoolean("esCeliaco")))
-                            sb.append("\uD83C\uDF3E Celíaco  \n");
+                                if (Boolean.TRUE.equals(document.getBoolean("esVegano")))
+                                    sb.append("\uD83C\uDF31 Vegano  \n");
+                                if (Boolean.TRUE.equals(document.getBoolean("esVegetariano")))
+                                    sb.append("\uD83C\uDF3F Vegetariano  \n");
+                                if (Boolean.TRUE.equals(document.getBoolean("sinLactosa")))
+                                    sb.append("\uD83E\uDD5B Sin Lactosa  \n");
+                                if (Boolean.TRUE.equals(document.getBoolean("esCeliaco")))
+                                    sb.append("\uD83C\uDF3E Celíaco  \n");
 
-                        // Manejo de "otraPreferencia"
-                        Object otra = document.get("otraPreferencia");
-                        if (otra instanceof String) {
-                            sb.append("\uD83D\uDCDD ").append(otra.toString());
-                        }
+                                // Manejo de "otraPreferencia"
+                                Object otra = document.get("otraPreferencia");
+                                if (otra instanceof String) {
+                                    sb.append("\uD83D\uDCDD ").append(otra.toString());
+                                }
 
-                        String resultado = sb.toString().trim();
+                                String resultado = sb.toString().trim();
 
-                        if (resultado.isEmpty()) {
-                            tvPreferencias.setText("Ninguna");
-                        } else {
-                            tvPreferencias.setText(resultado);
-                        }
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Error al cargar tu perfil", Toast.LENGTH_SHORT).show();
-                });
+                                if (resultado.isEmpty()) {
+                                    tvPreferencias.setText("Ninguna");
+                                } else {
+                                    tvPreferencias.setText(resultado);
+                                }
+                            }
+                        })
+                .addOnFailureListener(
+                        e -> {
+                            Toast.makeText(this, "Error al cargar tu perfil", Toast.LENGTH_SHORT)
+                                    .show();
+                        });
     }
 }

@@ -1,9 +1,9 @@
+/* © FoodTracks Project ===robertskrr=== */
 package com.foodtracks.app.models;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentId;
 import com.google.firebase.firestore.ServerTimestamp;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,6 +27,5 @@ public class RegistroBorradoPublicacion {
     private String usernameUsuario;
     private String motivo;
 
-    @ServerTimestamp
-    private Timestamp fecha;
+    @ServerTimestamp private Timestamp fecha;
 }

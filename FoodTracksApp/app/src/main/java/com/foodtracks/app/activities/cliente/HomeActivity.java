@@ -1,3 +1,4 @@
+/* © FoodTracks Project ===robertskrr=== */
 package com.foodtracks.app.activities.cliente;
 
 import android.content.Intent;
@@ -5,12 +6,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.foodtracks.app.activities.MainActivity;
 import com.foodtracks.app.R;
+import com.foodtracks.app.activities.MainActivity;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -36,21 +37,17 @@ public class HomeActivity extends AppCompatActivity {
         mostrarInterfazCliente();
     }
 
-    /**
-     * Asigna los componentes de la interfaz
-     */
-    private void asignarComponentes(){
+    /** Asigna los componentes de la interfaz */
+    private void asignarComponentes() {
         mFirestore = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
         btnLogOut = findViewById(R.id.btnLogOutCliente);
         btnPerfil = findViewById(R.id.btnPerfilCliente);
     }
 
-    /**
-     * Si no es un invitado muestra la interfaz de usuario
-     */
-    private void mostrarInterfazCliente(){
-        if (mAuth.getCurrentUser() != null){
+    /** Si no es un invitado muestra la interfaz de usuario */
+    private void mostrarInterfazCliente() {
+        if (mAuth.getCurrentUser() != null) {
             btnLogOut.setVisibility(View.VISIBLE);
             btnPerfil.setVisibility(View.VISIBLE);
         }
@@ -58,9 +55,10 @@ public class HomeActivity extends AppCompatActivity {
 
     /**
      * Cierra la sesión del usuario
+     *
      * @param view
      */
-    public void logOut(View view){
+    public void logOut(View view) {
         mAuth.signOut();
         Intent intent = new Intent(HomeActivity.this, MainActivity.class);
 
@@ -73,10 +71,10 @@ public class HomeActivity extends AppCompatActivity {
 
     /**
      * Visualizar el perfil
+     *
      * @param view
      */
-    public void miPerfil(View view){
+    public void miPerfil(View view) {
         startActivity(new Intent(getApplicationContext(), PerfilClienteActivity.class));
     }
-
 }

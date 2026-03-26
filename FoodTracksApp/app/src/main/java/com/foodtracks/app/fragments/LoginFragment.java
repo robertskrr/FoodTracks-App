@@ -1,11 +1,8 @@
+/* © FoodTracks Project ===robertskrr=== */
 package com.foodtracks.app.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.DialogFragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,18 +10,20 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
 
 import com.foodtracks.app.R;
 import com.foodtracks.app.activities.admin.AdminActivity;
 import com.foodtracks.app.activities.cliente.HomeActivity;
 import com.foodtracks.app.activities.local.DashBoardLocalActivity;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
-
 
 /**
  * @author Robert
@@ -54,78 +53,108 @@ public class LoginFragment extends DialogFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(
+            LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_login, container, false);
         asignarComponentes(v);
 
-        irARegistro.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Cerramos fragment
-                dismiss();
+        irARegistro.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // Cerramos fragment
+                        dismiss();
 
-                // Abrimos fragmento de registro
-                TipoRegistroFragment registroFragment = new TipoRegistroFragment();
-                registroFragment.show(getParentFragmentManager(), "Fragment registro");
-            }
-        });
+                        // Abrimos fragmento de registro
+                        TipoRegistroFragment registroFragment = new TipoRegistroFragment();
+                        registroFragment.show(getParentFragmentManager(), "Fragment registro");
+                    }
+                });
 
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String emailLogin = email.getText().toString().trim();
-                String passwordLogin = password.getText().toString().trim();
+        btnLogin.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        String emailLogin = email.getText().toString().trim();
+                        String passwordLogin = password.getText().toString().trim();
 
-                if (emailLogin.isEmpty() || passwordLogin.isEmpty()) {
-                    Toast.makeText(getContext(), "Complete todos los campos", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+                        if (emailLogin.isEmpty() || passwordLogin.isEmpty()) {
+                            Toast.makeText(
+                                            getContext(),
+                                            "Complete todos los campos",
+                                            Toast.LENGTH_SHORT)
+                                    .show();
+                            return;
+                        }
 
-                loginUser(emailLogin, passwordLogin);
-            }
-        });
+                        loginUser(emailLogin, passwordLogin);
+                    }
+                });
 
         return v;
     }
 
     private void loginUser(String emailLogin, String passwordLogin) {
-        mAuth.signInWithEmailAndPassword(emailLogin, passwordLogin).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    String uid = mAuth.getCurrentUser().getUid();
+        mAuth.signInWithEmailAndPassword(emailLogin, passwordLogin)
+                .addOnCompleteListener(
+                        new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if (task.isSuccessful()) {
+                                    String uid = mAuth.getCurrentUser().getUid();
 
-                    // Consultamos el tipo de usuario en la colección
-                    mFirestore.collection("usuarios")
-                            .document(uid)
-                            .get()
-                            .addOnSuccessListener(document -> {
-                                String rol = document.getString("rol");
-                                Intent intent;
+                                    // Consultamos el tipo de usuario en la colección
+                                    mFirestore
+                                            .collection("usuarios")
+                                            .document(uid)
+                                            .get()
+                                            .addOnSuccessListener(
+                                                    document -> {
+                                                        String rol = document.getString("rol");
+                                                        Intent intent;
 
-                                if (rol.equals("admin")) {
-                                    intent = new Intent(getContext(), AdminActivity.class);
-                                } else if (rol.equals("local")) {
-                                    intent = new Intent(getContext(), DashBoardLocalActivity.class);
-                                } else {
-                                    intent = new Intent(getContext(), HomeActivity.class);
+                                                        if (rol.equals("admin")) {
+                                                            intent =
+                                                                    new Intent(
+                                                                            getContext(),
+                                                                            AdminActivity.class);
+                                                        } else if (rol.equals("local")) {
+                                                            intent =
+                                                                    new Intent(
+                                                                            getContext(),
+                                                                            DashBoardLocalActivity
+                                                                                    .class);
+                                                        } else {
+                                                            intent =
+                                                                    new Intent(
+                                                                            getContext(),
+                                                                            HomeActivity.class);
+                                                        }
+
+                                                        // Limpiamos historial de activities para
+                                                        // que no pueda volver atrás
+                                                        intent.setFlags(
+                                                                Intent.FLAG_ACTIVITY_NEW_TASK
+                                                                        | Intent
+                                                                                .FLAG_ACTIVITY_CLEAR_TASK);
+                                                        dismiss();
+                                                        startActivity(intent);
+                                                    });
                                 }
-
-                                // Limpiamos historial de activities para que no pueda volver atrás
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                dismiss();
-                                startActivity(intent);
-                            });
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getContext(), "Error al iniciar sesión", Toast.LENGTH_SHORT).show();
-            }
-        });
+                            }
+                        })
+                .addOnFailureListener(
+                        new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(
+                                                getContext(),
+                                                "Error al iniciar sesión",
+                                                Toast.LENGTH_SHORT)
+                                        .show();
+                            }
+                        });
     }
 
     @Override

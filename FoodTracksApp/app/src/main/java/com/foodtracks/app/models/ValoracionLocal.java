@@ -1,7 +1,7 @@
+/* © FoodTracks Project ===robertskrr=== */
 package com.foodtracks.app.models;
 
 import com.google.firebase.firestore.DocumentId;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

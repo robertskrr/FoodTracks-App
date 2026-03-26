@@ -1,3 +1,4 @@
+/* © FoodTracks Project ===robertskrr=== */
 package com.foodtracks.app.models;
 
 import lombok.AllArgsConstructor;
@@ -17,6 +18,5 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @SuperBuilder
 public class UsuarioCliente extends Usuario {
-    @Builder.Default
-    private String rol = "cliente";
+    @Builder.Default private String rol = "cliente";
 }

@@ -1,3 +1,4 @@
+/* © FoodTracks Project ===robertskrr=== */
 package com.foodtracks.app.models;
 
 import lombok.AllArgsConstructor;
@@ -17,19 +18,15 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @SuperBuilder
 public class UsuarioLocal extends Usuario {
-    @Builder.Default
-    private String rol = "local";
+    @Builder.Default private String rol = "local";
 
     private String direccion;
     private String telefono;
     private String sitioWeb;
 
-    @Builder.Default
-    private long visitasPerfil = 0;
+    @Builder.Default private long visitasPerfil = 0;
 
-    @Builder.Default
-    private double puntuacionMedia = 0.0;
+    @Builder.Default private double puntuacionMedia = 0.0;
 
-    @Builder.Default
-    private long totalValoraciones = 0;
+    @Builder.Default private long totalValoraciones = 0;
 }

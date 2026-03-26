@@ -1,9 +1,9 @@
+/* © FoodTracks Project ===robertskrr=== */
 package com.foodtracks.app.models;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentId;
 import com.google.firebase.firestore.ServerTimestamp;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -24,23 +24,20 @@ public abstract class Usuario {
     @EqualsAndHashCode.Include
     private String uid;
 
-    @EqualsAndHashCode.Include
-    private String username;
+    @EqualsAndHashCode.Include private String username;
 
     private String email;
     private String nombre;
     private String ciudad;
     private String rol;
 
-    @ServerTimestamp
-    private Timestamp fechaRegistro;
+    @ServerTimestamp private Timestamp fechaRegistro;
 
     private String fotoPerfil;
 
-    /**
-     * Preferencias alimenticias
-     */
+    /** Preferencias alimenticias */
     private boolean esVegano;
+
     private boolean esVegetariano;
     private boolean sinLactosa;
     private boolean esCeliaco;
