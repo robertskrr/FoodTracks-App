@@ -1,13 +1,14 @@
+/** © FoodTracks Project ===robertskrr=== */
+
 package com.foodtracks.app.repositories.interfaces;
 
-import com.foodtracks.app.models.RegistroBorradoPublicacion;
-import com.foodtracks.app.models.RegistroBorradoUsuario;
 import com.foodtracks.app.models.ValoracionLocal;
+
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
 
 /**
  * Definición de las operaciones permitidas sobre la colección de valoración de locales
+ *
  * @author Robert
  * @since 26/03
  */
@@ -15,6 +16,7 @@ public interface IValoracionLocalRepository {
 
     /**
      * Guarda una nueva valoración o actualiza una ya existente
+     *
      * @param valoracionLocal Objeto con los datos de la valoración
      * @return {@link Task} con la referencia al documento creado
      */

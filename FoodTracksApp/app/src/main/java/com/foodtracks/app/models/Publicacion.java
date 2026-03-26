@@ -28,8 +28,10 @@ public class Publicacion {
     private String uidLocal;
 
     @PropertyName("fecha_hora")
-    @ServerTimestamp private Timestamp fechaHora;
+    @ServerTimestamp
+    private Timestamp fechaHora;
 
     @PropertyName("num_likes")
-    @Builder.Default private long numLikes = 0;
+    @Builder.Default
+    private long numLikes = 0;
 }

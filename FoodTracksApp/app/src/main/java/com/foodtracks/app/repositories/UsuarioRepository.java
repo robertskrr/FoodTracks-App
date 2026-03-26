@@ -3,8 +3,8 @@
 package com.foodtracks.app.repositories;
 
 import com.foodtracks.app.models.Usuario;
-
 import com.foodtracks.app.repositories.interfaces.IUsuarioRepository;
+
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -22,9 +22,7 @@ public class UsuarioRepository implements IUsuarioRepository {
 
     private final CollectionReference usersCollection;
 
-    /**
-     * Constructor vacío que se encarga de recoger la colección
-     */
+    /** Constructor vacío que se encarga de recoger la colección */
     public UsuarioRepository() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         this.usersCollection = db.collection("usuarios");

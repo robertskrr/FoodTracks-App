@@ -1,6 +1,9 @@
+/** © FoodTracks Project ===robertskrr=== */
+
 package com.foodtracks.app.repositories.interfaces;
 
 import com.foodtracks.app.models.Usuario;
+
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -34,7 +37,7 @@ public interface IUsuarioRepository {
      *
      * @param username Nombre de usuario a buscar
      * @return {@link Task} con el {@link QuerySnapshot} que contiene los resultados (lista) de la
-     * búsqueda
+     *     búsqueda
      */
     Task<QuerySnapshot> getUsuarioByUsername(String username);
 

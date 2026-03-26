@@ -4,7 +4,6 @@ package com.foodtracks.app.models;
 
 import com.google.firebase.firestore.DocumentId;
 import com.google.firebase.firestore.PropertyName;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

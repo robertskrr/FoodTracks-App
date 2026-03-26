@@ -34,7 +34,8 @@ public abstract class Usuario {
     private String rol;
 
     @PropertyName("fecha_registro")
-    @ServerTimestamp private Timestamp fechaRegistro;
+    @ServerTimestamp
+    private Timestamp fechaRegistro;
 
     @PropertyName("foto_perfil")
     private String fotoPerfil;

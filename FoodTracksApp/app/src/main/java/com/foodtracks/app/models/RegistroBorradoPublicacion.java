@@ -38,5 +38,6 @@ public class RegistroBorradoPublicacion {
     private String motivo;
 
     @PropertyName("fecha_hora")
-    @ServerTimestamp private Timestamp fechaHora;
+    @ServerTimestamp
+    private Timestamp fechaHora;
 }
