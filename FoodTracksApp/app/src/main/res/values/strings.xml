@@ -56,7 +56,7 @@
     <string name="registrarse">Registrarse</string>
 
     <!-- ERROR MESSAGES -->
-    <string name="usuario_validation_error_message">Este nombre de usuario ya está en uso.</string>
+    <string name="username_validation_error_message">Este nombre de usuario ya está en uso.</string>
     <string name="usuario_not_found_error_message">El usuario no existe.</string>
     <string name="email_validation_error_message">El formato del correo electrónico no es válido.</string>
 </resources>
