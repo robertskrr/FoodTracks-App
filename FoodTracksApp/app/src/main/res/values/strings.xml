@@ -54,6 +54,9 @@
     <string name="login_failed">"Login failed"</string>
     <string name="iniciar_sesion">Iniciar sesión</string>
     <string name="registrarse">Registrarse</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- ERROR MESSAGES -->
+    <string name="usuario_validation_error_message">Este nombre de usuario ya está en uso.</string>
+    <string name="usuario_not_found_error_message">El usuario no existe.</string>
+    <string name="email_validation_error_message">El formato del correo electrónico no es válido.</string>
 </resources>
