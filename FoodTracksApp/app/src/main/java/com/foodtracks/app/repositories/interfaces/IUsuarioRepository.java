@@ -51,6 +51,7 @@ public interface IUsuarioRepository {
 
     /**
      * Busca usuarios cuyo nombre de usuario comience por una cadena específica
+     *
      * @param query Texto introducido por el usuario
      * @return Task con la lista de posibles coincidencias
      */
