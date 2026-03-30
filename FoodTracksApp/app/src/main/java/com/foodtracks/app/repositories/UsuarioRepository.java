@@ -12,8 +12,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 /**
- * Repositorio encargado de gestionar la persistencia y consultas de la colección "usuarios" en
- * Firestore. Centraliza el acceso a datos para perfiles de Clientes, Locales y Administradores.
+ * Repositorio encargado de gestionar la persistencia y consultas de la colección "usuarios" en Firestore.
+ * Centraliza el acceso a datos para perfiles de Clientes, Locales y Administradores.
  *
  * @author Robert
  * @since 26/03

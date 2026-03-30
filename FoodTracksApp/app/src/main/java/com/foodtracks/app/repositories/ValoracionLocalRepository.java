@@ -10,9 +10,8 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
- * Repositorio encargado de gestionar la persistencia y consultas de la colección
- * "valoraciones_locales" en Firestore. Centraliza el acceso a datos para las valoraciones de los
- * locales por parte de clientes.
+ * Repositorio encargado de gestionar la persistencia y consultas de la colección "valoraciones_locales" en Firestore.
+ * Centraliza el acceso a datos para las valoraciones de los locales por parte de clientes.
  *
  * @author Robert
  * @since 26/03

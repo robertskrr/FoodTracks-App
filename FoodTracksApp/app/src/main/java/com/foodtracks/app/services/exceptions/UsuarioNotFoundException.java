@@ -5,7 +5,7 @@ package com.foodtracks.app.services.exceptions;
 import lombok.Getter;
 
 /**
- * Gestiona los errores en cuanto a usuarios no encontrados en la BD
+ * Gestiona los errores en cuanto a usuarios no encontrados en la BD.
  *
  * @author Robert
  * @since 30/03

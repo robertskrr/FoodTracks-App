@@ -1,4 +1,6 @@
-/** © FoodTracks Project ===robertskrr=== */
+/**
+ * © FoodTracks Project ===robertskrr===
+ */
 
 package com.foodtracks.app.repositories.interfaces;
 
@@ -9,7 +11,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 /**
- * Definición de las operaciones permitidas sobre la colección de usuarios
+ * Definición de las operaciones permitidas sobre la colección de usuarios.
  *
  * @author Robert
  * @since 26/03
@@ -17,43 +19,42 @@ import com.google.firebase.firestore.QuerySnapshot;
 public interface IUsuarioRepository {
 
     /**
-     * Guarda un nuevo usuario o actualiza uno existente
+     * Guarda un nuevo usuario o actualiza uno existente.
      *
-     * @param usuario que extiende de {@link Usuario} (Cliente, Local o Admin)
-     * @return {@link Task} que representa el estado de la operación de escritura
+     * @param usuario que extiende de {@link Usuario} (Cliente, Local o Admin).
+     * @return {@link Task} que representa el estado de la operación de escritura.
      */
     Task<Void> saveUsuario(Usuario usuario);
 
     /**
-     * Recupera un documento de usuario específico mediante UID
+     * Recupera un documento de usuario específico mediante UID.
      *
-     * @param uid Identificador del usuario
-     * @return {@link Task} con el {@link DocumentSnapshot} del usuario encontrado
+     * @param uid Identificador del usuario.
+     * @return {@link Task} con el {@link DocumentSnapshot} del usuario encontrado.
      */
     Task<DocumentSnapshot> getUsuarioById(String uid);
 
     /**
-     * Realiza una consulta para encontrar un usuario basado en su username único
+     * Realiza una consulta para encontrar un usuario basado en su username único.
      *
-     * @param username Nombre de usuario a buscar
-     * @return {@link Task} con el {@link QuerySnapshot} que contiene los resultados (lista) de la
-     *     búsqueda
+     * @param username Nombre de usuario a buscar.
+     * @return {@link Task} con el {@link QuerySnapshot} que contiene los resultados (lista) de la búsqueda.
      */
     Task<QuerySnapshot> getUsuarioByUsername(String username);
 
     /**
-     * Elimina físicamente el documento de un usuario de la colección
+     * Elimina físicamente el documento de un usuario de la colección.
      *
-     * @param uid Identificador del usuario a eliminar
-     * @return {@link Task} que representa el estado de la eliminación
+     * @param uid Identificador del usuario a eliminar.
+     * @return {@link Task} que representa el estado de la eliminación.
      */
     Task<Void> deleteUsuario(String uid);
 
     /**
-     * Busca usuarios cuyo nombre de usuario comience por una cadena específica
+     * Busca usuarios cuyo nombre de usuario comience por una cadena específica.
      *
-     * @param query Texto introducido por el usuario
-     * @return Task con la lista de posibles coincidencias
+     * @param query Texto introducido por el usuario.
+     * @return Task con la lista de posibles coincidencias.
      */
     Task<QuerySnapshot> searchUsuariosByUsername(String query);
 }
