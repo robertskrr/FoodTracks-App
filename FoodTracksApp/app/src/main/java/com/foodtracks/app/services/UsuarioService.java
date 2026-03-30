@@ -178,7 +178,11 @@ public class UsuarioService implements IUsuarioService {
                         });
     }
 
-    /** ==================== Private helpers =========================== */
+    /**
+     * ================================================================
+     * ==================== Private helpers ===========================
+     * ================================================================
+     */
     private boolean emailValido(String email) {
         return email != null && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }

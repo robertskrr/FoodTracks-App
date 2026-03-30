@@ -11,7 +11,7 @@ plugins {
 spotless {
 	java {
 		target 'src/**/*.java'
-		googleJavaFormat('1.17.0').aosp()
+		googleJavaFormat('1.17.0').aosp().formatJavadoc(false)
 		removeUnusedImports()
 		importOrder('java', 'javax', 'android', 'com.foodtracks', '')
 		licenseHeader '/** © FoodTracks Project ===robertskrr=== */\n\n'
