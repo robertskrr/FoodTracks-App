@@ -48,4 +48,11 @@ public interface IUsuarioRepository {
      * @return {@link Task} que representa el estado de la eliminación
      */
     Task<Void> deleteUsuario(String uid);
+
+    /**
+     * Busca usuarios cuyo nombre de usuario comience por una cadena específica
+     * @param query Texto introducido por el usuario
+     * @return Task con la lista de posibles coincidencias
+     */
+    Task<QuerySnapshot> searchUsuariosByUsername(String query);
 }

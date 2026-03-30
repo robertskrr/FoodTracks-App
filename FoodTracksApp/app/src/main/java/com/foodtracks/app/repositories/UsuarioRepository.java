@@ -47,4 +47,14 @@ public class UsuarioRepository implements IUsuarioRepository {
     public Task<Void> deleteUsuario(String uid) {
         return usersCollection.document(uid).delete();
     }
+
+    @Override
+    public Task<QuerySnapshot> searchUsuariosByUsername(String query) {
+        return usersCollection
+                .orderBy("username")
+                .startAt(query)
+                .endAt(query + "\uf8ff")
+                .limit(10)
+                .get();
+    }
 }
