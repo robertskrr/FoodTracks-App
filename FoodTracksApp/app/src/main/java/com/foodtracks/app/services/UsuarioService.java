@@ -59,10 +59,10 @@ public class UsuarioService implements IUsuarioService {
 
     @Override
     public Task<Void> registrarUsuario(Usuario usuario, String password) {
-        int validacion = validarDatos(usuario, password);
-        if (validacion != 0) {
+        int errorIdValidacion = validarDatos(usuario);
+        if (errorIdValidacion != 0) {
             return Tasks.forException(
-                    new UsuarioValidationException(validacion));
+                    new UsuarioValidationException(errorIdValidacion));
         }
 
         normalizarDatos(usuario);
@@ -145,9 +145,10 @@ public class UsuarioService implements IUsuarioService {
 
     @Override
     public Task<Void> actualizarPerfil(Usuario usuarioNuevo) {
-        if (!emailValido(usuarioNuevo.getEmail())) {
+        int errorIdValidacion = validarDatos(usuarioNuevo);
+        if (errorIdValidacion != 0) {
             return Tasks.forException(
-                    new UsuarioValidationException(R.string.email_validation_error_message));
+                    new UsuarioValidationException(errorIdValidacion));
         }
 
         normalizarDatos(usuarioNuevo);
@@ -256,18 +257,13 @@ public class UsuarioService implements IUsuarioService {
      * Valida los datos del usuario.
      *
      * @param usuario Usuario a validar.
-     * @param password Contraseña a validar.
      * @return 0 si es todo correcto, en caso contrario devuelve el mensaje de error.
      */
-    private int validarDatos(Usuario usuario, String password) {
+    private int validarDatos(Usuario usuario) {
 
         if (usuario.getEmail().isEmpty() || usuario.getUsername().isEmpty()
                 || usuario.getNombre().isEmpty() || usuario.getCiudad().isEmpty()) {
             return R.string.usuario_empty_fields_error_message;
-        }
-
-        if (password == null || password.length() < 8) {
-            return R.string.password_length_error_message;
         }
 
         /* === LOCAL === */
