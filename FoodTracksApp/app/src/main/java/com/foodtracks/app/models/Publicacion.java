@@ -9,7 +9,9 @@ import com.google.firebase.firestore.ServerTimestamp;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Data
 @AllArgsConstructor
@@ -22,16 +24,24 @@ public class Publicacion {
     private String imagen;
 
     @PropertyName("uid_usuario")
+    @Getter(onMethod_ = {@PropertyName("uid_usuario")})
+    @Setter(onMethod_ = {@PropertyName("uid_usuario")})
     private String uidUsuario;
 
     @PropertyName("uid_local")
+    @Getter(onMethod_ = {@PropertyName("uid_local")})
+    @Setter(onMethod_ = {@PropertyName("uid_local")})
     private String uidLocal;
 
     @PropertyName("fecha_hora")
     @ServerTimestamp
+    @Getter(onMethod_ = {@PropertyName("fecha_hora")})
+    @Setter(onMethod_ = {@PropertyName("fecha_hora")})
     private Timestamp fechaHora;
 
     @PropertyName("num_likes")
+    @Getter(onMethod_ = {@PropertyName("num_likes")})
+    @Setter(onMethod_ = {@PropertyName("num_likes")})
     @Builder.Default
     private long numLikes = 0;
 }

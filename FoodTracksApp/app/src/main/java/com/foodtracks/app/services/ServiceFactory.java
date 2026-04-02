@@ -1,10 +1,8 @@
 package com.foodtracks.app.services;
 
 import com.foodtracks.app.repositories.RegistroBorradoRepository;
-import com.foodtracks.app.repositories.StorageRepository;
 import com.foodtracks.app.repositories.UsuarioRepository;
 import com.foodtracks.app.repositories.interfaces.IRegistroBorradoRepository;
-import com.foodtracks.app.repositories.interfaces.IStorageRepository;
 import com.foodtracks.app.repositories.interfaces.IUsuarioRepository;
 import com.foodtracks.app.services.interfaces.IUsuarioService;
 
@@ -22,7 +20,6 @@ public class ServiceFactory {
     public static IUsuarioService provideUsuarioService() {
         IUsuarioRepository repo = new UsuarioRepository();
         IRegistroBorradoRepository repoLog = new RegistroBorradoRepository();
-        IStorageRepository storage = new StorageRepository();
-        return new UsuarioService(repo, repoLog, storage);
+        return new UsuarioService(repo, repoLog);
     }
 }

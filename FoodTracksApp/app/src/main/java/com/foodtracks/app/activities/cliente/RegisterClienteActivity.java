@@ -40,18 +40,8 @@ public class RegisterClienteActivity extends AppCompatActivity {
     // Elementos de registro
     private EditText nombre, username, email, password, confirmPassword, ciudad, especifiqueOtro;
     private CheckBox esVegano, esVegetariano, sinLactosa, esCeliaco, otraPreferencia;
-    private Uri uriFotoSeleccionada;
+    private String nombreAvatar;
     ShapeableImageView fotoPerfil;
-
-    private final ActivityResultLauncher<String> galleryLauncher = registerForActivityResult(
-            new ActivityResultContracts.GetContent(),
-            uri -> {
-                if (uri != null) {
-                    uriFotoSeleccionada = uri;
-                    fotoPerfil.setImageURI(uri); // Muestra la foto seleccionada
-                }
-            }
-    );
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,18 +84,9 @@ public class RegisterClienteActivity extends AppCompatActivity {
                     if (e instanceof FirebaseAuthUserCollisionException) {
                         Toast.makeText(this, R.string.registered_email_error_message, Toast.LENGTH_LONG).show();
                     } else {
-                        Toast.makeText(this, R.string.create_account_error_message + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, R.string.create_account_error_message + ": " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
-    }
-
-    /**
-     * Abre la galería para seleccionar la foto de perfil.
-     *
-     * @param view Vista del registro.
-     */
-    public void setGalleryLauncher(View view) {
-        galleryLauncher.launch("image/*");
     }
 
     /**
@@ -127,7 +108,7 @@ public class RegisterClienteActivity extends AppCompatActivity {
                 .otraPreferencia(otraPreferencia.isChecked() ? especifiqueOtro.getText().toString() : false)
                 .build();
 
-        usuarioService.registrarUsuario(newUsuario, uriFotoSeleccionada)
+        usuarioService.registrarUsuario(newUsuario, nombreAvatar)
                 .addOnSuccessListener(unused -> {
                     irAHome();
                 })
@@ -137,10 +118,6 @@ public class RegisterClienteActivity extends AppCompatActivity {
 
                         mAuth.getCurrentUser().delete() // Rollback: Elimina al usuario creado en Auth
                                 .addOnCompleteListener(task -> {
-                                    if (uriFotoSeleccionada != null) {
-                                        usuarioService.eliminarFotoPerfil(uidDelete);
-                                    }
-
                                     if (e instanceof UsuarioValidationException ex) {
                                         Toast.makeText(this, ex.getErrorResId(), Toast.LENGTH_SHORT).show();
                                     } else {

@@ -4,8 +4,6 @@
 
 package com.foodtracks.app.services;
 
-import android.net.Uri;
-
 import java.util.List;
 
 import com.foodtracks.app.R;
@@ -13,7 +11,6 @@ import com.foodtracks.app.models.RegistroBorradoUsuario;
 import com.foodtracks.app.models.Usuario;
 import com.foodtracks.app.models.UsuarioLocal;
 import com.foodtracks.app.repositories.interfaces.IRegistroBorradoRepository;
-import com.foodtracks.app.repositories.interfaces.IStorageRepository;
 import com.foodtracks.app.repositories.interfaces.IUsuarioRepository;
 import com.foodtracks.app.services.exceptions.UsuarioNotFoundException;
 import com.foodtracks.app.services.exceptions.UsuarioValidationException;
@@ -34,14 +31,12 @@ import com.google.firebase.firestore.DocumentSnapshot;
 public class UsuarioService implements IUsuarioService {
     private final IUsuarioRepository usuarioRepository;
     private final IRegistroBorradoRepository registroBorradoRepository;
-    private final IStorageRepository storageRepository;
 
     public UsuarioService(
             IUsuarioRepository usuarioRepository,
-            IRegistroBorradoRepository registroBorradoRepository, IStorageRepository storageRepository) {
+            IRegistroBorradoRepository registroBorradoRepository) {
         this.usuarioRepository = usuarioRepository;
         this.registroBorradoRepository = registroBorradoRepository;
-        this.storageRepository = storageRepository;
     }
 
     @Override
@@ -64,7 +59,7 @@ public class UsuarioService implements IUsuarioService {
     }
 
     @Override
-    public Task<Void> registrarUsuario(Usuario usuario, Uri fotoUri) {
+    public Task<Void> registrarUsuario(Usuario usuario, String nombreAvatar) {
         int errorIdValidacion = validarDatos(usuario);
         if (errorIdValidacion != 0) {
             return Tasks.forException(
@@ -72,20 +67,10 @@ public class UsuarioService implements IUsuarioService {
         }
 
         usuario.setFechaRegistro(Timestamp.now());
+        usuario.setFotoPerfil(nombreAvatar);
         normalizarDatos(usuario);
 
-        if (fotoUri != null) {
-            // Subimos la foto de perfil
-            String path = "perfiles/" + usuario.getUid() + ".jpg";
-            return storageRepository.uploadImage(fotoUri, path)
-                    .continueWithTask(task -> {
-                        // Asignamos URL al campo fotoPerfil
-                        usuario.setFotoPerfil(task.getResult().toString());
-                        return comprobarUsernameYGuardar(usuario);
-                    });
-        } else {
-            return comprobarUsernameYGuardar(usuario);
-        }
+        return comprobarUsernameYGuardar(usuario);
     }
 
     @Override
@@ -142,12 +127,6 @@ public class UsuarioService implements IUsuarioService {
                                             deleteTask ->
                                                     usuarioRepository.deleteUsuario(uidUsuario));
                         });
-    }
-
-    @Override
-    public Task<Void> eliminarFotoPerfil(String uid) {
-        String path = "perfiles/" + uid + ".jpg";
-        return storageRepository.deleteImage(path);
     }
 
     @Override

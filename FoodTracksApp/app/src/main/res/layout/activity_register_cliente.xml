@@ -55,7 +55,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|end"
                     android:contentDescription="Cambiar foto de perfil"
-                    android:onClick="setGalleryLauncher"
                     app:backgroundTint="@color/white"
                     app:fabSize="mini"
                     app:srcCompat="@android:drawable/ic_menu_camera" />
