@@ -6,6 +6,7 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentId;
 import com.google.firebase.firestore.PropertyName;
 import com.google.firebase.firestore.ServerTimestamp;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -26,7 +27,8 @@ public abstract class Usuario {
     @EqualsAndHashCode.Include
     private String uid;
 
-    @EqualsAndHashCode.Include private String username;
+    @EqualsAndHashCode.Include
+    private String username;
 
     private String email;
     private String nombre;
@@ -41,6 +43,7 @@ public abstract class Usuario {
     private String fotoPerfil;
 
     /** Preferencias alimenticias */
+
     @PropertyName("es_vegano")
     private boolean esVegano;
 

@@ -1,4 +1,6 @@
-/** © FoodTracks Project ===robertskrr=== */
+/**
+ * © FoodTracks Project ===robertskrr===
+ */
 
 package com.foodtracks.app.services;
 
@@ -7,12 +9,14 @@ import java.util.List;
 import com.foodtracks.app.R;
 import com.foodtracks.app.models.RegistroBorradoUsuario;
 import com.foodtracks.app.models.Usuario;
+import com.foodtracks.app.models.UsuarioLocal;
 import com.foodtracks.app.repositories.interfaces.IRegistroBorradoRepository;
 import com.foodtracks.app.repositories.interfaces.IUsuarioRepository;
 import com.foodtracks.app.services.exceptions.UsuarioNotFoundException;
 import com.foodtracks.app.services.exceptions.UsuarioValidationException;
 import com.foodtracks.app.services.interfaces.IUsuarioService;
 
+import com.foodtracks.app.utils.StringUtils;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -54,12 +58,13 @@ public class UsuarioService implements IUsuarioService {
     }
 
     @Override
-    public Task<Void> registrarUsuario(Usuario usuario) {
-        if (!emailValido(usuario.getEmail())) {
+    public Task<Void> registrarUsuario(Usuario usuario, String password) {
+        int validacion = validarDatos(usuario, password);
+        if (validacion != 0) {
             return Tasks.forException(
-                    new UsuarioValidationException(R.string.email_validation_error_message));
+                    new UsuarioValidationException(validacion));
         }
-        // Normalizamos username y email a minúsculas
+
         normalizarDatos(usuario);
 
         return esUsernameUnico(usuario.getUsername())
@@ -72,6 +77,27 @@ public class UsuarioService implements IUsuarioService {
                             }
                             return usuarioRepository.saveUsuario(usuario);
                         });
+    }
+
+    @Override
+    public int validarCredenciales(String email, String pass, String confirmPass) {
+        if (email.isEmpty() || pass.isEmpty() || confirmPass.isEmpty()) {
+            return R.string.usuario_empty_fields_error_message;
+        }
+
+        if (!emailValido(email)) {
+            return R.string.email_validation_error_message;
+        }
+
+        if (pass.length() < 8) {
+            return R.string.password_length_error_message;
+        }
+
+        if (!pass.equals(confirmPass)) {
+            return R.string.passwords_dont_match_error_message;
+        }
+
+        return 0;
     }
 
     @Override
@@ -136,8 +162,8 @@ public class UsuarioService implements IUsuarioService {
                             // Comprueba si se ha cambiado el username
                             if (usuarioActual != null
                                     && !usuarioActual
-                                            .getUsername()
-                                            .equals(usuarioNuevo.getUsername())) {
+                                    .getUsername()
+                                    .equals(usuarioNuevo.getUsername())) {
                                 // Si el nombre es distinto, comprobamos que el nuevo no esté
                                 // pillado
                                 return esUsernameUnico(usuarioNuevo.getUsername())
@@ -178,15 +204,27 @@ public class UsuarioService implements IUsuarioService {
                         });
     }
 
-    /**
+    /*
      * ================================================================
      * ==================== Private helpers ===========================
      * ================================================================
+     */
+
+    /**
+     * Verifica si el email ingresado coincide con el estándar.
+     *
+     * @param email Correo a validar.
+     * @return true si es válido, false en caso contrario.
      */
     private boolean emailValido(String email) {
         return email != null && android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
+    /**
+     * Normaliza los datos del usuario a registrar (username en minúsculas, espacios en blanco, etc).
+     *
+     * @param usuario Usuario a normalizar.
+     */
     private void normalizarDatos(Usuario usuario) {
         if (usuario.getUsername() != null) {
             usuario.setUsername(usuario.getUsername().toLowerCase().trim());
@@ -195,5 +233,55 @@ public class UsuarioService implements IUsuarioService {
         if (usuario.getEmail() != null) {
             usuario.setEmail(usuario.getEmail().toLowerCase().trim());
         }
+
+        if (usuario.getNombre() != null) {
+            usuario.setNombre
+                    (StringUtils.capitalizeNombreCompleto(usuario.getNombre()));
+        }
+
+        if (usuario.getCiudad() != null) {
+            usuario.setCiudad(usuario.getCiudad().trim());
+        }
+
+        if (usuario.getOtraPreferencia() instanceof String) {
+            if (!((String) usuario.getOtraPreferencia()).isEmpty()) {
+                usuario.setOtraPreferencia(((String) usuario.getOtraPreferencia()).trim().toLowerCase());
+            } else {
+                usuario.setOtraPreferencia(false);
+            }
+        }
     }
+
+    /**
+     * Valida los datos del usuario.
+     *
+     * @param usuario Usuario a validar.
+     * @param password Contraseña a validar.
+     * @return 0 si es todo correcto, en caso contrario devuelve el mensaje de error.
+     */
+    private int validarDatos(Usuario usuario, String password) {
+
+        if (usuario.getEmail().isEmpty() || usuario.getUsername().isEmpty()
+                || usuario.getNombre().isEmpty() || usuario.getCiudad().isEmpty()) {
+            return R.string.usuario_empty_fields_error_message;
+        }
+
+        if (password == null || password.length() < 8) {
+            return R.string.password_length_error_message;
+        }
+
+        /* === LOCAL === */
+        if (usuario instanceof UsuarioLocal local) {
+            if (local.getDireccion().isEmpty() || local.getTelefono().isEmpty()) {
+                return R.string.usuario_empty_fields_error_message;
+            }
+        }
+
+        if (!emailValido(usuario.getEmail())) {
+            return R.string.email_validation_error_message;
+        }
+
+        return 0;
+    }
+
 }

@@ -26,7 +26,7 @@ public class UsuarioLocal extends Usuario {
     private String telefono;
 
     @PropertyName("sitio_web")
-    private String sitioWeb;
+    private String sitioWeb; // puede ser empty
 
     @PropertyName("visitas_perfil")
     @Builder.Default

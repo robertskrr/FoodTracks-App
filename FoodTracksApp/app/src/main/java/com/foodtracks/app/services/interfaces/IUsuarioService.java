@@ -31,7 +31,16 @@ public interface IUsuarioService {
      * @param usuario Objeto con la información del nuevo registro.
      * @return {@link Task} que representa el estado de la operación.
      */
-    Task<Void> registrarUsuario(Usuario usuario);
+    Task<Void> registrarUsuario(Usuario usuario, String password);
+
+    /**
+     * Valida las credenciales de registro de un usuario.
+     * @param email Correo a validar.
+     * @param pass Contraseña a validar.
+     * @param confirmPass Contraseña confirmada a validar.
+     * @return 0 si fue todo correcto, en caso contrario el id del error.
+     */
+    int validarCredenciales(String email, String pass, String confirmPass);
 
     /**
      * Gestiona la eliminación de una cuenta, registrando previamente el motivo en la auditoría.
