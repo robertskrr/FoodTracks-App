@@ -13,9 +13,9 @@ import lombok.Getter;
 @Getter
 public class UsuarioValidationException extends Exception {
 
-    private final int resId;
+    private final int errorResId;
 
-    public UsuarioValidationException(int resId) {
-        this.resId = resId;
+    public UsuarioValidationException(int errorResId) {
+        this.errorResId = errorResId;
     }
 }

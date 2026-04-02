@@ -4,6 +4,8 @@
 
 package com.foodtracks.app.services;
 
+import android.net.Uri;
+
 import java.util.List;
 
 import com.foodtracks.app.R;
@@ -11,6 +13,7 @@ import com.foodtracks.app.models.RegistroBorradoUsuario;
 import com.foodtracks.app.models.Usuario;
 import com.foodtracks.app.models.UsuarioLocal;
 import com.foodtracks.app.repositories.interfaces.IRegistroBorradoRepository;
+import com.foodtracks.app.repositories.interfaces.IStorageRepository;
 import com.foodtracks.app.repositories.interfaces.IUsuarioRepository;
 import com.foodtracks.app.services.exceptions.UsuarioNotFoundException;
 import com.foodtracks.app.services.exceptions.UsuarioValidationException;
@@ -19,6 +22,7 @@ import com.foodtracks.app.services.interfaces.IUsuarioService;
 import com.foodtracks.app.utils.StringUtils;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 /**
@@ -30,12 +34,14 @@ import com.google.firebase.firestore.DocumentSnapshot;
 public class UsuarioService implements IUsuarioService {
     private final IUsuarioRepository usuarioRepository;
     private final IRegistroBorradoRepository registroBorradoRepository;
+    private final IStorageRepository storageRepository;
 
     public UsuarioService(
             IUsuarioRepository usuarioRepository,
-            IRegistroBorradoRepository registroBorradoRepository) {
+            IRegistroBorradoRepository registroBorradoRepository, IStorageRepository storageRepository) {
         this.usuarioRepository = usuarioRepository;
         this.registroBorradoRepository = registroBorradoRepository;
+        this.storageRepository = storageRepository;
     }
 
     @Override
@@ -58,25 +64,28 @@ public class UsuarioService implements IUsuarioService {
     }
 
     @Override
-    public Task<Void> registrarUsuario(Usuario usuario, String password) {
+    public Task<Void> registrarUsuario(Usuario usuario, Uri fotoUri) {
         int errorIdValidacion = validarDatos(usuario);
         if (errorIdValidacion != 0) {
             return Tasks.forException(
                     new UsuarioValidationException(errorIdValidacion));
         }
 
+        usuario.setFechaRegistro(Timestamp.now());
         normalizarDatos(usuario);
 
-        return esUsernameUnico(usuario.getUsername())
-                .continueWithTask(
-                        task -> {
-                            if (task.getResult() != null && !task.getResult()) {
-                                return Tasks.forException(
-                                        new UsuarioValidationException(
-                                                R.string.username_validation_error_message));
-                            }
-                            return usuarioRepository.saveUsuario(usuario);
-                        });
+        if (fotoUri != null) {
+            // Subimos la foto de perfil
+            String path = "perfiles/" + usuario.getUid() + ".jpg";
+            return storageRepository.uploadImage(fotoUri, path)
+                    .continueWithTask(task -> {
+                        // Asignamos URL al campo fotoPerfil
+                        usuario.setFotoPerfil(task.getResult().toString());
+                        return comprobarUsernameYGuardar(usuario);
+                    });
+        } else {
+            return comprobarUsernameYGuardar(usuario);
+        }
     }
 
     @Override
@@ -133,6 +142,12 @@ public class UsuarioService implements IUsuarioService {
                                             deleteTask ->
                                                     usuarioRepository.deleteUsuario(uidUsuario));
                         });
+    }
+
+    @Override
+    public Task<Void> eliminarFotoPerfil(String uid) {
+        String path = "perfiles/" + uid + ".jpg";
+        return storageRepository.deleteImage(path);
     }
 
     @Override
@@ -241,12 +256,13 @@ public class UsuarioService implements IUsuarioService {
         }
 
         if (usuario.getCiudad() != null) {
-            usuario.setCiudad(usuario.getCiudad().trim());
+            usuario.setCiudad(StringUtils.capitalize(usuario.getCiudad()));
         }
 
-        if (usuario.getOtraPreferencia() instanceof String) {
-            if (!((String) usuario.getOtraPreferencia()).isEmpty()) {
-                usuario.setOtraPreferencia(((String) usuario.getOtraPreferencia()).trim().toLowerCase());
+        if (usuario.getOtraPreferencia() instanceof String pref) {
+            String textoPref = pref.trim();
+            if (!textoPref.isEmpty()) {
+                usuario.setOtraPreferencia(StringUtils.capitalize(textoPref));
             } else {
                 usuario.setOtraPreferencia(false);
             }
@@ -278,6 +294,21 @@ public class UsuarioService implements IUsuarioService {
         }
 
         return 0;
+    }
+
+
+    /**
+     * Método auxiliar para no repetir la lógica de unicidad y guardado
+     */
+    private Task<Void> comprobarUsernameYGuardar(Usuario usuario) {
+        return esUsernameUnico(usuario.getUsername())
+                .continueWithTask(task -> {
+                    if (task.getResult() != null && !task.getResult()) {
+                        return Tasks.forException(
+                                new UsuarioValidationException(R.string.username_validation_error_message));
+                    }
+                    return usuarioRepository.saveUsuario(usuario);
+                });
     }
 
 }

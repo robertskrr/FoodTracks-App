@@ -30,4 +30,19 @@ public class StringUtils {
 
         return resultado.toString().trim();
     }
+
+    /**
+     * Capitaliza solo la primera letra de un string y pone el resto en minúsculas.
+     * * @param texto Palabra a capitalizar.
+     * @return Texto formateado (Ej: "sevilla" -> "Sevilla")
+     */
+    public static String capitalize(String texto) {
+        if (texto == null || texto.isEmpty()) {
+            return texto;
+        }
+
+        String minusculas = texto.toLowerCase().trim();
+
+        return Character.toUpperCase(minusculas.charAt(0)) + minusculas.substring(1);
+    }
 }

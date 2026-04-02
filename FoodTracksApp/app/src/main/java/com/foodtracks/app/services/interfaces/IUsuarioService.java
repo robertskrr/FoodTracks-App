@@ -2,6 +2,8 @@
 
 package com.foodtracks.app.services.interfaces;
 
+import android.net.Uri;
+
 import java.util.List;
 
 import com.foodtracks.app.models.Usuario;
@@ -31,7 +33,7 @@ public interface IUsuarioService {
      * @param usuario Objeto con la información del nuevo registro.
      * @return {@link Task} que representa el estado de la operación.
      */
-    Task<Void> registrarUsuario(Usuario usuario, String password);
+    Task<Void> registrarUsuario(Usuario usuario, Uri fotoUri);
 
     /**
      * Valida las credenciales de registro de un usuario.
@@ -51,6 +53,13 @@ public interface IUsuarioService {
      * @return {@link Task} con el resultado final del proceso.
      */
     Task<Void> eliminarCuenta(String uid, String motivo, String uidAdmin);
+
+    /**
+     * Gestiona la eliminación de la foto de perfil de Storage
+     * @param uid ID del usuario dueño de la imagen.
+     * @return {@link Task} con el resultado final del proceso.
+     */
+    Task<Void> eliminarFotoPerfil(String uid);
 
     /**
      * Verifica si un nombre de usuario está disponible para su uso.

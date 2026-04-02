@@ -4,7 +4,12 @@
     <string name="iniciar_sesion">Iniciar sesión</string>
     <string name="registrarse">Registrarse</string>
 
+    <string name="succesful_register">¡Usuario registrado con éxito!</string>
+
     <!-- ERROR MESSAGES -->
+    <string name="create_account_error_message">Error al crear la cuenta.</string>
+    <string name="register_critic_error_message">Error crítico: Registro cancelado.</string>
+    <string name="registered_email_error_message"> Este correo ya está vinculado a otra cuenta.</string>
     <string name="username_validation_error_message">Este nombre de usuario ya está en uso.</string>
     <string name="usuario_not_found_error_message">El usuario no existe.</string>
     <string name="usuario_empty_fields_error_message">Debes rellenar los campos indicados.</string>

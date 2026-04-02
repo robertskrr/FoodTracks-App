@@ -10,7 +10,9 @@ import com.google.firebase.firestore.ServerTimestamp;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 
 /**
@@ -37,25 +39,37 @@ public abstract class Usuario {
 
     @PropertyName("fecha_registro")
     @ServerTimestamp
+    @Getter(onMethod_ = {@PropertyName("fecha_registro")})
+    @Setter(onMethod_ = {@PropertyName("fecha_registro")})
     private Timestamp fechaRegistro;
 
     @PropertyName("foto_perfil")
+    @Getter(onMethod_ = {@PropertyName("foto_perfil")})
+    @Setter(onMethod_ = {@PropertyName("foto_perfil")})
     private String fotoPerfil;
 
-    /** Preferencias alimenticias */
-
     @PropertyName("es_vegano")
+    @Getter(onMethod_ = {@PropertyName("es_vegano")})
+    @Setter(onMethod_ = {@PropertyName("es_vegano")})
     private boolean esVegano;
 
     @PropertyName("es_vegetariano")
+    @Getter(onMethod_ = {@PropertyName("es_vegetariano")})
+    @Setter(onMethod_ = {@PropertyName("es_vegetariano")})
     private boolean esVegetariano;
 
     @PropertyName("sin_lactosa")
+    @Getter(onMethod_ = {@PropertyName("sin_lactosa")})
+    @Setter(onMethod_ = {@PropertyName("sin_lactosa")})
     private boolean sinLactosa;
 
     @PropertyName("es_celiaco")
+    @Getter(onMethod_ = {@PropertyName("es_celiaco")})
+    @Setter(onMethod_ = {@PropertyName("es_celiaco")})
     private boolean esCeliaco;
 
     @PropertyName("otra_preferencia")
+    @Getter(onMethod_ = {@PropertyName("otra_preferencia")})
+    @Setter(onMethod_ = {@PropertyName("otra_preferencia")})
     private Object otraPreferencia; // Puede ser boolean false o String con la preferencia
 }
