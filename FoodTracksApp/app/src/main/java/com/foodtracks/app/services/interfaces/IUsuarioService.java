@@ -33,7 +33,7 @@ public interface IUsuarioService {
      * @param usuario Objeto con la información del nuevo registro.
      * @return {@link Task} que representa el estado de la operación.
      */
-    Task<Void> registrarUsuario(Usuario usuario, String nombreAvatar);
+    Task<Void> registrarUsuario(Usuario usuario, Uri fotoUri);
 
     /**
      * Valida las credenciales de registro de un usuario.

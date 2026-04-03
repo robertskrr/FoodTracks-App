@@ -4,13 +4,17 @@
 
 package com.foodtracks.app.services;
 
+import android.net.Uri;
+
 import java.util.List;
 
 import com.foodtracks.app.R;
+import com.foodtracks.app.api.ImageKitResponse;
 import com.foodtracks.app.models.RegistroBorradoUsuario;
 import com.foodtracks.app.models.Usuario;
 import com.foodtracks.app.models.UsuarioLocal;
 import com.foodtracks.app.repositories.interfaces.IRegistroBorradoRepository;
+import com.foodtracks.app.repositories.interfaces.IStorageRepository;
 import com.foodtracks.app.repositories.interfaces.IUsuarioRepository;
 import com.foodtracks.app.services.exceptions.UsuarioNotFoundException;
 import com.foodtracks.app.services.exceptions.UsuarioValidationException;
@@ -31,12 +35,15 @@ import com.google.firebase.firestore.DocumentSnapshot;
 public class UsuarioService implements IUsuarioService {
     private final IUsuarioRepository usuarioRepository;
     private final IRegistroBorradoRepository registroBorradoRepository;
+    private final IStorageRepository storageRepository;
 
     public UsuarioService(
             IUsuarioRepository usuarioRepository,
-            IRegistroBorradoRepository registroBorradoRepository) {
+            IRegistroBorradoRepository registroBorradoRepository,
+            IStorageRepository storageRepository) {
         this.usuarioRepository = usuarioRepository;
         this.registroBorradoRepository = registroBorradoRepository;
+        this.storageRepository = storageRepository;
     }
 
     @Override
@@ -59,7 +66,7 @@ public class UsuarioService implements IUsuarioService {
     }
 
     @Override
-    public Task<Void> registrarUsuario(Usuario usuario, String nombreAvatar) {
+    public Task<Void> registrarUsuario(Usuario usuario, Uri fotoUri) {
         int errorIdValidacion = validarDatos(usuario);
         if (errorIdValidacion != 0) {
             return Tasks.forException(
@@ -67,10 +74,29 @@ public class UsuarioService implements IUsuarioService {
         }
 
         usuario.setFechaRegistro(Timestamp.now());
-        usuario.setFotoPerfil(nombreAvatar);
         normalizarDatos(usuario);
 
-        return comprobarUsernameYGuardar(usuario);
+        return esUsernameUnico(usuario.getUsername()).continueWithTask(task -> {
+            if (task.getResult() != null && !task.getResult()) {
+                return Tasks.forException(new UsuarioValidationException(R.string.username_validation_error_message));
+            }
+
+            // Subimos la foto de perfil a ImageKit
+            if (fotoUri != null) {
+                return storageRepository.uploadImage(fotoUri, usuario.getUid(), "perfiles")
+                        .continueWithTask(uploadTask -> {
+                            ImageKitResponse res = uploadTask.getResult();
+
+                            // Asociamos la URL y el ID de la foto al usuario
+                            usuario.setFotoPerfil(res.getUrl());
+                            usuario.setFotoId(res.getFileId());
+
+                            return usuarioRepository.saveUsuario(usuario);
+                        });
+            } else {
+                return usuarioRepository.saveUsuario(usuario);
+            }
+        });
     }
 
     @Override
@@ -109,6 +135,11 @@ public class UsuarioService implements IUsuarioService {
                             }
 
                             Usuario usuarioABorrar = doc.toObject(Usuario.class);
+
+                            // Borra la foto de ImageKit
+                            if (usuarioABorrar.getFotoId() != null) {
+                                storageRepository.deleteImage(usuarioABorrar.getFotoId());
+                            }
 
                             // Creamos el registro de borrado
                             RegistroBorradoUsuario registro =
@@ -273,21 +304,6 @@ public class UsuarioService implements IUsuarioService {
         }
 
         return 0;
-    }
-
-
-    /**
-     * Método auxiliar para no repetir la lógica de unicidad y guardado
-     */
-    private Task<Void> comprobarUsernameYGuardar(Usuario usuario) {
-        return esUsernameUnico(usuario.getUsername())
-                .continueWithTask(task -> {
-                    if (task.getResult() != null && !task.getResult()) {
-                        return Tasks.forException(
-                                new UsuarioValidationException(R.string.username_validation_error_message));
-                    }
-                    return usuarioRepository.saveUsuario(usuario);
-                });
     }
 
 }

@@ -40,8 +40,19 @@ public class RegisterClienteActivity extends AppCompatActivity {
     // Elementos de registro
     private EditText nombre, username, email, password, confirmPassword, ciudad, especifiqueOtro;
     private CheckBox esVegano, esVegetariano, sinLactosa, esCeliaco, otraPreferencia;
-    private String nombreAvatar;
-    ShapeableImageView fotoPerfil;
+    private ShapeableImageView fotoPerfil;
+    private Uri uriFotoSeleccionada;
+
+    // Launcher para abrir la galería y recuperar la imagen
+    private final ActivityResultLauncher<String> galleryLauncher = registerForActivityResult(
+            new ActivityResultContracts.GetContent(),
+            uri -> {
+                if (uri != null) {
+                    uriFotoSeleccionada = uri;
+                    fotoPerfil.setImageURI(uri); // Muestra la foto elegida en el círculo
+                }
+            }
+    );
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +95,7 @@ public class RegisterClienteActivity extends AppCompatActivity {
                     if (e instanceof FirebaseAuthUserCollisionException) {
                         Toast.makeText(this, R.string.registered_email_error_message, Toast.LENGTH_LONG).show();
                     } else {
-                        Toast.makeText(this, R.string.create_account_error_message + ": " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, getString(R.string.create_account_error_message) + ": " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -108,7 +119,7 @@ public class RegisterClienteActivity extends AppCompatActivity {
                 .otraPreferencia(otraPreferencia.isChecked() ? especifiqueOtro.getText().toString() : false)
                 .build();
 
-        usuarioService.registrarUsuario(newUsuario, nombreAvatar)
+        usuarioService.registrarUsuario(newUsuario, uriFotoSeleccionada)
                 .addOnSuccessListener(unused -> {
                     irAHome();
                 })
@@ -121,7 +132,7 @@ public class RegisterClienteActivity extends AppCompatActivity {
                                     if (e instanceof UsuarioValidationException ex) {
                                         Toast.makeText(this, ex.getErrorResId(), Toast.LENGTH_SHORT).show();
                                     } else {
-                                        Toast.makeText(this, R.string.register_critic_error_message + ": " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(this, getString(R.string.register_critic_error_message) + ": " + e.getMessage(), Toast.LENGTH_SHORT).show();
                                     }
                                 });
                     }
@@ -129,11 +140,19 @@ public class RegisterClienteActivity extends AppCompatActivity {
     }
 
     /**
+     * Abre la galería para seleccionar la foto de perfiñ
+     * @param view Vista de la interfaz.
+     */
+    public void setGalleryLauncher(View view){
+        galleryLauncher.launch("image/*");
+    }
+
+    /**
      * Inicializa los elementos y componentes
      */
     private void inicializar() {
         mAuth = FirebaseAuth.getInstance();
-        usuarioService = ServiceFactory.provideUsuarioService();
+        usuarioService = ServiceFactory.provideUsuarioService(this);
 
         // Campos del usuario
         fotoPerfil = findViewById(R.id.imgPerfil);

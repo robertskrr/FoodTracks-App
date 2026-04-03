@@ -48,6 +48,17 @@ android {
 		versionName "1.0"
 
 		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+		Properties properties = new Properties()
+		properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+		buildConfigField "String", "IK_ENDPOINT", properties.getProperty('IMAGEKIT_URL_ENDPOINT')
+		buildConfigField "String", "IK_PUBLIC", properties.getProperty('IMAGEKIT_PUBLIC_KEY')
+		buildConfigField "String", "IK_PRIVATE", properties.getProperty('IMAGEKIT_PRIVATE_KEY')
+	}
+
+	buildFeatures {
+		buildConfig true
 	}
 
 	buildTypes {
@@ -104,4 +115,11 @@ dependencies {
 	 */
 	compileOnly 'org.projectlombok:lombok:1.18.44'
 	annotationProcessor 'org.projectlombok:lombok:1.18.44'
+
+	/** ==============================================
+	 *                      RETROFIT
+	 *  ==============================================
+	 */
+	implementation 'com.squareup.retrofit2:retrofit:3.0.0'
+	implementation 'com.squareup.retrofit2:converter-gson:3.0.0'
 }

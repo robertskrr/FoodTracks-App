@@ -48,6 +48,11 @@ public abstract class Usuario {
     @Setter(onMethod_ = {@PropertyName("foto_perfil")})
     private String fotoPerfil;
 
+    @PropertyName("foto_perfil_id")
+    @Getter(onMethod_ = {@PropertyName("foto_perfil_id")})
+    @Setter(onMethod_ = {@PropertyName("foto_perfil_id")})
+    private String fotoId; // ID para imageKit
+
     @PropertyName("es_vegano")
     @Getter(onMethod_ = {@PropertyName("es_vegano")})
     @Setter(onMethod_ = {@PropertyName("es_vegano")})
