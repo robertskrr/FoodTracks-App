@@ -78,7 +78,7 @@ public class RegisterClienteActivity extends AppCompatActivity {
         int errorResId = usuarioService.validarCredenciales(emailReg, passwordReg, confirmReg);
 
         if (errorResId != 0) {
-            Toast.makeText(getApplicationContext(), errorResId, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, errorResId, Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -86,14 +86,14 @@ public class RegisterClienteActivity extends AppCompatActivity {
         mAuth.createUserWithEmailAndPassword(emailReg, passwordReg)
                 .addOnSuccessListener(authResult -> {
                     if (authResult.getUser() != null) {
-                        procesarRegistro(authResult.getUser().getUid());
+                        procesarRegistroCliente(authResult.getUser().getUid());
                     } else {
                         Toast.makeText(this, R.string.register_critic_error_message, Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addOnFailureListener(e -> {
                     if (e instanceof FirebaseAuthUserCollisionException) {
-                        Toast.makeText(this, R.string.registered_email_error_message, Toast.LENGTH_LONG).show();
+                        Toast.makeText(this, R.string.registered_email_error_message, Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(this, getString(R.string.create_account_error_message) + ": " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
@@ -101,11 +101,19 @@ public class RegisterClienteActivity extends AppCompatActivity {
     }
 
     /**
-     * Proceso de registro del usuario con el servicio.
+     * Abre la galería para seleccionar la foto de perfiñ
+     * @param view Vista de la interfaz.
+     */
+    public void setGalleryLauncher(View view){
+        galleryLauncher.launch("image/*");
+    }
+
+    /**
+     * Proceso de registro del usuario cliente con el servicio.
      *
      * @param uid UID del usuario.
      */
-    private void procesarRegistro(String uid) {
+    private void procesarRegistroCliente(String uid) {
         UsuarioCliente newUsuario = UsuarioCliente.builder()
                 .uid(uid)
                 .nombre(nombre.getText().toString())
@@ -125,8 +133,6 @@ public class RegisterClienteActivity extends AppCompatActivity {
                 })
                 .addOnFailureListener(e -> {
                     if (mAuth.getCurrentUser() != null) {
-                        String uidDelete = mAuth.getCurrentUser().getUid();
-
                         mAuth.getCurrentUser().delete() // Rollback: Elimina al usuario creado en Auth
                                 .addOnCompleteListener(task -> {
                                     if (e instanceof UsuarioValidationException ex) {
@@ -140,14 +146,6 @@ public class RegisterClienteActivity extends AppCompatActivity {
     }
 
     /**
-     * Abre la galería para seleccionar la foto de perfiñ
-     * @param view Vista de la interfaz.
-     */
-    public void setGalleryLauncher(View view){
-        galleryLauncher.launch("image/*");
-    }
-
-    /**
      * Inicializa los elementos y componentes
      */
     private void inicializar() {
@@ -155,7 +153,7 @@ public class RegisterClienteActivity extends AppCompatActivity {
         usuarioService = ServiceFactory.provideUsuarioService(this);
 
         // Campos del usuario
-        fotoPerfil = findViewById(R.id.imgPerfil);
+        fotoPerfil = findViewById(R.id.imgPerfilLocal);
         nombre = findViewById(R.id.txtNombre);
         username = findViewById(R.id.txtUsername);
         email = findViewById(R.id.txtEmail);
@@ -188,7 +186,7 @@ public class RegisterClienteActivity extends AppCompatActivity {
     }
 
     /**
-     * Navega a la activity Home
+     * Navega a la activity Home.
      */
     private void irAHome() {
         Intent intent = new Intent(this, HomeActivity.class);

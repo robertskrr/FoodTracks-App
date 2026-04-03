@@ -13,8 +13,11 @@
     <string name="username_validation_error_message">Este nombre de usuario ya está en uso.</string>
     <string name="usuario_not_found_error_message">El usuario no existe.</string>
     <string name="usuario_empty_fields_error_message">Debes rellenar los campos indicados.</string>
+    <string name="local_phone_must_be_9_digits_error_message">El número de teléfono debe tener 9 dígitos.</string>
+    <string name="local_invalid_url_error_message">Introduce una URL válida por favor.</string>
     <string name="passwords_dont_match_error_message">Las contraseñas no coinciden.</string>
     <string name="password_length_error_message">La contraseña debe tener mínimo 8 caracteres.</string>
     <string name="email_validation_error_message">El formato del correo electrónico no es válido.</string>
     <string name="imagekit_error_message">Error de Image Kit.</string>
+    <string name="loading_profile_error">Error al cargar el perfil.</string>
 </resources>

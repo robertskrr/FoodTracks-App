@@ -5,6 +5,7 @@
 package com.foodtracks.app.services;
 
 import android.net.Uri;
+import android.text.TextUtils;
 
 import java.util.List;
 
@@ -137,6 +138,7 @@ public class UsuarioService implements IUsuarioService {
                             Usuario usuarioABorrar = doc.toObject(Usuario.class);
 
                             // Borra la foto de ImageKit
+                            assert usuarioABorrar != null;
                             if (usuarioABorrar.getFotoId() != null) {
                                 storageRepository.deleteImage(usuarioABorrar.getFotoId());
                             }
@@ -275,7 +277,16 @@ public class UsuarioService implements IUsuarioService {
     }
 
     /**
-     * Normaliza los datos del usuario a registrar (username en minúsculas, espacios en blanco, etc).
+     * Verifica si la URL del sitio web ingresada es válida.
+     * @param url Dirección web a validar.
+     * @return true si el formato es correcto, false en caso contrario.
+     */
+    private boolean urlValida(String url) {
+        return url != null && android.util.Patterns.WEB_URL.matcher(url).matches();
+    }
+
+    /**
+     * Normaliza los datos del usuario a registrar (username en minúsculas, espacios en blanco, etc.).
      *
      * @param usuario Usuario a normalizar.
      */
@@ -305,6 +316,18 @@ public class UsuarioService implements IUsuarioService {
                 usuario.setOtraPreferencia(false);
             }
         }
+
+        if (usuario instanceof UsuarioLocal local){
+            if (local.getTelefono() != null){
+                local.setTelefono(local.getTelefono().trim());
+            }
+
+            if (local.getSitioWeb() != null){
+                String web = local.getSitioWeb().trim();
+                // Si no hay nada escrito lo guarda como NULL real en BBDD
+                local.setSitioWeb(web.isEmpty() ? null : web);
+            }
+        }
     }
 
     /**
@@ -320,15 +343,26 @@ public class UsuarioService implements IUsuarioService {
             return R.string.usuario_empty_fields_error_message;
         }
 
+
+        if (!emailValido(usuario.getEmail())) {
+            return R.string.email_validation_error_message;
+        }
+
         /* === LOCAL === */
         if (usuario instanceof UsuarioLocal local) {
             if (local.getDireccion().isEmpty() || local.getTelefono().isEmpty()) {
                 return R.string.usuario_empty_fields_error_message;
             }
-        }
 
-        if (!emailValido(usuario.getEmail())) {
-            return R.string.email_validation_error_message;
+            if (local.getTelefono().length() != 9 || !TextUtils.isDigitsOnly(local.getTelefono())){
+                return R.string.local_phone_must_be_9_digits_error_message;
+            }
+
+            if (local.getSitioWeb() != null && !local.getSitioWeb().isEmpty()){
+                if (!urlValida(local.getSitioWeb())){
+                    return R.string.local_invalid_url_error_message;
+                }
+            }
         }
 
         return 0;
