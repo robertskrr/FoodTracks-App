@@ -5,7 +5,7 @@ import android.net.Uri;
 
 import com.foodtracks.app.utils.FileUtils;
 
-import com.foodtracks.app.api.ImageKitResponse;
+import com.foodtracks.app.api.imagekit.ImageKitResponse;
 import com.foodtracks.app.api.RetrofitClient;
 import com.foodtracks.app.repositories.interfaces.IStorageRepository;
 import com.google.android.gms.tasks.Task;
@@ -86,8 +86,30 @@ public class ImageKitRepository implements IStorageRepository {
 
 
     @Override
-    public Task<Void> deleteImage(String path) {
+    public Task<Void> deleteImage(String fileId) {
+        TaskCompletionSource<Void> tcs = new TaskCompletionSource<>();
 
-        return Tasks.forResult(null);
+        if (fileId == null || fileId.isEmpty()) {
+            return Tasks.forResult(null);
+        }
+
+        // Petición de borrado
+        RetrofitClient.getInterface().deleteImage(fileId).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful() || response.code() == 404) {
+                    tcs.setResult(null);
+                } else {
+                    tcs.setException(new Exception("Error al borrar de ImageKit: " + response.code()));
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                tcs.setException(new Exception(t.getMessage()));
+            }
+        });
+
+        return tcs.getTask();
     }
 }

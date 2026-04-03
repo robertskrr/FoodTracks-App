@@ -2,7 +2,7 @@ package com.foodtracks.app.repositories.interfaces;
 
 import android.net.Uri;
 
-import com.foodtracks.app.api.ImageKitResponse;
+import com.foodtracks.app.api.imagekit.ImageKitResponse;
 import com.google.android.gms.tasks.Task;
 
 /**
@@ -25,10 +25,9 @@ public interface IStorageRepository {
 
     /**
      * Elimina una imagen del servidor de almacenamiento.
-     * (Pendiente de implementación del endpoint de gestión de archivos).
      *
-     * @param path Identificador único o ruta del archivo a eliminar (fileId).
+     * @param fileId Identificador único del archivo a eliminar (fileId).
      * @return {@link Task} que representa la finalización del proceso de borrado.
      */
-    Task<Void> deleteImage(String path);
+    Task<Void> deleteImage(String fileId);
 }

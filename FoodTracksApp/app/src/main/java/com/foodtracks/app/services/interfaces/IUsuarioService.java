@@ -68,7 +68,7 @@ public interface IUsuarioService {
      * @param usuario Objeto con los nuevos datos.
      * @return Task que representa el éxito de la actualización.
      */
-    Task<Void> actualizarPerfil(Usuario usuario);
+    Task<Void> actualizarPerfil(Usuario usuario, Uri fotoUri);
 
     /**
      * Realiza una búsqueda de usuarios basada en el nombre de usuario.

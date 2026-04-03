@@ -1,4 +1,4 @@
-package com.foodtracks.app.api;
+package com.foodtracks.app.api.imagekit;
 
 import com.foodtracks.app.BuildConfig;
 

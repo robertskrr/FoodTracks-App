@@ -16,4 +16,5 @@
     <string name="passwords_dont_match_error_message">Las contraseñas no coinciden.</string>
     <string name="password_length_error_message">La contraseña debe tener mínimo 8 caracteres.</string>
     <string name="email_validation_error_message">El formato del correo electrónico no es válido.</string>
+    <string name="imagekit_error_message">Error de Image Kit.</string>
 </resources>

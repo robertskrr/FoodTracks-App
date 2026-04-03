@@ -1,13 +1,13 @@
-package com.foodtracks.app.api;
-
-import com.google.android.gms.tasks.Task;
+package com.foodtracks.app.api.imagekit;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import retrofit2.http.DELETE;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.Call;
+import retrofit2.http.Path;
 
 /**
  * Interfaz de Retrofit que define los endpoints de la API de ImageKit.
@@ -35,6 +35,13 @@ public interface ImageKitApi {
             @Part("folder") RequestBody folder // Para separar tipo de archivos: /perfiles, /publicaciones
             );
 
-    // Nota: El borrado usa una URL diferente (endpoint de gestión),
-    // lo configuraremos cuando lleguemos al borrado de usuario.
+    /**
+     * Elimina un archivo permanentemente del almacenamiento de ImageKit.
+     * Utiliza la Management API v1.
+     *
+     * @param fileId Identificador único del archivo (proporcionado en la subida).
+     * @return {@link Call} de tipo Void.
+     */
+    @DELETE("https://api.imagekit.io/v1/files/{fileId}") // URL de gestión
+    Call<Void> deleteImage(@Path("fileId") String fileId);
 }

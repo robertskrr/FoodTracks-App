@@ -1,5 +1,8 @@
 package com.foodtracks.app.api;
 
+import com.foodtracks.app.api.imagekit.AuthInterceptor;
+import com.foodtracks.app.api.imagekit.ImageKitApi;
+
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
