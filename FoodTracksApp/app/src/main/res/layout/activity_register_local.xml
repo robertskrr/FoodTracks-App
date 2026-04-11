@@ -25,7 +25,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:fontFamily="casual"
-                android:text="Registro local"
+                android:text="@string/registro_local"
                 android:textColor="@color/tertiary"
                 android:textSize="34sp"
                 android:textStyle="bold" />
@@ -54,7 +54,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|end"
-                    android:contentDescription="Cambiar foto de perfil"
+                    android:contentDescription="@string/cambiar_foto_de_perfil"
                     android:onClick="setGalleryLauncher"
                     app:backgroundTint="@color/white"
                     app:fabSize="mini"
@@ -65,7 +65,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Nombre del establecimiento">
+                android:hint="@string/nombre_del_establecimiento">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txtNombreLocal"
@@ -79,7 +79,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:hint="Nombre de usuario">
+                android:hint="@string/nombre_de_usuario">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txtUsernameLocal"
@@ -93,7 +93,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:hint="Correo electrónico">
+                android:hint="@string/correo_electronico">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txtEmailLocal"
@@ -107,7 +107,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:hint="Contraseña"
+                android:hint="@string/contrasenia"
                 app:passwordToggleEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -123,7 +123,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
 
-                android:hint="Confirmar contraseña"
+                android:hint="@string/confirmar_contrasenia"
                 app:passwordToggleEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -138,7 +138,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:hint="Dirección (Calle, Número)">
+                android:hint="@string/direccion_requerimientos">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txtDireccionLocal"
@@ -153,7 +153,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
 
-                android:hint="Ciudad">
+                android:hint="@string/ciudad">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txtCiudadLocal"
@@ -167,7 +167,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:hint="Teléfono">
+                android:hint="@string/telefono">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txtTelefonoLocal"
@@ -181,7 +181,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:hint="Sitio web">
+                android:hint="@string/sitio_web">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txtSitioWebLocal"
@@ -195,7 +195,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="10dp"
-                android:text="Opciones alimenticias que ofrece"
+                android:text="@string/opciones_alimenticias_que_ofrece"
                 android:textColor="#FFFFFF"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -211,7 +211,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:buttonTint="#FFFFFF"
-                    android:text="Vegano"
+                    android:text="@string/vegano"
                     android:textColor="#FFFFFF" />
 
                 <com.google.android.material.checkbox.MaterialCheckBox
@@ -219,7 +219,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:buttonTint="#FFFFFF"
-                    android:text="Vegetariano"
+                    android:text="@string/vegetariano"
                     android:textColor="#FFFFFF" />
 
                 <com.google.android.material.checkbox.MaterialCheckBox
@@ -227,7 +227,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:buttonTint="#FFFFFF"
-                    android:text="Sin Lactosa"
+                    android:text="@string/sin_lactosa"
                     android:textColor="#FFFFFF" />
 
                 <com.google.android.material.checkbox.MaterialCheckBox
@@ -235,7 +235,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:buttonTint="#FFFFFF"
-                    android:text="Celíaco"
+                    android:text="@string/celiaco"
                     android:textColor="#FFFFFF" />
 
                 <com.google.android.material.checkbox.MaterialCheckBox
@@ -243,17 +243,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:buttonTint="#FFFFFF"
-                    android:text="Otro:"
+                    android:text="@string/otro"
                     android:textColor="#FFFFFF" />
 
                 <EditText
                     android:id="@+id/txtEspecifiqueOtroLocal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:hint="¿Cuál?"
+                    android:hint="@string/cual"
+                    android:inputType="text"
                     android:textColor="#FFFFFF"
                     android:textColorHint="#CCCCCC"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    tools:ignore="Autofill" />
             </GridLayout>
 
             <Button
@@ -264,7 +266,7 @@
                 android:layout_marginBottom="20dp"
                 android:backgroundTint="@color/primary"
                 android:onClick="registroLocal"
-                android:text="Crear cuenta" />
+                android:text="@string/crear_cuenta" />
 
         </LinearLayout>
     </ScrollView>

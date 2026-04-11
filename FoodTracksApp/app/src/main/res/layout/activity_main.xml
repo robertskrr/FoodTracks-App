@@ -23,7 +23,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/logo_app" />
+            app:srcCompat="@drawable/logo_app"
+            tools:ignore="ImageContrastCheck" />
 
         <Button
             android:id="@+id/btnRegistro"
@@ -47,7 +48,7 @@
             android:layout_marginBottom="40dp"
             android:backgroundTint="@color/secondary"
             android:onClick="invitado"
-            android:text="Invitado"
+            android:text="@string/invitado"
             app:cornerRadius="5dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
