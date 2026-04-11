@@ -1,9 +1,6 @@
-/**
- * © FoodTracks Project ===robertskrr===
- */
+/** © FoodTracks Project ===robertskrr=== */
 
 package com.foodtracks.app.activities.cliente;
-
 
 import android.content.Intent;
 import android.net.Uri;
@@ -12,21 +9,19 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.foodtracks.app.R;
-
 import com.foodtracks.app.models.UsuarioCliente;
 import com.foodtracks.app.services.ServiceFactory;
 import com.foodtracks.app.services.exceptions.UsuarioValidationException;
 import com.foodtracks.app.services.interfaces.IUsuarioService;
+
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
-
 
 /**
  * @author Robert
@@ -44,15 +39,15 @@ public class RegisterClienteActivity extends AppCompatActivity {
     private Uri uriFotoSeleccionada;
 
     // Launcher para abrir la galería y recuperar la imagen
-    private final ActivityResultLauncher<String> galleryLauncher = registerForActivityResult(
-            new ActivityResultContracts.GetContent(),
-            uri -> {
-                if (uri != null) {
-                    uriFotoSeleccionada = uri;
-                    fotoPerfil.setImageURI(uri); // Muestra la foto elegida en el círculo
-                }
-            }
-    );
+    private final ActivityResultLauncher<String> galleryLauncher =
+            registerForActivityResult(
+                    new ActivityResultContracts.GetContent(),
+                    uri -> {
+                        if (uri != null) {
+                            uriFotoSeleccionada = uri;
+                            fotoPerfil.setImageURI(uri); // Muestra la foto elegida en el círculo
+                        }
+                    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +57,6 @@ public class RegisterClienteActivity extends AppCompatActivity {
         inicializar();
         mostrarOtraPreferencia();
     }
-
 
     /**
      * Acción al pulsar el registrar.
@@ -84,27 +78,43 @@ public class RegisterClienteActivity extends AppCompatActivity {
 
         // Llamada a Firebase Auth
         mAuth.createUserWithEmailAndPassword(emailReg, passwordReg)
-                .addOnSuccessListener(authResult -> {
-                    if (authResult.getUser() != null) {
-                        procesarRegistroCliente(authResult.getUser().getUid());
-                    } else {
-                        Toast.makeText(this, R.string.register_critic_error_message, Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    if (e instanceof FirebaseAuthUserCollisionException) {
-                        Toast.makeText(this, R.string.registered_email_error_message, Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(this, getString(R.string.create_account_error_message) + ": " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
+                .addOnSuccessListener(
+                        authResult -> {
+                            if (authResult.getUser() != null) {
+                                procesarRegistroCliente(authResult.getUser().getUid());
+                            } else {
+                                Toast.makeText(
+                                                this,
+                                                R.string.register_critic_error_message,
+                                                Toast.LENGTH_SHORT)
+                                        .show();
+                            }
+                        })
+                .addOnFailureListener(
+                        e -> {
+                            if (e instanceof FirebaseAuthUserCollisionException) {
+                                Toast.makeText(
+                                                this,
+                                                R.string.registered_email_error_message,
+                                                Toast.LENGTH_SHORT)
+                                        .show();
+                            } else {
+                                Toast.makeText(
+                                                this,
+                                                getString(R.string.create_account_error_message)
+                                                        + ": "
+                                                        + e.getMessage(),
+                                                Toast.LENGTH_SHORT)
+                                        .show();
+                            }
+                        });
     }
 
     /**
      * Abre la galería para seleccionar la foto de perfiñ
      * @param view Vista de la interfaz.
      */
-    public void setGalleryLauncher(View view){
+    public void setGalleryLauncher(View view) {
         galleryLauncher.launch("image/*");
     }
 
@@ -114,35 +124,59 @@ public class RegisterClienteActivity extends AppCompatActivity {
      * @param uid UID del usuario.
      */
     private void procesarRegistroCliente(String uid) {
-        UsuarioCliente newUsuario = UsuarioCliente.builder()
-                .uid(uid)
-                .nombre(nombre.getText().toString())
-                .username(username.getText().toString())
-                .email(email.getText().toString())
-                .ciudad(ciudad.getText().toString())
-                .esVegano(esVegano.isChecked())
-                .esVegetariano(esVegetariano.isChecked())
-                .sinLactosa(sinLactosa.isChecked())
-                .esCeliaco(esCeliaco.isChecked())
-                .otraPreferencia(otraPreferencia.isChecked() ? especifiqueOtro.getText().toString() : false)
-                .build();
+        UsuarioCliente newUsuario =
+                UsuarioCliente.builder()
+                        .uid(uid)
+                        .nombre(nombre.getText().toString())
+                        .username(username.getText().toString())
+                        .email(email.getText().toString())
+                        .ciudad(ciudad.getText().toString())
+                        .esVegano(esVegano.isChecked())
+                        .esVegetariano(esVegetariano.isChecked())
+                        .sinLactosa(sinLactosa.isChecked())
+                        .esCeliaco(esCeliaco.isChecked())
+                        .otraPreferencia(
+                                otraPreferencia.isChecked()
+                                        ? especifiqueOtro.getText().toString()
+                                        : false)
+                        .build();
 
-        usuarioService.registrarUsuario(newUsuario, uriFotoSeleccionada)
-                .addOnSuccessListener(unused -> {
-                    irAHome();
-                })
-                .addOnFailureListener(e -> {
-                    if (mAuth.getCurrentUser() != null) {
-                        mAuth.getCurrentUser().delete() // Rollback: Elimina al usuario creado en Auth
-                                .addOnCompleteListener(task -> {
-                                    if (e instanceof UsuarioValidationException ex) {
-                                        Toast.makeText(this, ex.getErrorResId(), Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        Toast.makeText(this, getString(R.string.register_critic_error_message) + ": " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                    }
-                });
+        usuarioService
+                .registrarUsuario(newUsuario, uriFotoSeleccionada)
+                .addOnSuccessListener(
+                        unused -> {
+                            irAHome();
+                        })
+                .addOnFailureListener(
+                        e -> {
+                            if (mAuth.getCurrentUser() != null) {
+                                mAuth.getCurrentUser()
+                                        .delete() // Rollback: Elimina al usuario creado en Auth
+                                        .addOnCompleteListener(
+                                                task -> {
+                                                    if (e
+                                                            instanceof
+                                                            UsuarioValidationException
+                                                            ex) {
+                                                        Toast.makeText(
+                                                                        this,
+                                                                        ex.getErrorResId(),
+                                                                        Toast.LENGTH_SHORT)
+                                                                .show();
+                                                    } else {
+                                                        Toast.makeText(
+                                                                        this,
+                                                                        getString(
+                                                                                        R.string
+                                                                                                .register_critic_error_message)
+                                                                                + ": "
+                                                                                + e.getMessage(),
+                                                                        Toast.LENGTH_SHORT)
+                                                                .show();
+                                                    }
+                                                });
+                            }
+                        });
     }
 
     /**
@@ -195,5 +229,3 @@ public class RegisterClienteActivity extends AppCompatActivity {
         finish();
     }
 }
-
-

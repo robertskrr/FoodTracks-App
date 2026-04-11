@@ -1,8 +1,10 @@
+/** © FoodTracks Project ===robertskrr=== */
+
 package com.foodtracks.app.api.imagekit;
 
-import com.foodtracks.app.BuildConfig;
-
 import java.io.IOException;
+
+import com.foodtracks.app.BuildConfig;
 
 import okhttp3.Credentials;
 import okhttp3.Interceptor;
@@ -29,9 +31,7 @@ public class AuthInterceptor implements Interceptor {
     public Response intercept(Chain chain) throws IOException {
         String credential = Credentials.basic(BuildConfig.IK_PRIVATE, "");
 
-        Request request = chain.request().newBuilder()
-                .header("Authorization", credential)
-                .build();
+        Request request = chain.request().newBuilder().header("Authorization", credential).build();
         return chain.proceed(request);
     }
 }

@@ -1,8 +1,11 @@
+/** © FoodTracks Project ===robertskrr=== */
+
 package com.foodtracks.app.repositories.interfaces;
 
 import android.net.Uri;
 
 import com.foodtracks.app.api.imagekit.ImageKitResponse;
+
 import com.google.android.gms.tasks.Task;
 
 /**

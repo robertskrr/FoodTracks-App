@@ -2,9 +2,9 @@
 
 package com.foodtracks.app.services.interfaces;
 
-import android.net.Uri;
-
 import java.util.List;
+
+import android.net.Uri;
 
 import com.foodtracks.app.models.Usuario;
 

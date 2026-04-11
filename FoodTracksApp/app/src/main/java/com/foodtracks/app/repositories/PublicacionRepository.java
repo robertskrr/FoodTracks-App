@@ -1,6 +1,4 @@
-/**
- * © FoodTracks Project ===robertskrr===
- */
+/** © FoodTracks Project ===robertskrr=== */
 
 package com.foodtracks.app.repositories;
 
@@ -67,7 +65,8 @@ public class PublicacionRepository implements IPublicacionRepository {
                         .limit(50); // Muestra de 50 en 50
 
         if (lastVisible != null) {
-            // Si ha ido viendo publicaciones, guarda un "checkpoint" de la última vista y carga a partir de esa
+            // Si ha ido viendo publicaciones, guarda un "checkpoint" de la última vista y carga a
+            // partir de esa
             query = query.startAfter(lastVisible);
         }
 

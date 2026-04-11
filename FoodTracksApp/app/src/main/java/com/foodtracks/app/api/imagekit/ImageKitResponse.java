@@ -1,9 +1,10 @@
+/** © FoodTracks Project ===robertskrr=== */
+
 package com.foodtracks.app.api.imagekit;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 
 /**
  * Modelo de datos que representa la respuesta JSON de ImageKit tras una subida.
@@ -36,4 +37,3 @@ public class ImageKitResponse {
     /** Tamaño del archivo en bytes. */
     private long size;
 }
-

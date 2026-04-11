@@ -1,13 +1,11 @@
-/**
- * © FoodTracks Project ===robertskrr===
- */
+/** © FoodTracks Project ===robertskrr=== */
 
 package com.foodtracks.app.services;
 
+import java.util.List;
+
 import android.net.Uri;
 import android.text.TextUtils;
-
-import java.util.List;
 
 import com.foodtracks.app.R;
 import com.foodtracks.app.api.imagekit.ImageKitResponse;
@@ -20,8 +18,8 @@ import com.foodtracks.app.repositories.interfaces.IUsuarioRepository;
 import com.foodtracks.app.services.exceptions.UsuarioNotFoundException;
 import com.foodtracks.app.services.exceptions.UsuarioValidationException;
 import com.foodtracks.app.services.interfaces.IUsuarioService;
-
 import com.foodtracks.app.utils.StringUtils;
+
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.Timestamp;
@@ -70,34 +68,40 @@ public class UsuarioService implements IUsuarioService {
     public Task<Void> registrarUsuario(Usuario usuario, Uri fotoUri) {
         int errorIdValidacion = validarDatos(usuario);
         if (errorIdValidacion != 0) {
-            return Tasks.forException(
-                    new UsuarioValidationException(errorIdValidacion));
+            return Tasks.forException(new UsuarioValidationException(errorIdValidacion));
         }
 
         usuario.setFechaRegistro(Timestamp.now());
         normalizarDatos(usuario);
 
-        return esUsernameUnico(usuario.getUsername()).continueWithTask(task -> {
-            if (task.getResult() != null && !task.getResult()) {
-                return Tasks.forException(new UsuarioValidationException(R.string.username_validation_error_message));
-            }
+        return esUsernameUnico(usuario.getUsername())
+                .continueWithTask(
+                        task -> {
+                            if (task.getResult() != null && !task.getResult()) {
+                                return Tasks.forException(
+                                        new UsuarioValidationException(
+                                                R.string.username_validation_error_message));
+                            }
 
-            // Subimos la foto de perfil a ImageKit
-            if (fotoUri != null) {
-                return storageRepository.uploadImage(fotoUri, usuario.getUid(), "perfiles")
-                        .continueWithTask(uploadTask -> {
-                            ImageKitResponse res = uploadTask.getResult();
+                            // Subimos la foto de perfil a ImageKit
+                            if (fotoUri != null) {
+                                return storageRepository
+                                        .uploadImage(fotoUri, usuario.getUid(), "perfiles")
+                                        .continueWithTask(
+                                                uploadTask -> {
+                                                    ImageKitResponse res = uploadTask.getResult();
 
-                            // Asociamos la URL y el ID de la foto al usuario
-                            usuario.setFotoPerfil(res.getUrl());
-                            usuario.setFotoId(res.getFileId());
+                                                    // Asociamos la URL y el ID de la foto al
+                                                    // usuario
+                                                    usuario.setFotoPerfil(res.getUrl());
+                                                    usuario.setFotoId(res.getFileId());
 
-                            return usuarioRepository.saveUsuario(usuario);
+                                                    return usuarioRepository.saveUsuario(usuario);
+                                                });
+                            } else {
+                                return usuarioRepository.saveUsuario(usuario);
+                            }
                         });
-            } else {
-                return usuarioRepository.saveUsuario(usuario);
-            }
-        });
     }
 
     @Override
@@ -174,8 +178,7 @@ public class UsuarioService implements IUsuarioService {
     public Task<Void> actualizarPerfil(Usuario usuarioModificado, Uri fotoUri) {
         int errorIdValidacion = validarDatos(usuarioModificado);
         if (errorIdValidacion != 0) {
-            return Tasks.forException(
-                    new UsuarioValidationException(errorIdValidacion));
+            return Tasks.forException(new UsuarioValidationException(errorIdValidacion));
         }
 
         normalizarDatos(usuarioModificado);
@@ -188,58 +191,73 @@ public class UsuarioService implements IUsuarioService {
                             Usuario usuarioActual = task.getResult().toObject(Usuario.class);
 
                             if (usuarioActual == null) {
-                                return Tasks.forException(new UsuarioNotFoundException(R.string.usuario_not_found_error_message));
+                                return Tasks.forException(
+                                        new UsuarioNotFoundException(
+                                                R.string.usuario_not_found_error_message));
                             }
 
                             Task<ImageKitResponse> uploadTask;
                             if (fotoUri != null) {
-                                uploadTask = storageRepository.uploadImage(fotoUri, usuarioModificado.getUid(), "perfiles");
+                                uploadTask =
+                                        storageRepository.uploadImage(
+                                                fotoUri, usuarioModificado.getUid(), "perfiles");
                             } else {
                                 uploadTask = Tasks.forResult(null);
                             }
 
-                            return uploadTask.continueWithTask(resTask -> {
-                                if (resTask.isSuccessful() && resTask.getResult() != null) {
-                                    ImageKitResponse res = resTask.getResult();
+                            return uploadTask.continueWithTask(
+                                    resTask -> {
+                                        if (resTask.isSuccessful() && resTask.getResult() != null) {
+                                            ImageKitResponse res = resTask.getResult();
 
-                                    // Borramos la foto antigua de la nube si el usuario ya tenía una
-                                    if (usuarioActual.getFotoId() != null) {
-                                        storageRepository.deleteImage(usuarioActual.getFotoId());
-                                    }
+                                            // Borramos la foto antigua de la nube si el usuario ya
+                                            // tenía una
+                                            if (usuarioActual.getFotoId() != null) {
+                                                storageRepository.deleteImage(
+                                                        usuarioActual.getFotoId());
+                                            }
 
-                                    // Actualizamos los campos de imagen en el usuario modificado
-                                    usuarioModificado.setFotoPerfil(res.getUrl());
-                                    usuarioModificado.setFotoId(res.getFileId());
-                                } else {
-                                    // Si no hay foto nueva, mantenemos los datos de la foto antigua
-                                    usuarioModificado.setFotoPerfil(usuarioActual.getFotoPerfil());
-                                    usuarioModificado.setFotoId(usuarioActual.getFotoId());
-                                }
+                                            // Actualizamos los campos de imagen en el usuario
+                                            // modificado
+                                            usuarioModificado.setFotoPerfil(res.getUrl());
+                                            usuarioModificado.setFotoId(res.getFileId());
+                                        } else {
+                                            // Si no hay foto nueva, mantenemos los datos de la foto
+                                            // antigua
+                                            usuarioModificado.setFotoPerfil(
+                                                    usuarioActual.getFotoPerfil());
+                                            usuarioModificado.setFotoId(usuarioActual.getFotoId());
+                                        }
 
-                                // Comprueba si se ha cambiado el username
-                                if (!usuarioActual
-                                        .getUsername()
-                                        .equals(usuarioModificado.getUsername())) {
-                                    // Si el nombre es distinto, comprobamos que el nuevo no esté pillado
-                                    return esUsernameUnico(usuarioModificado.getUsername())
-                                            .continueWithTask(
-                                                    isUniqueTask -> {
-                                                        if (isUniqueTask.getResult() != null
-                                                                && !isUniqueTask.getResult()) {
-                                                            return Tasks.forException(
-                                                                    new UsuarioValidationException(
-                                                                            R.string
-                                                                                    .username_validation_error_message));
-                                                        }
-                                                        // Si es único guardamos los nuevos datos
-                                                        return usuarioRepository.saveUsuario(
-                                                                usuarioModificado);
-                                                    });
-                                }
+                                        // Comprueba si se ha cambiado el username
+                                        if (!usuarioActual
+                                                .getUsername()
+                                                .equals(usuarioModificado.getUsername())) {
+                                            // Si el nombre es distinto, comprobamos que el nuevo no
+                                            // esté pillado
+                                            return esUsernameUnico(usuarioModificado.getUsername())
+                                                    .continueWithTask(
+                                                            isUniqueTask -> {
+                                                                if (isUniqueTask.getResult() != null
+                                                                        && !isUniqueTask
+                                                                                .getResult()) {
+                                                                    return Tasks.forException(
+                                                                            new UsuarioValidationException(
+                                                                                    R.string
+                                                                                            .username_validation_error_message));
+                                                                }
+                                                                // Si es único guardamos los nuevos
+                                                                // datos
+                                                                return usuarioRepository
+                                                                        .saveUsuario(
+                                                                                usuarioModificado);
+                                                            });
+                                        }
 
-                                // Si el nombre es el mismo que ya tenía se guarda directamente
-                                return usuarioRepository.saveUsuario(usuarioModificado);
-                            });
+                                        // Si el nombre es el mismo que ya tenía se guarda
+                                        // directamente
+                                        return usuarioRepository.saveUsuario(usuarioModificado);
+                                    });
                         });
     }
 
@@ -300,8 +318,7 @@ public class UsuarioService implements IUsuarioService {
         }
 
         if (usuario.getNombre() != null) {
-            usuario.setNombre
-                    (StringUtils.capitalizeNombreCompleto(usuario.getNombre()));
+            usuario.setNombre(StringUtils.capitalizeNombreCompleto(usuario.getNombre()));
         }
 
         if (usuario.getCiudad() != null) {
@@ -317,12 +334,12 @@ public class UsuarioService implements IUsuarioService {
             }
         }
 
-        if (usuario instanceof UsuarioLocal local){
-            if (local.getTelefono() != null){
+        if (usuario instanceof UsuarioLocal local) {
+            if (local.getTelefono() != null) {
                 local.setTelefono(local.getTelefono().trim());
             }
 
-            if (local.getSitioWeb() != null){
+            if (local.getSitioWeb() != null) {
                 String web = local.getSitioWeb().trim();
                 // Si no hay nada escrito lo guarda como NULL real en BBDD
                 local.setSitioWeb(web.isEmpty() ? null : web);
@@ -338,11 +355,12 @@ public class UsuarioService implements IUsuarioService {
      */
     private int validarDatos(Usuario usuario) {
 
-        if (usuario.getEmail().isEmpty() || usuario.getUsername().isEmpty()
-                || usuario.getNombre().isEmpty() || usuario.getCiudad().isEmpty()) {
+        if (usuario.getEmail().isEmpty()
+                || usuario.getUsername().isEmpty()
+                || usuario.getNombre().isEmpty()
+                || usuario.getCiudad().isEmpty()) {
             return R.string.usuario_empty_fields_error_message;
         }
-
 
         if (!emailValido(usuario.getEmail())) {
             return R.string.email_validation_error_message;
@@ -354,12 +372,12 @@ public class UsuarioService implements IUsuarioService {
                 return R.string.usuario_empty_fields_error_message;
             }
 
-            if (local.getTelefono().length() != 9 || !TextUtils.isDigitsOnly(local.getTelefono())){
+            if (local.getTelefono().length() != 9 || !TextUtils.isDigitsOnly(local.getTelefono())) {
                 return R.string.local_phone_must_be_9_digits_error_message;
             }
 
-            if (local.getSitioWeb() != null && !local.getSitioWeb().isEmpty()){
-                if (!urlValida(local.getSitioWeb())){
+            if (local.getSitioWeb() != null && !local.getSitioWeb().isEmpty()) {
+                if (!urlValida(local.getSitioWeb())) {
                     return R.string.local_invalid_url_error_message;
                 }
             }
@@ -367,5 +385,4 @@ public class UsuarioService implements IUsuarioService {
 
         return 0;
     }
-
 }

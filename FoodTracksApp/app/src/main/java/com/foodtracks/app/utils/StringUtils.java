@@ -1,3 +1,5 @@
+/** © FoodTracks Project ===robertskrr=== */
+
 package com.foodtracks.app.utils;
 
 /**
@@ -22,7 +24,8 @@ public class StringUtils {
 
         for (String palabra : palabras) {
             if (!palabra.isEmpty()) {
-                resultado.append(Character.toUpperCase(palabra.charAt(0)))
+                resultado
+                        .append(Character.toUpperCase(palabra.charAt(0)))
                         .append(palabra.substring(1))
                         .append(" ");
             }

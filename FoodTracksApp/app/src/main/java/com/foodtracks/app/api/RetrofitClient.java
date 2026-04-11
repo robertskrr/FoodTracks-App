@@ -1,3 +1,5 @@
+/** © FoodTracks Project ===robertskrr=== */
+
 package com.foodtracks.app.api;
 
 import com.foodtracks.app.api.imagekit.AuthInterceptor;
@@ -24,15 +26,15 @@ public class RetrofitClient {
      */
     public static ImageKitApi getInterface() {
         if (retrofit == null) {
-            OkHttpClient client = new OkHttpClient.Builder()
-                    .addInterceptor(new AuthInterceptor())
-                    .build();
+            OkHttpClient client =
+                    new OkHttpClient.Builder().addInterceptor(new AuthInterceptor()).build();
 
-            retrofit = new Retrofit.Builder()
-                    .baseUrl("https://upload.imagekit.io/")
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .client(client)
-                    .build();
+            retrofit =
+                    new Retrofit.Builder()
+                            .baseUrl("https://upload.imagekit.io/")
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .client(client)
+                            .build();
         }
         return retrofit.create(ImageKitApi.class);
     }

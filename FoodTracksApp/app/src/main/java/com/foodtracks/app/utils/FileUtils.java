@@ -1,3 +1,5 @@
+/** © FoodTracks Project ===robertskrr=== */
+
 package com.foodtracks.app.utils;
 
 import java.io.ByteArrayOutputStream;

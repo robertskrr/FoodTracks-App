@@ -1,19 +1,20 @@
+/** © FoodTracks Project ===robertskrr=== */
+
 package com.foodtracks.app.repositories;
+
+import java.io.InputStream;
 
 import android.content.Context;
 import android.net.Uri;
 
+import com.foodtracks.app.api.RetrofitClient;
+import com.foodtracks.app.api.imagekit.ImageKitResponse;
+import com.foodtracks.app.repositories.interfaces.IStorageRepository;
 import com.foodtracks.app.utils.FileUtils;
 
-import com.foodtracks.app.api.imagekit.ImageKitResponse;
-import com.foodtracks.app.api.RetrofitClient;
-import com.foodtracks.app.repositories.interfaces.IStorageRepository;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.android.gms.tasks.Tasks;
-
-import java.io.InputStream;
-
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -37,9 +38,9 @@ public class ImageKitRepository implements IStorageRepository {
         this.context = context;
     }
 
-
     @Override
-    public Task<ImageKitResponse> uploadImage(Uri localUri, String nombreArchivo, String folderName) {
+    public Task<ImageKitResponse> uploadImage(
+            Uri localUri, String nombreArchivo, String folderName) {
         // Objeto que permite convertir una Callback de Retrofit en una Task de Google
         TaskCompletionSource<ImageKitResponse> tcs = new TaskCompletionSource<>();
 
@@ -50,7 +51,8 @@ public class ImageKitRepository implements IStorageRepository {
 
             // Construcción del cuerpo de la petición Multipart
             RequestBody requestFile = RequestBody.create(inputData, MediaType.parse("image/*"));
-            MultipartBody.Part body = MultipartBody.Part.createFormData("file", nombreArchivo + ".jpg", requestFile);
+            MultipartBody.Part body =
+                    MultipartBody.Part.createFormData("file", nombreArchivo + ".jpg", requestFile);
 
             // Parámetros adicionales de la API de ImageKit
             RequestBody fileName = RequestBody.create(nombreArchivo, MediaType.parse("text/plain"));
@@ -58,24 +60,29 @@ public class ImageKitRepository implements IStorageRepository {
             RequestBody folder = RequestBody.create(folderName, MediaType.parse("text/plain"));
 
             // Ejecución de la petición mediante Retrofit
-            Call<ImageKitResponse> call = RetrofitClient.getInterface().upload(body, fileName, useUnique, folder);
-            call.enqueue(new Callback<ImageKitResponse>() {
-                @Override
-                public void onResponse(Call<ImageKitResponse> call, Response<ImageKitResponse> response) {
-                    if (response.isSuccessful() && response.body() != null) {
-                        // Transmitimos el éxito al Task
-                        tcs.setResult(response.body());
-                    } else {
-                        tcs.setException(new Exception("Error de respuesta API: " + response.code()));
-                    }
-                }
+            Call<ImageKitResponse> call =
+                    RetrofitClient.getInterface().upload(body, fileName, useUnique, folder);
+            call.enqueue(
+                    new Callback<ImageKitResponse>() {
+                        @Override
+                        public void onResponse(
+                                Call<ImageKitResponse> call, Response<ImageKitResponse> response) {
+                            if (response.isSuccessful() && response.body() != null) {
+                                // Transmitimos el éxito al Task
+                                tcs.setResult(response.body());
+                            } else {
+                                tcs.setException(
+                                        new Exception(
+                                                "Error de respuesta API: " + response.code()));
+                            }
+                        }
 
-                @Override
-                public void onFailure(Call<ImageKitResponse> call, Throwable t) {
-                    // Transmitimos el fallo de red
-                    tcs.setException(new Exception(t.getMessage()));
-                }
-            });
+                        @Override
+                        public void onFailure(Call<ImageKitResponse> call, Throwable t) {
+                            // Transmitimos el fallo de red
+                            tcs.setException(new Exception(t.getMessage()));
+                        }
+                    });
 
         } catch (Exception e) {
             tcs.setException(e);
@@ -83,7 +90,6 @@ public class ImageKitRepository implements IStorageRepository {
 
         return tcs.getTask();
     }
-
 
     @Override
     public Task<Void> deleteImage(String fileId) {
@@ -94,21 +100,27 @@ public class ImageKitRepository implements IStorageRepository {
         }
 
         // Petición de borrado
-        RetrofitClient.getInterface().deleteImage(fileId).enqueue(new Callback<Void>() {
-            @Override
-            public void onResponse(Call<Void> call, Response<Void> response) {
-                if (response.isSuccessful() || response.code() == 404) {
-                    tcs.setResult(null);
-                } else {
-                    tcs.setException(new Exception("Error al borrar de ImageKit: " + response.code()));
-                }
-            }
+        RetrofitClient.getInterface()
+                .deleteImage(fileId)
+                .enqueue(
+                        new Callback<Void>() {
+                            @Override
+                            public void onResponse(Call<Void> call, Response<Void> response) {
+                                if (response.isSuccessful() || response.code() == 404) {
+                                    tcs.setResult(null);
+                                } else {
+                                    tcs.setException(
+                                            new Exception(
+                                                    "Error al borrar de ImageKit: "
+                                                            + response.code()));
+                                }
+                            }
 
-            @Override
-            public void onFailure(Call<Void> call, Throwable t) {
-                tcs.setException(new Exception(t.getMessage()));
-            }
-        });
+                            @Override
+                            public void onFailure(Call<Void> call, Throwable t) {
+                                tcs.setException(new Exception(t.getMessage()));
+                            }
+                        });
 
         return tcs.getTask();
     }
