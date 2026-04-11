@@ -37,20 +37,20 @@
                 android:layout_marginBottom="20dp">
 
                 <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/imgPerfilLocal"
+                    android:id="@+id/imgPerfilCliente"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@color/primary"
                     android:padding="2dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/avatar_default"
-                    app:contentPadding="16dp"
+                    app:contentPadding="2dp"
                     app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
                     app:strokeColor="@color/tertiary"
                     app:strokeWidth="4dp" />
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/btnSeleccionarFotoLocal"
+                    android:id="@+id/btnSeleccionarFotoCliente"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|end"

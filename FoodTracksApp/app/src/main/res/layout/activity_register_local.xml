@@ -44,7 +44,7 @@
                     android:padding="2dp"
                     android:scaleType="centerCrop"
                     android:src="@drawable/avatar_default"
-                    app:contentPadding="16dp"
+                    app:contentPadding="2dp"
                     app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
                     app:strokeColor="@color/tertiary"
                     app:strokeWidth="4dp" />

@@ -153,7 +153,7 @@ public class RegisterClienteActivity extends AppCompatActivity {
         usuarioService = ServiceFactory.provideUsuarioService(this);
 
         // Campos del usuario
-        fotoPerfil = findViewById(R.id.imgPerfilLocal);
+        fotoPerfil = findViewById(R.id.imgPerfilCliente);
         nombre = findViewById(R.id.txtNombre);
         username = findViewById(R.id.txtUsername);
         email = findViewById(R.id.txtEmail);
