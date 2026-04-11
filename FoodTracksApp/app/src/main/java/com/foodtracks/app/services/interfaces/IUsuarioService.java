@@ -31,6 +31,7 @@ public interface IUsuarioService {
      * Registra un nuevo usuario.
      *
      * @param usuario Objeto con la información del nuevo registro.
+     * @param fotoUri Uri de la foto de perfil (opcional).
      * @return {@link Task} que representa el estado de la operación.
      */
     Task<Void> registrarUsuario(Usuario usuario, Uri fotoUri);
