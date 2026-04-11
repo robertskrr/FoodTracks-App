@@ -15,7 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-            android:text="Mi Perfil"
+            android:text="@string/mi_perfil"
             android:textColor="@color/tertiary"
             android:textSize="28sp"
             android:textStyle="bold" />
