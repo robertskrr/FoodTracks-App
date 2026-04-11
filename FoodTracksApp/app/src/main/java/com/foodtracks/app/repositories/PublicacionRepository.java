@@ -1,4 +1,6 @@
-/** © FoodTracks Project ===robertskrr=== */
+/**
+ * © FoodTracks Project ===robertskrr===
+ */
 
 package com.foodtracks.app.repositories;
 
@@ -13,8 +15,8 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 /**
- * Repositorio encargado de gestionar la persistencia y consultas de la colección "publicaciones" en
- * Firestore. Centraliza el acceso a datos para las publicaciones de los usuarios.
+ * Repositorio encargado de gestionar la persistencia y consultas de la colección "publicaciones" en Firestore.
+ * Centraliza el acceso a datos para las publicaciones de los usuarios.
  *
  * @author Robert
  * @since 26/03
@@ -23,7 +25,9 @@ public class PublicacionRepository implements IPublicacionRepository {
 
     private final CollectionReference postsCollection;
 
-    /** Constructor vacío que se encarga de recoger la colección */
+    /**
+     * Constructor vacío que se encarga de recoger la colección
+     */
     public PublicacionRepository() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         this.postsCollection = db.collection("publicaciones");
@@ -63,8 +67,7 @@ public class PublicacionRepository implements IPublicacionRepository {
                         .limit(50); // Muestra de 50 en 50
 
         if (lastVisible != null) {
-            // Si ha ido viendo publicaciones, guarda un "checkpoint" de la última vista y carga a
-            // partir de esa
+            // Si ha ido viendo publicaciones, guarda un "checkpoint" de la última vista y carga a partir de esa
             query = query.startAfter(lastVisible);
         }
 

@@ -9,7 +9,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 /**
- * Definición de las operaciones permitidas sobre la colección de publicaciones
+ * Definición de las operaciones permitidas sobre la colección de publicaciones.
  *
  * @author Robert
  * @since 26/03
@@ -17,42 +17,42 @@ import com.google.firebase.firestore.QuerySnapshot;
 public interface IPublicacionRepository {
 
     /**
-     * Guarda una nueva publicación
+     * Guarda una nueva publicación.
      *
-     * @param publicacion Objeto Publicación
-     * @return {@link Task} que representa el estado de la operación de escritura
+     * @param publicacion Objeto Publicación.
+     * @return {@link Task} que representa el estado de la operación de escritura.
      */
     Task<Void> savePublicacion(Publicacion publicacion);
 
     /**
-     * Recupera un documento de publicación específica mediante UID
+     * Recupera un documento de publicación específica mediante UID.
      *
-     * @param uid Identificador de la publicación
-     * @return {@link Task} con el {@link DocumentSnapshot} de la publicación encontrada
+     * @param uid Identificador de la publicación.
+     * @return {@link Task} con el {@link DocumentSnapshot} de la publicación encontrada.
      */
     Task<DocumentSnapshot> getPublicacionById(String uid);
 
     /**
-     * Elimina físicamente el documento de una publicacion de la colección
+     * Elimina físicamente el documento de una publicacion de la colección.
      *
-     * @param uid Identificador de la publicación a eliminar
-     * @return {@link Task} que representa el estado de la eliminación
+     * @param uid Identificador de la publicación a eliminar.
+     * @return {@link Task} que representa el estado de la eliminación.
      */
     Task<Void> deletePublicacion(String uid);
 
     /**
-     * Recupera todas las publicaciones de un usuario específico
+     * Recupera todas las publicaciones de un usuario específico.
      *
-     * @param uidUsuario ID del usuario autor
-     * @return Task con la lista de publicaciones
+     * @param uidUsuario ID del usuario autor.
+     * @return Task con la lista de publicaciones.
      */
     Task<QuerySnapshot> getPublicacionesByUsuario(String uidUsuario);
 
     /**
-     * Recupera todas las publicaciones asociadas a un local específico
+     * Recupera todas las publicaciones asociadas a un local específico.
      *
      * @param uidLocal ID del establecimiento.
-     * @return Task con la lista de publicaciones
+     * @return Task con la lista de publicaciones.
      */
     Task<QuerySnapshot> getPublicacionesByLocal(String uidLocal);
 

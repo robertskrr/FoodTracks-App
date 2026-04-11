@@ -12,8 +12,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 /**
- * Repositorio encargado de gestionar la persistencia y consultas de la colección "usuarios" en
- * Firestore. Centraliza el acceso a datos para perfiles de Clientes, Locales y Administradores.
+ * Repositorio encargado de gestionar la persistencia y consultas de la colección "usuarios" en Firestore.
+ * Centraliza el acceso a datos para perfiles de Clientes, Locales y Administradores.
  *
  * @author Robert
  * @since 26/03
@@ -46,5 +46,15 @@ public class UsuarioRepository implements IUsuarioRepository {
     @Override
     public Task<Void> deleteUsuario(String uid) {
         return usersCollection.document(uid).delete();
+    }
+
+    @Override
+    public Task<QuerySnapshot> searchUsuariosByUsername(String query) {
+        return usersCollection
+                .orderBy("username")
+                .startAt(query)
+                .endAt(query + "\uf8ff")
+                .limit(10)
+                .get();
     }
 }

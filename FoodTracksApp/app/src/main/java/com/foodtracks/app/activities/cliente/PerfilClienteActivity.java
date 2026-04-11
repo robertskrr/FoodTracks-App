@@ -65,17 +65,17 @@ public class PerfilClienteActivity extends AppCompatActivity {
                                 // Preferencias
                                 StringBuilder sb = new StringBuilder();
 
-                                if (Boolean.TRUE.equals(document.getBoolean("esVegano")))
+                                if (Boolean.TRUE.equals(document.getBoolean("es_vegano")))
                                     sb.append("\uD83C\uDF31 Vegano  \n");
-                                if (Boolean.TRUE.equals(document.getBoolean("esVegetariano")))
+                                if (Boolean.TRUE.equals(document.getBoolean("es_vegetariano")))
                                     sb.append("\uD83C\uDF3F Vegetariano  \n");
-                                if (Boolean.TRUE.equals(document.getBoolean("sinLactosa")))
+                                if (Boolean.TRUE.equals(document.getBoolean("sin_lactosa")))
                                     sb.append("\uD83E\uDD5B Sin Lactosa  \n");
-                                if (Boolean.TRUE.equals(document.getBoolean("esCeliaco")))
+                                if (Boolean.TRUE.equals(document.getBoolean("es_celiaco")))
                                     sb.append("\uD83C\uDF3E Celíaco  \n");
 
                                 // Manejo de "otraPreferencia"
-                                Object otra = document.get("otraPreferencia");
+                                Object otra = document.get("otra_preferencia");
                                 if (otra instanceof String) {
                                     sb.append("\uD83D\uDCDD ").append(otra.toString());
                                 }
@@ -91,7 +91,7 @@ public class PerfilClienteActivity extends AppCompatActivity {
                         })
                 .addOnFailureListener(
                         e -> {
-                            Toast.makeText(this, "Error al cargar tu perfil", Toast.LENGTH_SHORT)
+                            Toast.makeText(this, R.string.loading_profile_error, Toast.LENGTH_SHORT)
                                     .show();
                         });
     }
