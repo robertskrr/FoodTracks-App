@@ -11,10 +11,10 @@ import lombok.Getter;
  * @since 30/03
  */
 @Getter
-public class UsuarioNotFoundException extends Exception {
+public class FoodTracksNotFoundException extends Exception {
     private final int resId;
 
-    public UsuarioNotFoundException(int resId) {
+    public FoodTracksNotFoundException(int resId) {
         this.resId = resId;
     }
 }

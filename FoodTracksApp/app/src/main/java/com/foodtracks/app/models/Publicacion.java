@@ -26,7 +26,7 @@ public class Publicacion {
     @PropertyName("imagen_id")
     @Getter(onMethod_ = {@PropertyName("imagen_id")})
     @Setter(onMethod_ = {@PropertyName("imagen_id")})
-    private String imagen_id; // ID para imageKit
+    private String imagenId; // ID para imageKit
 
     @PropertyName("uid_usuario")
     @Getter(onMethod_ = {@PropertyName("uid_usuario")})
