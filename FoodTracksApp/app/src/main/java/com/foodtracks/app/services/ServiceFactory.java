@@ -1,14 +1,19 @@
-/** © FoodTracks Project ===robertskrr=== */
+/**
+ * © FoodTracks Project ===robertskrr===
+ */
 
 package com.foodtracks.app.services;
 
 import android.content.Context;
 
 import com.foodtracks.app.repositories.ImageKitRepository;
+import com.foodtracks.app.repositories.PublicacionRepository;
 import com.foodtracks.app.repositories.RegistroBorradoRepository;
 import com.foodtracks.app.repositories.UsuarioRepository;
+import com.foodtracks.app.repositories.interfaces.IPublicacionRepository;
 import com.foodtracks.app.repositories.interfaces.IRegistroBorradoRepository;
 import com.foodtracks.app.repositories.interfaces.IUsuarioRepository;
+import com.foodtracks.app.services.interfaces.IPublicacionService;
 import com.foodtracks.app.services.interfaces.IUsuarioService;
 
 /**
@@ -34,5 +39,21 @@ public class ServiceFactory {
         IRegistroBorradoRepository repoLog = new RegistroBorradoRepository();
         ImageKitRepository storageRepo = new ImageKitRepository(context);
         return new UsuarioService(repo, repoLog, storageRepo);
+    }
+
+    /**
+     * Proporciona una instancia configurada de PublicacionService.
+     * Vincula el servicio con sus repositorios de base de datos y el
+     * sistema de almacenamiento en la nube (ImageKit).
+     *
+     * @param context Contexto de la aplicación necesario para el repositorio de imágenes.
+     * @return Implementación de {@link IPublicacionService}.
+     */
+    public static IPublicacionService providePublicacionService(Context context) {
+        IPublicacionRepository repo = new PublicacionRepository();
+        IUsuarioRepository repoUser = new UsuarioRepository();
+        IRegistroBorradoRepository repoLog = new RegistroBorradoRepository();
+        ImageKitRepository storageRepo = new ImageKitRepository(context);
+        return new PublicacionService(repo, repoUser, repoLog, storageRepo);
     }
 }

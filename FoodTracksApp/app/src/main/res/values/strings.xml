@@ -16,7 +16,8 @@
     <string name="imagekit_error_message">Error de Image Kit.</string>
     <string name="loading_profile_error_message">Error al cargar el perfil.</string>
     <string name="publicacion_text_empty_error_message">No has introducido ningún texto.</string>
-    <string name="publicacion_not_found_error_message">No has introducido ningún texto.</string>
+    <string name="publicacion_not_found_error_message">La publicación no existe.</string>
+    <string name="publicacion_too_long_error_message">Máximo 500 caracteres.</string>
 
 
 
