@@ -14,8 +14,10 @@
     <string name="password_length_error_message">La contraseña debe tener mínimo 8 caracteres.</string>
     <string name="email_validation_error_message">El formato del correo electrónico no es válido.</string>
     <string name="imagekit_error_message">Error de Image Kit.</string>
-    <string name="loading_profile_error">Error al cargar el perfil.</string>
-    <string name="publicacion_text_empty_error">No has introducido ningún texto.</string>
+    <string name="loading_profile_error_message">Error al cargar el perfil.</string>
+    <string name="publicacion_text_empty_error_message">No has introducido ningún texto.</string>
+    <string name="publicacion_not_found_error_message">No has introducido ningún texto.</string>
+
 
 
     <!-- LAYOUTS STRINGS -->
