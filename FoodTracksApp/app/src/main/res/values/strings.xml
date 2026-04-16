@@ -7,6 +7,7 @@
     <string name="registered_email_error_message"> Este correo ya está vinculado a otra cuenta.</string>
     <string name="username_validation_error_message">Este nombre de usuario ya está en uso.</string>
     <string name="usuario_not_found_error_message">El usuario no existe.</string>
+    <string name="local_not_found_error_message">El local no existe.</string>
     <string name="usuario_empty_fields_error_message">Debes rellenar los campos indicados.</string>
     <string name="local_phone_must_be_9_digits_error_message">El número de teléfono debe tener 9 dígitos.</string>
     <string name="local_invalid_url_error_message">Introduce una URL válida por favor.</string>
@@ -18,6 +19,9 @@
     <string name="publicacion_text_empty_error_message">No has introducido ningún texto.</string>
     <string name="publicacion_not_found_error_message">La publicación no existe.</string>
     <string name="publicacion_too_long_error_message">Máximo 500 caracteres.</string>
+    <string name="valoracion_invalid_puntuation_error_message">Error al asignar la puntuación.</string>
+    <string name="valoracion_not_found_error_message">La valoración no existe.</string>
+
 
 
 
