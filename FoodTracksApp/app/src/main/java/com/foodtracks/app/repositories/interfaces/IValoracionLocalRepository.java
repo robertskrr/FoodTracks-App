@@ -26,11 +26,10 @@ public interface IValoracionLocalRepository {
     /**
      * Recupera un documento de valoración específica mediante el UID de los implicados.
      *
-     * @param uidCliente Identificador del cliente.
-     * @param uidLocal Identificador del local.
+     * @param uid Identificador de la valoración.
      * @return {@link Task} con el {@link DocumentSnapshot} de la valoración encontrada.
      */
-    public Task<DocumentSnapshot> getValoracion(String uidCliente, String uidLocal);
+    public Task<DocumentSnapshot> getValoracion(String uid);
 
     /**
      * Elimina el documento de una valoración de la colección.

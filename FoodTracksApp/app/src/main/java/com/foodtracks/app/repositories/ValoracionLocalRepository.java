@@ -29,19 +29,18 @@ public class ValoracionLocalRepository implements IValoracionLocalRepository {
 
     @Override
     public Task<Void> saveValoracion(ValoracionLocal valoracionLocal) {
-        // UID personalizado para las valoraciones
-        String customId = valoracionLocal.getUidCliente() + "_" + valoracionLocal.getUidLocal();
-        return ratingsCollection.document(customId).set(valoracionLocal);
+        return ratingsCollection.document(valoracionLocal.getUid()).set(valoracionLocal);
     }
 
     @Override
-    public Task<DocumentSnapshot> getValoracion(String uidCliente, String uidLocal) {
-        String customId = uidCliente + "_" + uidLocal;
-        return ratingsCollection.document(customId).get();
+    public Task<DocumentSnapshot> getValoracion(String uid) {
+        return ratingsCollection.document(uid).get();
     }
 
     @Override
     public Task<Void> deleteValoracion(String uid) {
         return ratingsCollection.document(uid).delete();
     }
+
+    // TODO --> Borrar todas las valoraciones de un usuario si se elimina su cuenta
 }
