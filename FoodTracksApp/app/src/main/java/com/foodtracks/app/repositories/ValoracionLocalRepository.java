@@ -7,6 +7,7 @@ import com.foodtracks.app.repositories.interfaces.IValoracionLocalRepository;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
@@ -31,6 +32,12 @@ public class ValoracionLocalRepository implements IValoracionLocalRepository {
         // UID personalizado para las valoraciones
         String customId = valoracionLocal.getUidCliente() + "_" + valoracionLocal.getUidLocal();
         return ratingsCollection.document(customId).set(valoracionLocal);
+    }
+
+    @Override
+    public Task<DocumentSnapshot> getValoracion(String uidCliente, String uidLocal) {
+        String customId = uidCliente + "_" + uidLocal;
+        return ratingsCollection.document(customId).get();
     }
 
     @Override
