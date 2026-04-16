@@ -1,8 +1,9 @@
-/**
- * © FoodTracks Project ===robertskrr===
- */
+/** © FoodTracks Project ===robertskrr=== */
 
 package com.foodtracks.app.services;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import android.net.Uri;
 
@@ -19,13 +20,11 @@ import com.foodtracks.app.services.exceptions.FoodTracksNotFoundException;
 import com.foodtracks.app.services.exceptions.FoodTracksValidationException;
 import com.foodtracks.app.services.interfaces.IPublicacionService;
 import com.foodtracks.app.utils.StringUtils;
+
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Lógica de negocio para la gestión de publicaciones.
@@ -52,51 +51,60 @@ public class PublicacionService implements IPublicacionService {
 
     @Override
     public Task<Publicacion> getPublicacion(String uid) {
-        return publicacionRepository.getPublicacionById(uid)
-                .continueWithTask(task -> {
-                    DocumentSnapshot doc = task.getResult();
-                    if (task.isSuccessful() && doc != null && doc.exists()) {
-                        return Tasks.forResult(doc.toObject(Publicacion.class));
-                    } else {
-                        return Tasks.forException(new FoodTracksNotFoundException(
-                                R.string.publicacion_not_found_error_message));
-                    }
-                });
+        return publicacionRepository
+                .getPublicacionById(uid)
+                .continueWithTask(
+                        task -> {
+                            DocumentSnapshot doc = task.getResult();
+                            if (task.isSuccessful() && doc != null && doc.exists()) {
+                                return Tasks.forResult(doc.toObject(Publicacion.class));
+                            } else {
+                                return Tasks.forException(
+                                        new FoodTracksNotFoundException(
+                                                R.string.publicacion_not_found_error_message));
+                            }
+                        });
     }
 
     @Override
     public Task<List<Publicacion>> getAllPublicaciones() {
         // Pasamos null como checkpoint para cargar la primera página (50 posts)
-        return publicacionRepository.getAllPublicaciones(null) // TODO --> Check si marca el checkpoint
-                .continueWith(task -> {
-                    if (task.isSuccessful() && task.getResult() != null) {
-                        return task.getResult().toObjects(Publicacion.class);
-                    }
-                    return new java.util.ArrayList<>();
-                });
+        return publicacionRepository
+                .getAllPublicaciones(null) // TODO --> Check si marca el checkpoint
+                .continueWith(
+                        task -> {
+                            if (task.isSuccessful() && task.getResult() != null) {
+                                return task.getResult().toObjects(Publicacion.class);
+                            }
+                            return new java.util.ArrayList<>();
+                        });
     }
 
     @Override
     public Task<List<Publicacion>> getPublicacionesByUsuario(String uidUsuario) {
-        return publicacionRepository.getPublicacionesByUsuario(uidUsuario)
-                .continueWith(task -> {
-                    if (task.isSuccessful() && task.getResult() != null){
-                        return task.getResult().toObjects(Publicacion.class);
-                    } else{
-                        return new ArrayList<>(); // Devolvemos lista vacia
-                    }
-                });
+        return publicacionRepository
+                .getPublicacionesByUsuario(uidUsuario)
+                .continueWith(
+                        task -> {
+                            if (task.isSuccessful() && task.getResult() != null) {
+                                return task.getResult().toObjects(Publicacion.class);
+                            } else {
+                                return new ArrayList<>(); // Devolvemos lista vacia
+                            }
+                        });
     }
 
     @Override
     public Task<List<Publicacion>> getPublicacionesByLocalMencionado(String uidLocal) {
-        return publicacionRepository.getPublicacionesByLocal(uidLocal)
-                .continueWith(task -> {
-                    if (task.isSuccessful() && task.getResult() != null) {
-                        return task.getResult().toObjects(Publicacion.class);
-                    }
-                    return new java.util.ArrayList<>();
-                });
+        return publicacionRepository
+                .getPublicacionesByLocal(uidLocal)
+                .continueWith(
+                        task -> {
+                            if (task.isSuccessful() && task.getResult() != null) {
+                                return task.getResult().toObjects(Publicacion.class);
+                            }
+                            return new java.util.ArrayList<>();
+                        });
     }
 
     @Override
@@ -111,16 +119,19 @@ public class PublicacionService implements IPublicacionService {
 
         if (fotoUri != null) {
             return storageRepository
-                    .uploadImage(fotoUri, publicacion
-                            .getUidUsuario() + "_pub_" + System.currentTimeMillis(), "publicaciones")
-                    .continueWithTask(uploadTask -> {
-                        ImageKitResponse res = uploadTask.getResult();
+                    .uploadImage(
+                            fotoUri,
+                            publicacion.getUidUsuario() + "_pub_" + System.currentTimeMillis(),
+                            "publicaciones")
+                    .continueWithTask(
+                            uploadTask -> {
+                                ImageKitResponse res = uploadTask.getResult();
 
-                        publicacion.setImagen(res.getUrl());
-                        publicacion.setImagenId(res.getFileId());
+                                publicacion.setImagen(res.getUrl());
+                                publicacion.setImagenId(res.getFileId());
 
-                        return publicacionRepository.savePublicacion(publicacion);
-                    });
+                                return publicacionRepository.savePublicacion(publicacion);
+                            });
         } else {
             return publicacionRepository.savePublicacion(publicacion);
         }
@@ -128,65 +139,86 @@ public class PublicacionService implements IPublicacionService {
 
     @Override
     public Task<Void> eliminarPublicacion(String uid) {
-        return publicacionRepository.getPublicacionById(uid).continueWithTask(task -> {
-            DocumentSnapshot doc = task.getResult();
-            if (!doc.exists()) {
-                return Tasks.forException(new FoodTracksNotFoundException(R.string.publicacion_not_found_error_message));
-            }
+        return publicacionRepository
+                .getPublicacionById(uid)
+                .continueWithTask(
+                        task -> {
+                            DocumentSnapshot doc = task.getResult();
+                            if (!doc.exists()) {
+                                return Tasks.forException(
+                                        new FoodTracksNotFoundException(
+                                                R.string.publicacion_not_found_error_message));
+                            }
 
-            Publicacion publicacion = doc.toObject(Publicacion.class);
+                            Publicacion publicacion = doc.toObject(Publicacion.class);
 
-            // Si tenía una foto adjunta, la borrramos de la nube
-            if (publicacion != null && publicacion.getImagenId() != null) {
-                storageRepository.deleteImage(publicacion.getImagenId());
-            }
+                            // Si tenía una foto adjunta, la borrramos de la nube
+                            if (publicacion != null && publicacion.getImagenId() != null) {
+                                storageRepository.deleteImage(publicacion.getImagenId());
+                            }
 
-            return publicacionRepository.deletePublicacion(uid);
-        });
+                            return publicacionRepository.deletePublicacion(uid);
+                        });
     }
 
     @Override
-    public Task<Void> eliminarPublicacionByAdmin(String uid, String uidUsuario, String motivo, String uidAdmin) {
-        return publicacionRepository.getPublicacionById(uid)
-                .continueWithTask(task -> {
-                    DocumentSnapshot doc = task.getResult();
-                    if (!doc.exists()) {
-                        return Tasks.forException(new FoodTracksNotFoundException(R.string.publicacion_not_found_error_message));
-                    }
-
-                    Publicacion publicacion = doc.toObject(Publicacion.class);
-
-                    // Buscamos al usuario para tener su username
-                    return usuarioRepository.getUsuarioById(uidUsuario).continueWithTask(userTask -> {
-                        DocumentSnapshot usuarioDoc = userTask.getResult();
-                        String username = "Usuario desconocido";
-
-                        if (usuarioDoc.exists()) {
-                            Usuario usuario = usuarioDoc.toObject(Usuario.class);
-                            if (usuario != null) {
-                                username = usuario.getUsername();
+    public Task<Void> eliminarPublicacionByAdmin(
+            String uid, String uidUsuario, String motivo, String uidAdmin) {
+        return publicacionRepository
+                .getPublicacionById(uid)
+                .continueWithTask(
+                        task -> {
+                            DocumentSnapshot doc = task.getResult();
+                            if (!doc.exists()) {
+                                return Tasks.forException(
+                                        new FoodTracksNotFoundException(
+                                                R.string.publicacion_not_found_error_message));
                             }
-                        }
 
-                        // Borra la foto de ImageKit
-                        if (publicacion != null && publicacion.getImagenId() != null) {
-                            storageRepository.deleteImage(publicacion.getImagenId());
-                        }
+                            Publicacion publicacion = doc.toObject(Publicacion.class);
 
-                        RegistroBorradoPublicacion registro =
-                                RegistroBorradoPublicacion.builder()
-                                        .uidAdmin(uidAdmin)
-                                        .uidPublicacion(uid)
-                                        .uidUsuario(uidUsuario)
-                                        .usernameUsuario(username)
-                                        .motivo(motivo)
-                                        .fechaHora(Timestamp.now())
-                                        .build();
+                            // Buscamos al usuario para tener su username
+                            return usuarioRepository
+                                    .getUsuarioById(uidUsuario)
+                                    .continueWithTask(
+                                            userTask -> {
+                                                DocumentSnapshot usuarioDoc = userTask.getResult();
+                                                String username = "Usuario desconocido";
 
-                        return registroBorradoRepository.saveRegistroBorradoPublicacion(registro)
-                                .continueWithTask(unused -> publicacionRepository.deletePublicacion(uid));
-                    });
-                });
+                                                if (usuarioDoc.exists()) {
+                                                    Usuario usuario =
+                                                            usuarioDoc.toObject(Usuario.class);
+                                                    if (usuario != null) {
+                                                        username = usuario.getUsername();
+                                                    }
+                                                }
+
+                                                // Borra la foto de ImageKit
+                                                if (publicacion != null
+                                                        && publicacion.getImagenId() != null) {
+                                                    storageRepository.deleteImage(
+                                                            publicacion.getImagenId());
+                                                }
+
+                                                RegistroBorradoPublicacion registro =
+                                                        RegistroBorradoPublicacion.builder()
+                                                                .uidAdmin(uidAdmin)
+                                                                .uidPublicacion(uid)
+                                                                .uidUsuario(uidUsuario)
+                                                                .usernameUsuario(username)
+                                                                .motivo(motivo)
+                                                                .fechaHora(Timestamp.now())
+                                                                .build();
+
+                                                return registroBorradoRepository
+                                                        .saveRegistroBorradoPublicacion(registro)
+                                                        .continueWithTask(
+                                                                unused ->
+                                                                        publicacionRepository
+                                                                                .deletePublicacion(
+                                                                                        uid));
+                                            });
+                        });
     }
 
     /*
@@ -224,5 +256,4 @@ public class PublicacionService implements IPublicacionService {
 
         return 0;
     }
-
 }

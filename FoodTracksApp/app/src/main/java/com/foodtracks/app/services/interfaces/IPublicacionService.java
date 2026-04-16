@@ -2,13 +2,13 @@
 
 package com.foodtracks.app.services.interfaces;
 
+import java.util.List;
+
 import android.net.Uri;
 
 import com.foodtracks.app.models.Publicacion;
 
 import com.google.android.gms.tasks.Task;
-
-import java.util.List;
 
 /**
  * Lógica de negocio para la gestión de publicaciones.
@@ -61,7 +61,6 @@ public interface IPublicacionService {
      */
     Task<Void> subirPublicacion(Publicacion publicacion, Uri fotoUri);
 
-
     /**
      * Gestiona la eliminación de una publicación por parte del usuario dueño.
      *
@@ -80,5 +79,6 @@ public interface IPublicacionService {
      * @param uidAdmin Identificador del administrador que ejecuta la acción.
      * @return {@link Task} que representa el estado final del proceso de borrado.
      */
-    Task<Void> eliminarPublicacionByAdmin(String uid, String uidUsuario, String motivo, String uidAdmin);
+    Task<Void> eliminarPublicacionByAdmin(
+            String uid, String uidUsuario, String motivo, String uidAdmin);
 }

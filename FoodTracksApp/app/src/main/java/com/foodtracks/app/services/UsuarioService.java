@@ -142,7 +142,6 @@ public class UsuarioService implements IUsuarioService {
                             Usuario usuarioABorrar = doc.toObject(Usuario.class);
                             assert usuarioABorrar != null;
 
-
                             // Borra la foto de ImageKit
                             if (usuarioABorrar.getFotoId() != null) {
                                 storageRepository.deleteImage(usuarioABorrar.getFotoId());
