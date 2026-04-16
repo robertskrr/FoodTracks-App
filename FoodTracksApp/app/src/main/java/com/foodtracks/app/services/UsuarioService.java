@@ -15,8 +15,8 @@ import com.foodtracks.app.models.UsuarioLocal;
 import com.foodtracks.app.repositories.interfaces.IRegistroBorradoRepository;
 import com.foodtracks.app.repositories.interfaces.IStorageRepository;
 import com.foodtracks.app.repositories.interfaces.IUsuarioRepository;
-import com.foodtracks.app.services.exceptions.UsuarioNotFoundException;
-import com.foodtracks.app.services.exceptions.UsuarioValidationException;
+import com.foodtracks.app.services.exceptions.FoodTracksNotFoundException;
+import com.foodtracks.app.services.exceptions.FoodTracksValidationException;
 import com.foodtracks.app.services.interfaces.IUsuarioService;
 import com.foodtracks.app.utils.StringUtils;
 
@@ -58,7 +58,7 @@ public class UsuarioService implements IUsuarioService {
                                 return Tasks.forResult(doc.toObject(Usuario.class));
                             } else {
                                 return Tasks.forException(
-                                        new UsuarioNotFoundException(
+                                        new FoodTracksNotFoundException(
                                                 R.string.usuario_not_found_error_message));
                             }
                         });
@@ -68,7 +68,7 @@ public class UsuarioService implements IUsuarioService {
     public Task<Void> registrarUsuario(Usuario usuario, Uri fotoUri) {
         int errorIdValidacion = validarDatos(usuario);
         if (errorIdValidacion != 0) {
-            return Tasks.forException(new UsuarioValidationException(errorIdValidacion));
+            return Tasks.forException(new FoodTracksValidationException(errorIdValidacion));
         }
 
         usuario.setFechaRegistro(Timestamp.now());
@@ -79,7 +79,7 @@ public class UsuarioService implements IUsuarioService {
                         task -> {
                             if (task.getResult() != null && !task.getResult()) {
                                 return Tasks.forException(
-                                        new UsuarioValidationException(
+                                        new FoodTracksValidationException(
                                                 R.string.username_validation_error_message));
                             }
 
@@ -135,14 +135,15 @@ public class UsuarioService implements IUsuarioService {
 
                             if (!doc.exists()) {
                                 return Tasks.forException(
-                                        new UsuarioNotFoundException(
+                                        new FoodTracksNotFoundException(
                                                 R.string.usuario_not_found_error_message));
                             }
 
                             Usuario usuarioABorrar = doc.toObject(Usuario.class);
+                            assert usuarioABorrar != null;
+
 
                             // Borra la foto de ImageKit
-                            assert usuarioABorrar != null;
                             if (usuarioABorrar.getFotoId() != null) {
                                 storageRepository.deleteImage(usuarioABorrar.getFotoId());
                             }
@@ -166,6 +167,8 @@ public class UsuarioService implements IUsuarioService {
                         });
     }
 
+    // TODO --> Chequear eliminación de cuenta por parte del mismo usuario
+
     @Override
     public Task<Boolean> esUsernameUnico(String username) {
         String cleanUsername = (username != null) ? username.toLowerCase().trim() : "";
@@ -178,7 +181,7 @@ public class UsuarioService implements IUsuarioService {
     public Task<Void> actualizarPerfil(Usuario usuarioModificado, Uri fotoUri) {
         int errorIdValidacion = validarDatos(usuarioModificado);
         if (errorIdValidacion != 0) {
-            return Tasks.forException(new UsuarioValidationException(errorIdValidacion));
+            return Tasks.forException(new FoodTracksValidationException(errorIdValidacion));
         }
 
         normalizarDatos(usuarioModificado);
@@ -192,7 +195,7 @@ public class UsuarioService implements IUsuarioService {
 
                             if (usuarioActual == null) {
                                 return Tasks.forException(
-                                        new UsuarioNotFoundException(
+                                        new FoodTracksNotFoundException(
                                                 R.string.usuario_not_found_error_message));
                             }
 
@@ -242,7 +245,7 @@ public class UsuarioService implements IUsuarioService {
                                                                         && !isUniqueTask
                                                                                 .getResult()) {
                                                                     return Tasks.forException(
-                                                                            new UsuarioValidationException(
+                                                                            new FoodTracksValidationException(
                                                                                     R.string
                                                                                             .username_validation_error_message));
                                                                 }
@@ -318,7 +321,7 @@ public class UsuarioService implements IUsuarioService {
         }
 
         if (usuario.getNombre() != null) {
-            usuario.setNombre(StringUtils.capitalizeNombreCompleto(usuario.getNombre()));
+            usuario.setNombre(StringUtils.capitalizeNombreCompleto(usuario.getNombre().trim()));
         }
 
         if (usuario.getCiudad() != null) {

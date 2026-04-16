@@ -91,7 +91,7 @@ public class PerfilClienteActivity extends AppCompatActivity {
                         })
                 .addOnFailureListener(
                         e -> {
-                            Toast.makeText(this, R.string.loading_profile_error, Toast.LENGTH_SHORT)
+                            Toast.makeText(this, R.string.loading_profile_error_message, Toast.LENGTH_SHORT)
                                     .show();
                         });
     }

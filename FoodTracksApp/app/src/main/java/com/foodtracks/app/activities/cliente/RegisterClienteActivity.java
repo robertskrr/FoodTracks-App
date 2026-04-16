@@ -16,7 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.foodtracks.app.R;
 import com.foodtracks.app.models.UsuarioCliente;
 import com.foodtracks.app.services.ServiceFactory;
-import com.foodtracks.app.services.exceptions.UsuarioValidationException;
+import com.foodtracks.app.services.exceptions.FoodTracksValidationException;
 import com.foodtracks.app.services.interfaces.IUsuarioService;
 
 import com.google.android.material.imageview.ShapeableImageView;
@@ -156,7 +156,7 @@ public class RegisterClienteActivity extends AppCompatActivity {
                                                 task -> {
                                                     if (e
                                                             instanceof
-                                                            UsuarioValidationException
+                                                            FoodTracksValidationException
                                                             ex) {
                                                         Toast.makeText(
                                                                         this,

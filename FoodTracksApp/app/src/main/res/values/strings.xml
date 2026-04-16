@@ -14,7 +14,14 @@
     <string name="password_length_error_message">La contraseña debe tener mínimo 8 caracteres.</string>
     <string name="email_validation_error_message">El formato del correo electrónico no es válido.</string>
     <string name="imagekit_error_message">Error de Image Kit.</string>
-    <string name="loading_profile_error">Error al cargar el perfil.</string>
+    <string name="loading_profile_error_message">Error al cargar el perfil.</string>
+    <string name="publicacion_text_empty_error_message">No has introducido ningún texto.</string>
+    <string name="publicacion_not_found_error_message">La publicación no existe.</string>
+    <string name="publicacion_too_long_error_message">Máximo 500 caracteres.</string>
+
+
+
+    <!-- LAYOUTS STRINGS -->
     <string name="action_settings">Settings</string>
     <string name="iniciar_sesion">Iniciar sesión</string>
     <string name="registrarse">Registrarse</string>
@@ -22,8 +29,6 @@
     <string name="cerrar_sesion">Cerrar sesión</string>
     <string name="perfil">Perfil</string>
     <string name="succesful_register">¡Usuario registrado con éxito!</string>
-
-    <!-- LAYOUTS STRINGS -->
     <string name="admin_panel">ADMIN PANEL</string>
     <string name="dashboard">DASHBOARD</string>
     <string name="mi_perfil">Mi Perfil</string>

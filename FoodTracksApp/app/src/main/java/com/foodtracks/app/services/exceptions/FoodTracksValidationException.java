@@ -11,11 +11,11 @@ import lombok.Getter;
  * @since 30/03
  */
 @Getter
-public class UsuarioValidationException extends Exception {
+public class FoodTracksValidationException extends Exception {
 
     private final int errorResId;
 
-    public UsuarioValidationException(int errorResId) {
+    public FoodTracksValidationException(int errorResId) {
         this.errorResId = errorResId;
     }
 }

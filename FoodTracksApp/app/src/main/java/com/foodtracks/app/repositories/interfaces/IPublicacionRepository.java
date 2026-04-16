@@ -63,4 +63,6 @@ public interface IPublicacionRepository {
      * @return Task con el siguiente bloque de resultados.
      */
     Task<QuerySnapshot> getAllPublicaciones(DocumentSnapshot lastVisible);
+
+    // TODO --> Si hay tiempo, hacer actualizarPublicacion
 }
