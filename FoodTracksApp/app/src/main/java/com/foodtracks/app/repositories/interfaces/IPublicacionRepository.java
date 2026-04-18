@@ -64,5 +64,13 @@ public interface IPublicacionRepository {
      */
     Task<QuerySnapshot> getAllPublicaciones(DocumentSnapshot lastVisible);
 
+    /**
+     * Actualiza el contador de likes de la publicación.
+     * @param uidPublicacion Identificador de la publicación.
+     * @param cantidad +1 o -1 dependiendo de si se añade o se elimina.
+     * @return @return {@link Task} que representa el estado de la actualización.
+     */
+    public Task<Void> actualizarContadorLikes(String uidPublicacion, int cantidad);
+
     // TODO --> Si hay tiempo, hacer actualizarPublicacion
 }
