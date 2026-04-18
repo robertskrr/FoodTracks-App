@@ -5,14 +5,17 @@ package com.foodtracks.app.services;
 import android.content.Context;
 
 import com.foodtracks.app.repositories.ImageKitRepository;
+import com.foodtracks.app.repositories.LikeRepository;
 import com.foodtracks.app.repositories.PublicacionRepository;
 import com.foodtracks.app.repositories.RegistroBorradoRepository;
 import com.foodtracks.app.repositories.UsuarioRepository;
 import com.foodtracks.app.repositories.ValoracionLocalRepository;
+import com.foodtracks.app.repositories.interfaces.ILikeRepository;
 import com.foodtracks.app.repositories.interfaces.IPublicacionRepository;
 import com.foodtracks.app.repositories.interfaces.IRegistroBorradoRepository;
 import com.foodtracks.app.repositories.interfaces.IUsuarioRepository;
 import com.foodtracks.app.repositories.interfaces.IValoracionLocalRepository;
+import com.foodtracks.app.services.interfaces.ILikeService;
 import com.foodtracks.app.services.interfaces.IPublicacionService;
 import com.foodtracks.app.services.interfaces.IUsuarioService;
 import com.foodtracks.app.services.interfaces.IValoracionLocalService;
@@ -68,5 +71,17 @@ public class ServiceFactory {
         IValoracionLocalRepository repo = new ValoracionLocalRepository();
         IUsuarioRepository repoUsers = new UsuarioRepository();
         return new ValoracionLocalService(repo, repoUsers);
+    }
+
+    /**
+     * Proporciona una instancia configurada de LikeService.
+     * Vincula el servicio con sus repositorios de base de datos.
+     *
+     * @return Implementación de {@link ILikeService}.
+     */
+    public static ILikeService provideLikeService() {
+        ILikeRepository repo = new LikeRepository();
+        IPublicacionRepository repoPosts = new PublicacionRepository();
+        return new LikeService(repo, repoPosts);
     }
 }

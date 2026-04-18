@@ -8,6 +8,7 @@ import com.foodtracks.app.repositories.interfaces.IPublicacionRepository;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -71,5 +72,11 @@ public class PublicacionRepository implements IPublicacionRepository {
         }
 
         return query.get();
+    }
+
+    @Override
+    public Task<Void> actualizarContadorLikes(String uidPublicacion, int cantidad){
+        return postsCollection.document(uidPublicacion)
+                .update("num_likes", FieldValue.increment(cantidad));
     }
 }
