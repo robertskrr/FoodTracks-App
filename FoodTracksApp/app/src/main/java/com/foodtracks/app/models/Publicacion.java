@@ -13,6 +13,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * @author Robert
+ * @since 22/03
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
