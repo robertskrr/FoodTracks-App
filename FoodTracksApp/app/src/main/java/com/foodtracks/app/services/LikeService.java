@@ -1,21 +1,15 @@
-/**
- * © FoodTracks Project ===robertskrr===
- */
+/** © FoodTracks Project ===robertskrr=== */
 
 package com.foodtracks.app.services;
 
 import com.foodtracks.app.R;
 import com.foodtracks.app.models.LikePublicacion;
-import com.foodtracks.app.models.UsuarioLocal;
-import com.foodtracks.app.models.ValoracionLocal;
 import com.foodtracks.app.repositories.interfaces.ILikeRepository;
 import com.foodtracks.app.repositories.interfaces.IPublicacionRepository;
-import com.foodtracks.app.repositories.interfaces.IUsuarioRepository;
-import com.foodtracks.app.repositories.interfaces.IValoracionLocalRepository;
 import com.foodtracks.app.services.exceptions.FoodTracksNotFoundException;
 import com.foodtracks.app.services.exceptions.FoodTracksValidationException;
 import com.foodtracks.app.services.interfaces.ILikeService;
-import com.foodtracks.app.services.interfaces.IValoracionLocalService;
+
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.Timestamp;
@@ -32,8 +26,7 @@ public class LikeService implements ILikeService {
     private final IPublicacionRepository publicacionRepository;
 
     public LikeService(
-            ILikeRepository likeRepository,
-            IPublicacionRepository publicacionRepository) {
+            ILikeRepository likeRepository, IPublicacionRepository publicacionRepository) {
         this.likeRepository = likeRepository;
         this.publicacionRepository = publicacionRepository;
     }
@@ -50,10 +43,10 @@ public class LikeService implements ILikeService {
                                 return Tasks.forResult(doc.toObject(LikePublicacion.class));
                             } else {
                                 return Tasks.forException(
-                                        new FoodTracksNotFoundException(R.string.like_not_found_error_message));
+                                        new FoodTracksNotFoundException(
+                                                R.string.like_not_found_error_message));
                             }
-                        }
-                );
+                        });
     }
 
     @Override
@@ -63,18 +56,28 @@ public class LikeService implements ILikeService {
         like.setFechaHora(Timestamp.now());
 
         // Comprobamos si el usuario ya le había dado like
-        return likeRepository.getLike(customId).continueWithTask(task -> {
-            DocumentSnapshot doc = task.getResult();
+        return likeRepository
+                .getLike(customId)
+                .continueWithTask(
+                        task -> {
+                            DocumentSnapshot doc = task.getResult();
 
-            if (task.isSuccessful() && doc != null && doc.exists()) {
-                return Tasks.forException(new FoodTracksValidationException(R.string.like_duplicated_error_message));
-            } else {
-                // Si no existe, procedemos a guardar e incrementar el contador
-                return likeRepository.saveLike(like)
-                        .continueWithTask(unused ->
-                                publicacionRepository.actualizarContadorLikes(like.getUidPublicacion(), 1));
-            }
-        });
+                            if (task.isSuccessful() && doc != null && doc.exists()) {
+                                return Tasks.forException(
+                                        new FoodTracksValidationException(
+                                                R.string.like_duplicated_error_message));
+                            } else {
+                                // Si no existe, procedemos a guardar e incrementar el contador
+                                return likeRepository
+                                        .saveLike(like)
+                                        .continueWithTask(
+                                                unused ->
+                                                        publicacionRepository
+                                                                .actualizarContadorLikes(
+                                                                        like.getUidPublicacion(),
+                                                                        1));
+                            }
+                        });
     }
 
     @Override
@@ -82,18 +85,27 @@ public class LikeService implements ILikeService {
         String customId = getCustomId(uidUsuario, uidPublicacion);
 
         // Comprobamos si el like existe
-        return likeRepository.getLike(customId).continueWithTask(task -> {
-            DocumentSnapshot doc = task.getResult();
+        return likeRepository
+                .getLike(customId)
+                .continueWithTask(
+                        task -> {
+                            DocumentSnapshot doc = task.getResult();
 
-            if (task.isSuccessful() && doc != null && doc.exists()) {
-                // Si existe, lo borramos y decrementamos el contador
-                return likeRepository.deleteLike(customId)
-                        .continueWithTask(unused ->
-                                publicacionRepository.actualizarContadorLikes(uidPublicacion, -1));
-            } else {
-                return Tasks.forException(new FoodTracksNotFoundException(R.string.like_not_found_error_message));
-            }
-        });
+                            if (task.isSuccessful() && doc != null && doc.exists()) {
+                                // Si existe, lo borramos y decrementamos el contador
+                                return likeRepository
+                                        .deleteLike(customId)
+                                        .continueWithTask(
+                                                unused ->
+                                                        publicacionRepository
+                                                                .actualizarContadorLikes(
+                                                                        uidPublicacion, -1));
+                            } else {
+                                return Tasks.forException(
+                                        new FoodTracksNotFoundException(
+                                                R.string.like_not_found_error_message));
+                            }
+                        });
     }
 
     /*
@@ -105,5 +117,4 @@ public class LikeService implements ILikeService {
     private String getCustomId(String uidUsuario, String uidPublicacion) {
         return uidUsuario + "_" + uidPublicacion;
     }
-
 }

@@ -75,8 +75,9 @@ public class PublicacionRepository implements IPublicacionRepository {
     }
 
     @Override
-    public Task<Void> actualizarContadorLikes(String uidPublicacion, int cantidad){
-        return postsCollection.document(uidPublicacion)
+    public Task<Void> actualizarContadorLikes(String uidPublicacion, int cantidad) {
+        return postsCollection
+                .document(uidPublicacion)
                 .update("num_likes", FieldValue.increment(cantidad));
     }
 }

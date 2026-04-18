@@ -1,19 +1,14 @@
-/**
- * © FoodTracks Project ===robertskrr===
- */
+/** © FoodTracks Project ===robertskrr=== */
 
 package com.foodtracks.app.repositories;
 
 import com.foodtracks.app.models.LikePublicacion;
-import com.foodtracks.app.models.Publicacion;
 import com.foodtracks.app.repositories.interfaces.ILikeRepository;
-import com.foodtracks.app.repositories.interfaces.IPublicacionRepository;
+
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QuerySnapshot;
 
 /**
  * Repositorio encargado de gestionar la persistencia y consultas de la colección "likes_publicaciones" en Firestore.

@@ -3,10 +3,9 @@
 package com.foodtracks.app.repositories.interfaces;
 
 import com.foodtracks.app.models.LikePublicacion;
-import com.foodtracks.app.models.Publicacion;
+
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 /**
  * Definición de las operaciones permitidas sobre los likes a publicaciones.

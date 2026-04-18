@@ -3,9 +3,8 @@
 package com.foodtracks.app.services.interfaces;
 
 import com.foodtracks.app.models.LikePublicacion;
-import com.google.android.gms.tasks.Task;
 
-import java.util.List;
+import com.google.android.gms.tasks.Task;
 
 /**
  * Lógica de negocio para la gestión de likes de publicaciones.
@@ -24,7 +23,6 @@ public interface ILikeService {
      * @return {@link Task} que contiene el objeto {@link LikePublicacion}.
      */
     Task<LikePublicacion> getLike(String uidUsuario, String uidPublicacion);
-
 
     // Task<List<Publicacion>> getLikesByUser(String uidUsuario); TODO --> Si tengo tiempo
 
