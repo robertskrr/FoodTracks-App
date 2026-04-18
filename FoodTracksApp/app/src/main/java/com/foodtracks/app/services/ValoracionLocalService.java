@@ -1,19 +1,16 @@
-/**
- * © FoodTracks Project ===robertskrr===
- */
+/** © FoodTracks Project ===robertskrr=== */
 
 package com.foodtracks.app.services;
-
 
 import com.foodtracks.app.R;
 import com.foodtracks.app.models.UsuarioLocal;
 import com.foodtracks.app.models.ValoracionLocal;
 import com.foodtracks.app.repositories.interfaces.IUsuarioRepository;
 import com.foodtracks.app.repositories.interfaces.IValoracionLocalRepository;
-
 import com.foodtracks.app.services.exceptions.FoodTracksNotFoundException;
 import com.foodtracks.app.services.exceptions.FoodTracksValidationException;
 import com.foodtracks.app.services.interfaces.IValoracionLocalService;
+
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -35,7 +32,6 @@ public class ValoracionLocalService implements IValoracionLocalService {
         this.usuarioRepository = usuarioRepository;
     }
 
-
     @Override
     public Task<Void> valorarLocal(ValoracionLocal valoracion) {
         String customId = getCustomId(valoracion.getUidCliente(), valoracion.getUidLocal());
@@ -46,112 +42,168 @@ public class ValoracionLocalService implements IValoracionLocalService {
             return Tasks.forException(new FoodTracksValidationException(errorIdValidacion));
         }
 
-        return valoracionLocalRepository.getValoracion(customId).continueWithTask(task -> {
-            DocumentSnapshot ratingDoc = task.getResult();
+        return valoracionLocalRepository
+                .getValoracion(customId)
+                .continueWithTask(
+                        task -> {
+                            DocumentSnapshot ratingDoc = task.getResult();
 
-            // Recuperamos el perfil del local para recalcular la media
-            return usuarioRepository.getUsuarioById(valoracion.getUidLocal()).continueWithTask(userTask -> {
-                DocumentSnapshot localDoc = userTask.getResult();
-                if (!localDoc.exists()) {
-                    return Tasks.forException(new FoodTracksNotFoundException(R.string.local_not_found_error_message));
-                }
+                            // Recuperamos el perfil del local para recalcular la media
+                            return usuarioRepository
+                                    .getUsuarioById(valoracion.getUidLocal())
+                                    .continueWithTask(
+                                            userTask -> {
+                                                DocumentSnapshot localDoc = userTask.getResult();
+                                                if (!localDoc.exists()) {
+                                                    return Tasks.forException(
+                                                            new FoodTracksNotFoundException(
+                                                                    R.string
+                                                                            .local_not_found_error_message));
+                                                }
 
-                // Convertimos al modelo
-                UsuarioLocal local = localDoc.toObject(UsuarioLocal.class);
-                assert local != null;
-                double mediaActual = local.getPuntuacionMedia();
-                long totalActualValoraciones = local.getTotalValoraciones();
+                                                // Convertimos al modelo
+                                                UsuarioLocal local =
+                                                        localDoc.toObject(UsuarioLocal.class);
+                                                assert local != null;
+                                                double mediaActual = local.getPuntuacionMedia();
+                                                long totalActualValoraciones =
+                                                        local.getTotalValoraciones();
 
-                double nuevaMedia;
-                long nuevoTotalValoraciones;
+                                                double nuevaMedia;
+                                                long nuevoTotalValoraciones;
 
-                // -- ACTUALIZACIÓN DE MEDIA SI EXISTE --
-                if (ratingDoc.exists()) {
-                    ValoracionLocal votoAntiguo = ratingDoc.toObject(ValoracionLocal.class);
-                    assert votoAntiguo != null;
-                    double notaVieja = votoAntiguo.getPuntuacion();
-                    double notaNueva = valoracion.getPuntuacion();
+                                                // -- ACTUALIZACIÓN DE MEDIA SI EXISTE --
+                                                if (ratingDoc.exists()) {
+                                                    ValoracionLocal votoAntiguo =
+                                                            ratingDoc.toObject(
+                                                                    ValoracionLocal.class);
+                                                    assert votoAntiguo != null;
+                                                    double notaVieja = votoAntiguo.getPuntuacion();
+                                                    double notaNueva = valoracion.getPuntuacion();
 
-                    // Solo se ajusta el peso de la nota, no el total
-                    nuevaMedia = ((mediaActual * totalActualValoraciones) - notaVieja + notaNueva) / totalActualValoraciones;
-                    nuevoTotalValoraciones = totalActualValoraciones;
-                } else {
-                    // -- NUEVA VALORACIÓN --
-                    double notaNueva = valoracion.getPuntuacion();
+                                                    // Solo se ajusta el peso de la nota, no el
+                                                    // total
+                                                    nuevaMedia =
+                                                            ((mediaActual * totalActualValoraciones)
+                                                                            - notaVieja
+                                                                            + notaNueva)
+                                                                    / totalActualValoraciones;
+                                                    nuevoTotalValoraciones =
+                                                            totalActualValoraciones;
+                                                } else {
+                                                    // -- NUEVA VALORACIÓN --
+                                                    double notaNueva = valoracion.getPuntuacion();
 
-                    // Se añade un voto más y se calcula la nueva media
-                    nuevoTotalValoraciones = totalActualValoraciones + 1;
-                    nuevaMedia = ((mediaActual * totalActualValoraciones) + notaNueva) / (nuevoTotalValoraciones);
-                }
+                                                    // Se añade un voto más y se calcula la nueva
+                                                    // media
+                                                    nuevoTotalValoraciones =
+                                                            totalActualValoraciones + 1;
+                                                    nuevaMedia =
+                                                            ((mediaActual * totalActualValoraciones)
+                                                                            + notaNueva)
+                                                                    / (nuevoTotalValoraciones);
+                                                }
 
-                // Actualizamos el nuevo total del local
-                local.setPuntuacionMedia(nuevaMedia);
-                local.setTotalValoraciones(nuevoTotalValoraciones);
+                                                // Actualizamos el nuevo total del local
+                                                local.setPuntuacionMedia(nuevaMedia);
+                                                local.setTotalValoraciones(nuevoTotalValoraciones);
 
-                return valoracionLocalRepository.saveValoracion(valoracion)
-                        .continueWithTask(unused -> usuarioRepository.saveUsuario(local));
-            });
-        });
+                                                return valoracionLocalRepository
+                                                        .saveValoracion(valoracion)
+                                                        .continueWithTask(
+                                                                unused ->
+                                                                        usuarioRepository
+                                                                                .saveUsuario(
+                                                                                        local));
+                                            });
+                        });
     }
 
     @Override
     public Task<ValoracionLocal> getValoracionUsuario(String uidCliente, String uidLocal) {
-        return valoracionLocalRepository.getValoracion(getCustomId(uidCliente, uidLocal))
-                .continueWithTask(task -> {
+        return valoracionLocalRepository
+                .getValoracion(getCustomId(uidCliente, uidLocal))
+                .continueWithTask(
+                        task -> {
+                            DocumentSnapshot doc = task.getResult();
 
-                    DocumentSnapshot doc = task.getResult();
-
-                    if (task.isSuccessful() && doc != null && doc.exists()) {
-                        return Tasks.forResult(doc.toObject(ValoracionLocal.class));
-                    } else {
-                        return Tasks.forException(new FoodTracksNotFoundException(R.string.valoracion_not_found_error_message));
-                    }
-
-                });
+                            if (task.isSuccessful() && doc != null && doc.exists()) {
+                                return Tasks.forResult(doc.toObject(ValoracionLocal.class));
+                            } else {
+                                return Tasks.forException(
+                                        new FoodTracksNotFoundException(
+                                                R.string.valoracion_not_found_error_message));
+                            }
+                        });
     }
 
     @Override
     public Task<Void> eliminarValoracion(String uidCliente, String uidLocal) {
         String customId = getCustomId(uidCliente, uidLocal);
-        return valoracionLocalRepository.getValoracion(customId).continueWithTask(task -> {
-           DocumentSnapshot ratingDoc = task.getResult();
+        return valoracionLocalRepository
+                .getValoracion(customId)
+                .continueWithTask(
+                        task -> {
+                            DocumentSnapshot ratingDoc = task.getResult();
 
-            if (!ratingDoc.exists()) {
-                return Tasks.forException(new FoodTracksNotFoundException(R.string.valoracion_not_found_error_message));
-            }
+                            if (!ratingDoc.exists()) {
+                                return Tasks.forException(
+                                        new FoodTracksNotFoundException(
+                                                R.string.valoracion_not_found_error_message));
+                            }
 
-            ValoracionLocal votoABorrar = ratingDoc.toObject(ValoracionLocal.class);
+                            ValoracionLocal votoABorrar = ratingDoc.toObject(ValoracionLocal.class);
 
-            // Buscamos al local para restarle el voto al total de valoraciones
-            return usuarioRepository.getUsuarioById(uidLocal).continueWithTask(userTask -> {
-                DocumentSnapshot localDoc = userTask.getResult();
+                            // Buscamos al local para restarle el voto al total de valoraciones
+                            return usuarioRepository
+                                    .getUsuarioById(uidLocal)
+                                    .continueWithTask(
+                                            userTask -> {
+                                                DocumentSnapshot localDoc = userTask.getResult();
 
-                if (!localDoc.exists()) {
-                    return Tasks.forException(new FoodTracksNotFoundException(R.string.local_not_found_error_message));
-                }
+                                                if (!localDoc.exists()) {
+                                                    return Tasks.forException(
+                                                            new FoodTracksNotFoundException(
+                                                                    R.string
+                                                                            .local_not_found_error_message));
+                                                }
 
-                UsuarioLocal local = userTask.getResult().toObject(UsuarioLocal.class);
-                assert local != null;
+                                                UsuarioLocal local =
+                                                        userTask.getResult()
+                                                                .toObject(UsuarioLocal.class);
+                                                assert local != null;
 
-                double mediaActual = local.getPuntuacionMedia();
-                long totalActualValoraciones = local.getTotalValoraciones();
+                                                double mediaActual = local.getPuntuacionMedia();
+                                                long totalActualValoraciones =
+                                                        local.getTotalValoraciones();
 
-                assert votoABorrar != null;
-                double notaBorrada = votoABorrar.getPuntuacion();
+                                                assert votoABorrar != null;
+                                                double notaBorrada = votoABorrar.getPuntuacion();
 
-                // Calculamos nuevos valores
-                long nuevoTotalValoraciones = totalActualValoraciones - 1;
-                double nuevaMedia = (nuevoTotalValoraciones <= 0) ? 0 : ((mediaActual * totalActualValoraciones) - notaBorrada) / nuevoTotalValoraciones;
+                                                // Calculamos nuevos valores
+                                                long nuevoTotalValoraciones =
+                                                        totalActualValoraciones - 1;
+                                                double nuevaMedia =
+                                                        (nuevoTotalValoraciones <= 0)
+                                                                ? 0
+                                                                : ((mediaActual
+                                                                                        * totalActualValoraciones)
+                                                                                - notaBorrada)
+                                                                        / nuevoTotalValoraciones;
 
-                local.setTotalValoraciones(nuevoTotalValoraciones);
-                local.setPuntuacionMedia(nuevaMedia);
+                                                local.setTotalValoraciones(nuevoTotalValoraciones);
+                                                local.setPuntuacionMedia(nuevaMedia);
 
-                // Borramos la reseña y actualizamos el local
-                return valoracionLocalRepository.deleteValoracion(customId)
-                        .continueWithTask(unused -> usuarioRepository.saveUsuario(local));
-            });
-
-        });
+                                                // Borramos la reseña y actualizamos el local
+                                                return valoracionLocalRepository
+                                                        .deleteValoracion(customId)
+                                                        .continueWithTask(
+                                                                unused ->
+                                                                        usuarioRepository
+                                                                                .saveUsuario(
+                                                                                        local));
+                                            });
+                        });
     }
 
     /*
@@ -160,8 +212,8 @@ public class ValoracionLocalService implements IValoracionLocalService {
      * ================================================================
      */
 
-    private String getCustomId(String uidCliente, String uidLocal){
-        return  uidCliente + "_" + uidLocal;
+    private String getCustomId(String uidCliente, String uidLocal) {
+        return uidCliente + "_" + uidLocal;
     }
 
     /**
@@ -177,5 +229,4 @@ public class ValoracionLocalService implements IValoracionLocalService {
 
         return 0;
     }
-
 }

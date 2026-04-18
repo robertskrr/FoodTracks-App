@@ -38,5 +38,4 @@ public interface IValoracionLocalRepository {
      * @return {@link Task} que representa el estado de la eliminación.
      */
     public Task<Void> deleteValoracion(String uid);
-
 }

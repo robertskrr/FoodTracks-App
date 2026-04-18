@@ -1,6 +1,4 @@
-/**
- * © FoodTracks Project ===robertskrr===
- */
+/** © FoodTracks Project ===robertskrr=== */
 
 package com.foodtracks.app.services;
 

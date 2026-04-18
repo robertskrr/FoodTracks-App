@@ -1,17 +1,10 @@
-/**
- * © FoodTracks Project ===robertskrr===
- */
+/** © FoodTracks Project ===robertskrr=== */
 
 package com.foodtracks.app.services.interfaces;
 
-import android.net.Uri;
-
-import com.foodtracks.app.models.Publicacion;
-import com.foodtracks.app.models.Usuario;
 import com.foodtracks.app.models.ValoracionLocal;
-import com.google.android.gms.tasks.Task;
 
-import java.util.List;
+import com.google.android.gms.tasks.Task;
 
 /**
  * Lógica de negocio para la gestión de valoraciones de locales.

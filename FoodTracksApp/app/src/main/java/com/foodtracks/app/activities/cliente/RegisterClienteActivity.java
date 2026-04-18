@@ -1,6 +1,4 @@
-/**
- * © FoodTracks Project ===robertskrr===
- */
+/** © FoodTracks Project ===robertskrr=== */
 
 package com.foodtracks.app.activities.cliente;
 
@@ -11,7 +9,6 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
@@ -157,7 +154,10 @@ public class RegisterClienteActivity extends AppCompatActivity {
                                         .delete() // Rollback: Elimina al usuario creado en Auth
                                         .addOnCompleteListener(
                                                 task -> {
-                                                    if (e instanceof FoodTracksValidationException ex) {
+                                                    if (e
+                                                            instanceof
+                                                            FoodTracksValidationException
+                                                            ex) {
                                                         Toast.makeText(
                                                                         this,
                                                                         ex.getErrorResId(),
@@ -167,8 +167,8 @@ public class RegisterClienteActivity extends AppCompatActivity {
                                                         Toast.makeText(
                                                                         this,
                                                                         getString(
-                                                                                R.string
-                                                                                        .register_critic_error_message)
+                                                                                        R.string
+                                                                                                .register_critic_error_message)
                                                                                 + ": "
                                                                                 + e.getMessage(),
                                                                         Toast.LENGTH_SHORT)
