@@ -1,4 +1,6 @@
-/** © FoodTracks Project ===robertskrr=== */
+/**
+ * © FoodTracks Project ===robertskrr===
+ */
 
 package com.foodtracks.app.services;
 
@@ -8,11 +10,14 @@ import com.foodtracks.app.repositories.ImageKitRepository;
 import com.foodtracks.app.repositories.PublicacionRepository;
 import com.foodtracks.app.repositories.RegistroBorradoRepository;
 import com.foodtracks.app.repositories.UsuarioRepository;
+import com.foodtracks.app.repositories.ValoracionLocalRepository;
 import com.foodtracks.app.repositories.interfaces.IPublicacionRepository;
 import com.foodtracks.app.repositories.interfaces.IRegistroBorradoRepository;
 import com.foodtracks.app.repositories.interfaces.IUsuarioRepository;
+import com.foodtracks.app.repositories.interfaces.IValoracionLocalRepository;
 import com.foodtracks.app.services.interfaces.IPublicacionService;
 import com.foodtracks.app.services.interfaces.IUsuarioService;
+import com.foodtracks.app.services.interfaces.IValoracionLocalService;
 
 /**
  * Fábrica centralizada para la creación e inyección de servicios.
@@ -53,5 +58,17 @@ public class ServiceFactory {
         IRegistroBorradoRepository repoLog = new RegistroBorradoRepository();
         ImageKitRepository storageRepo = new ImageKitRepository(context);
         return new PublicacionService(repo, repoUser, repoLog, storageRepo);
+    }
+
+    /**
+     * Proporciona una instancia configurada de ValoracionLocalService.
+     * Vincula el servicio con sus repositorios de base de datos.
+     *
+     * @return Implementación de {@link IValoracionLocalService}.
+     */
+    public static IValoracionLocalService provideValoracionLocalService() {
+        IValoracionLocalRepository repo = new ValoracionLocalRepository();
+        IUsuarioRepository repoUsers = new UsuarioRepository();
+        return new ValoracionLocalService(repo, repoUsers);
     }
 }

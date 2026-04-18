@@ -7,6 +7,7 @@ import com.foodtracks.app.repositories.interfaces.IValoracionLocalRepository;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
@@ -28,13 +29,18 @@ public class ValoracionLocalRepository implements IValoracionLocalRepository {
 
     @Override
     public Task<Void> saveValoracion(ValoracionLocal valoracionLocal) {
-        // UID personalizado para las valoraciones
-        String customId = valoracionLocal.getUidCliente() + "_" + valoracionLocal.getUidLocal();
-        return ratingsCollection.document(customId).set(valoracionLocal);
+        return ratingsCollection.document(valoracionLocal.getUid()).set(valoracionLocal);
+    }
+
+    @Override
+    public Task<DocumentSnapshot> getValoracion(String uid) {
+        return ratingsCollection.document(uid).get();
     }
 
     @Override
     public Task<Void> deleteValoracion(String uid) {
         return ratingsCollection.document(uid).delete();
     }
+
+    // TODO --> Borrar todas las valoraciones de un usuario si se elimina su cuenta
 }
