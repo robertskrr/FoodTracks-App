@@ -55,4 +55,12 @@ public interface IUsuarioRepository {
      * @return Task con la lista de posibles coincidencias.
      */
     Task<QuerySnapshot> searchUsuariosByUsername(String query);
+
+    /**
+     * Incrementa atómicamente el contador de visitas del perfil de un local.
+     *
+     * @param uidLocal Identificador del local visitado.
+     * @return {@link Task} que representa el éxito o fallo de la operación.
+     */
+    Task<Void> incrementarVisitasPerfil(String uidLocal);
 }

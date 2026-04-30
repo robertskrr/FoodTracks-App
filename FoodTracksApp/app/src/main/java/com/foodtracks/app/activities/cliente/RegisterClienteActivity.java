@@ -111,7 +111,7 @@ public class RegisterClienteActivity extends AppCompatActivity {
     }
 
     /**
-     * Abre la galería para seleccionar la foto de perfiñ
+     * Abre la galería para seleccionar la foto de perfil
      * @param view Vista de la interfaz.
      */
     public void setGalleryLauncher(View view) {

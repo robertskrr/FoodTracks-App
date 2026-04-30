@@ -280,6 +280,16 @@ public class UsuarioService implements IUsuarioService {
                         });
     }
 
+    @Override
+    public Task<Void> registrarVisitaPerfil(String uidVisitante, String uidLocal) {
+        if (uidVisitante != null && uidVisitante.equals(uidLocal)) {
+            return Tasks.forResult(
+                    null); // No hace nada si es el mismo local el que visita su perfil
+        }
+
+        return usuarioRepository.incrementarVisitasPerfil(uidLocal);
+    }
+
     /*
      * ================================================================
      * ==================== Private helpers ===========================
