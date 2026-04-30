@@ -126,7 +126,7 @@ public class UsuarioService implements IUsuarioService {
     }
 
     @Override
-    public Task<Void> eliminarCuenta(String uidUsuario, String motivo, String uidAdmin) {
+    public Task<Void> eliminarCuentaByAdmin(String uidUsuario, String motivo, String uidAdmin) {
         return usuarioRepository
                 .getUsuarioById(uidUsuario)
                 .continueWithTask(
@@ -278,6 +278,16 @@ public class UsuarioService implements IUsuarioService {
                                 return new java.util.ArrayList<>();
                             }
                         });
+    }
+
+    @Override
+    public Task<Void> registrarVisitaPerfil(String uidVisitante, String uidLocal) {
+        if (uidVisitante != null && uidVisitante.equals(uidLocal)) {
+            return Tasks.forResult(
+                    null); // No hace nada si es el mismo local el que visita su perfil
+        }
+
+        return usuarioRepository.incrementarVisitasPerfil(uidLocal);
     }
 
     /*

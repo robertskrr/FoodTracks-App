@@ -8,6 +8,7 @@ import com.foodtracks.app.repositories.interfaces.IUsuarioRepository;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -56,5 +57,10 @@ public class UsuarioRepository implements IUsuarioRepository {
                 .endAt(query + "\uf8ff")
                 .limit(10)
                 .get();
+    }
+
+    @Override
+    public Task<Void> incrementarVisitasPerfil(String uidLocal) {
+        return usersCollection.document(uidLocal).update("visitas_perfil", FieldValue.increment(1));
     }
 }

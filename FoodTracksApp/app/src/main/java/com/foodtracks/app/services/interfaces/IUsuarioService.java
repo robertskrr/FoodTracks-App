@@ -53,7 +53,7 @@ public interface IUsuarioService {
      * @param uidAdmin ID del administrador que ejecuta la acción.
      * @return {@link Task} con el resultado final del proceso.
      */
-    Task<Void> eliminarCuenta(String uid, String motivo, String uidAdmin);
+    Task<Void> eliminarCuentaByAdmin(String uid, String motivo, String uidAdmin);
 
     /**
      * Verifica si un nombre de usuario está disponible para su uso.
@@ -79,4 +79,14 @@ public interface IUsuarioService {
      * @return {@link Task} que contiene una lista de {@link Usuario} que coinciden con la búsqueda.
      */
     Task<List<Usuario>> buscarUsuarios(String query);
+
+    /**
+     * Registra una visita en el perfil de un usuario local.
+     * La lógica ignora la visita si el usuario que visita es el propio dueño del local.
+     *
+     * @param uidVisitante Identificador del usuario que está viendo el perfil (puede ser null si es invitado).
+     * @param uidLocal Identificador del usuario local que recibe la visita.
+     * @return {@link Task} que representa el estado de la operación.
+     */
+    Task<Void> registrarVisitaPerfil(String uidVisitante, String uidLocal);
 }
