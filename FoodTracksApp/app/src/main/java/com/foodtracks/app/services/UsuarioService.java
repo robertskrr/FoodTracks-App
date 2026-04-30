@@ -126,7 +126,7 @@ public class UsuarioService implements IUsuarioService {
     }
 
     @Override
-    public Task<Void> eliminarCuenta(String uidUsuario, String motivo, String uidAdmin) {
+    public Task<Void> eliminarCuentaByAdmin(String uidUsuario, String motivo, String uidAdmin) {
         return usuarioRepository
                 .getUsuarioById(uidUsuario)
                 .continueWithTask(

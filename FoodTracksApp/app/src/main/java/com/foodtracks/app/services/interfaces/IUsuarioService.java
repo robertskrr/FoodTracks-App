@@ -53,7 +53,7 @@ public interface IUsuarioService {
      * @param uidAdmin ID del administrador que ejecuta la acción.
      * @return {@link Task} con el resultado final del proceso.
      */
-    Task<Void> eliminarCuenta(String uid, String motivo, String uidAdmin);
+    Task<Void> eliminarCuentaByAdmin(String uid, String motivo, String uidAdmin);
 
     /**
      * Verifica si un nombre de usuario está disponible para su uso.
