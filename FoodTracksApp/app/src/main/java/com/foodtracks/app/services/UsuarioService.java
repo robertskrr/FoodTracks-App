@@ -147,7 +147,8 @@ public class UsuarioService implements IUsuarioService {
                                 storageRepository.deleteImage(usuarioABorrar.getFotoId());
                             }
 
-                            // TODO --> Borrar sus publicaciones + fotos de publicaciones + todo en lo que ha interactuado (valoraciones, likes, etc)
+                            // TODO --> Borrar sus publicaciones + fotos de publicaciones + todo en
+                            // lo que ha interactuado (valoraciones, likes, etc)
 
                             // Creamos el registro de borrado
                             RegistroBorradoUsuario registro =
@@ -169,7 +170,7 @@ public class UsuarioService implements IUsuarioService {
     }
 
     @Override
-    public Task<Void> eliminarCuenta(String uid){
+    public Task<Void> eliminarCuenta(String uid) {
         return usuarioRepository
                 .getUsuarioById(uid)
                 .continueWithTask(
@@ -190,8 +191,10 @@ public class UsuarioService implements IUsuarioService {
                                 storageRepository.deleteImage(usuarioABorrar.getFotoId());
                             }
 
-                            // TODO --> Borrar sus publicaciones + fotos de publicaciones + todo en lo que ha interactuado (valoraciones, likes, etc)
-                            // TODO --> Chequear si en activity podemos eliminar su Auth después de este proceso exitoso
+                            // TODO --> Borrar sus publicaciones + fotos de publicaciones + todo en
+                            // lo que ha interactuado (valoraciones, likes, etc)
+                            // TODO --> Chequear si en activity podemos eliminar su Auth después de
+                            // este proceso exitoso
                             // Procedemos al borrado real
                             return usuarioRepository.deleteUsuario(uid);
                         });
