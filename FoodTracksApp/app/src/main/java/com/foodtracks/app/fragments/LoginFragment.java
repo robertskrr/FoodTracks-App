@@ -11,7 +11,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 import com.foodtracks.app.R;
@@ -19,10 +18,6 @@ import com.foodtracks.app.activities.admin.AdminActivity;
 import com.foodtracks.app.activities.cliente.HomeActivity;
 import com.foodtracks.app.activities.local.DashBoardLocalActivity;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -61,36 +56,30 @@ public class LoginFragment extends DialogFragment {
         asignarComponentes(v);
 
         irARegistro.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // Cerramos fragment
-                        dismiss();
+                v1 -> {
+                    // Cerramos fragment
+                    dismiss();
 
-                        // Abrimos fragmento de registro
-                        TipoRegistroFragment registroFragment = new TipoRegistroFragment();
-                        registroFragment.show(getParentFragmentManager(), "Fragment registro");
-                    }
+                    // Abrimos fragmento de registro
+                    TipoRegistroFragment registroFragment = new TipoRegistroFragment();
+                    registroFragment.show(getParentFragmentManager(), "Fragment registro");
                 });
 
         btnLogin.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String emailLogin = email.getText().toString().trim();
-                        String passwordLogin = password.getText().toString().trim();
+                v2 -> {
+                    String emailLogin = email.getText().toString().trim();
+                    String passwordLogin = password.getText().toString().trim();
 
-                        if (emailLogin.isEmpty() || passwordLogin.isEmpty()) {
-                            Toast.makeText(
-                                            getContext(),
-                                            "Complete todos los campos",
-                                            Toast.LENGTH_SHORT)
-                                    .show();
-                            return;
-                        }
-
-                        loginUser(emailLogin, passwordLogin);
+                    if (emailLogin.isEmpty() || passwordLogin.isEmpty()) {
+                        Toast.makeText(
+                                        getContext(),
+                                        "Complete todos los campos",
+                                        Toast.LENGTH_SHORT)
+                                .show();
+                        return;
                     }
+
+                    loginUser(emailLogin, passwordLogin);
                 });
 
         return v;
@@ -99,63 +88,56 @@ public class LoginFragment extends DialogFragment {
     private void loginUser(String emailLogin, String passwordLogin) {
         mAuth.signInWithEmailAndPassword(emailLogin, passwordLogin)
                 .addOnCompleteListener(
-                        new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    String uid = mAuth.getCurrentUser().getUid();
+                        task -> {
+                            if (task.isSuccessful()) {
+                                String uid = mAuth.getCurrentUser().getUid();
 
-                                    // Consultamos el tipo de usuario en la colección
-                                    mFirestore
-                                            .collection("usuarios")
-                                            .document(uid)
-                                            .get()
-                                            .addOnSuccessListener(
-                                                    document -> {
-                                                        String rol = document.getString("rol");
-                                                        Intent intent;
+                                // Consultamos el tipo de usuario en la colección
+                                mFirestore
+                                        .collection("usuarios")
+                                        .document(uid)
+                                        .get()
+                                        .addOnSuccessListener(
+                                                document -> {
+                                                    String rol = document.getString("rol");
+                                                    Intent intent;
 
-                                                        if (rol.equals("admin")) {
-                                                            intent =
-                                                                    new Intent(
-                                                                            getContext(),
-                                                                            AdminActivity.class);
-                                                        } else if (rol.equals("local")) {
-                                                            intent =
-                                                                    new Intent(
-                                                                            getContext(),
-                                                                            DashBoardLocalActivity
-                                                                                    .class);
-                                                        } else {
-                                                            intent =
-                                                                    new Intent(
-                                                                            getContext(),
-                                                                            HomeActivity.class);
-                                                        }
+                                                    if (rol.equals("admin")) {
+                                                        intent =
+                                                                new Intent(
+                                                                        getContext(),
+                                                                        AdminActivity.class);
+                                                    } else if (rol.equals("local")) {
+                                                        intent =
+                                                                new Intent(
+                                                                        getContext(),
+                                                                        DashBoardLocalActivity
+                                                                                .class);
+                                                    } else {
+                                                        intent =
+                                                                new Intent(
+                                                                        getContext(),
+                                                                        HomeActivity.class);
+                                                    }
 
-                                                        // Limpiamos historial de activities para
-                                                        // que no pueda volver atrás
-                                                        intent.setFlags(
-                                                                Intent.FLAG_ACTIVITY_NEW_TASK
-                                                                        | Intent
-                                                                                .FLAG_ACTIVITY_CLEAR_TASK);
-                                                        dismiss();
-                                                        startActivity(intent);
-                                                    });
-                                }
+                                                    // Limpiamos historial de activities para
+                                                    // que no pueda volver atrás
+                                                    intent.setFlags(
+                                                            Intent.FLAG_ACTIVITY_NEW_TASK
+                                                                    | Intent
+                                                                            .FLAG_ACTIVITY_CLEAR_TASK);
+                                                    dismiss();
+                                                    startActivity(intent);
+                                                });
                             }
                         })
                 .addOnFailureListener(
-                        new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
+                        e ->
                                 Toast.makeText(
                                                 getContext(),
                                                 "Error al iniciar sesión",
                                                 Toast.LENGTH_SHORT)
-                                        .show();
-                            }
-                        });
+                                        .show());
     }
 
     @Override

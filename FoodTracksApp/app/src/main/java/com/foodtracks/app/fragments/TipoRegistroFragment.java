@@ -33,20 +33,10 @@ public class TipoRegistroFragment extends DialogFragment {
         btnLocal = v.findViewById(R.id.btnRegistroLocal);
 
         btnCliente.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        startActivity(new Intent(getContext(), RegisterClienteActivity.class));
-                    }
-                });
+                v1 -> startActivity(new Intent(getContext(), RegisterClienteActivity.class)));
 
         btnLocal.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        startActivity(new Intent(getContext(), RegisterLocalActivity.class));
-                    }
-                });
+                v2 -> startActivity(new Intent(getContext(), RegisterLocalActivity.class)));
         return v;
     }
 
