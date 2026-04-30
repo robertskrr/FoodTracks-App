@@ -147,6 +147,9 @@ public class UsuarioService implements IUsuarioService {
                                 storageRepository.deleteImage(usuarioABorrar.getFotoId());
                             }
 
+                            // TODO --> Borrar sus publicaciones + fotos de publicaciones + todo en
+                            // lo que ha interactuado (valoraciones, likes, etc)
+
                             // Creamos el registro de borrado
                             RegistroBorradoUsuario registro =
                                     RegistroBorradoUsuario.builder()
@@ -166,7 +169,36 @@ public class UsuarioService implements IUsuarioService {
                         });
     }
 
-    // TODO --> Chequear eliminación de cuenta por parte del mismo usuario
+    @Override
+    public Task<Void> eliminarCuenta(String uid) {
+        return usuarioRepository
+                .getUsuarioById(uid)
+                .continueWithTask(
+                        task -> {
+                            DocumentSnapshot doc = task.getResult();
+
+                            if (!doc.exists()) {
+                                return Tasks.forException(
+                                        new FoodTracksNotFoundException(
+                                                R.string.usuario_not_found_error_message));
+                            }
+
+                            Usuario usuarioABorrar = doc.toObject(Usuario.class);
+                            assert usuarioABorrar != null;
+
+                            // Borra la foto de ImageKit
+                            if (usuarioABorrar.getFotoId() != null) {
+                                storageRepository.deleteImage(usuarioABorrar.getFotoId());
+                            }
+
+                            // TODO --> Borrar sus publicaciones + fotos de publicaciones + todo en
+                            // lo que ha interactuado (valoraciones, likes, etc)
+                            // TODO --> Chequear si en activity podemos eliminar su Auth después de
+                            // este proceso exitoso
+                            // Procedemos al borrado real
+                            return usuarioRepository.deleteUsuario(uid);
+                        });
+    }
 
     @Override
     public Task<Boolean> esUsernameUnico(String username) {

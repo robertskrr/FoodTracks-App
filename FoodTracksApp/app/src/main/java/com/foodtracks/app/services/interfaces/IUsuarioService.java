@@ -56,6 +56,14 @@ public interface IUsuarioService {
     Task<Void> eliminarCuentaByAdmin(String uid, String motivo, String uidAdmin);
 
     /**
+     * Gestiona la eliminación de una cuenta por parte del usuario dueño.
+     *
+     * @param uid ID del usuario a eliminar.
+     * @return {@link Task} con el resultado final del proceso.
+     */
+    Task<Void> eliminarCuenta(String uid);
+
+    /**
      * Verifica si un nombre de usuario está disponible para su uso.
      *
      * @param username Nombre de usuario a comprobar.
