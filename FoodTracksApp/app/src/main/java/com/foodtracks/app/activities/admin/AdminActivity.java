@@ -22,7 +22,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
  */
 public class AdminActivity extends AppCompatActivity {
 
-    private FirebaseFirestore mFirestore;
     private FirebaseAuth mAuth;
 
     @Override
@@ -36,7 +35,6 @@ public class AdminActivity extends AppCompatActivity {
 
     /** Asigna los componentes a la interfaz */
     private void asignarComponentes() {
-        mFirestore = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
     }
 
