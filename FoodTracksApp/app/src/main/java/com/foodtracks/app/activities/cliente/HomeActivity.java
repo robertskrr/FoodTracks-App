@@ -22,7 +22,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
  */
 public class HomeActivity extends AppCompatActivity {
 
-    private FirebaseFirestore mFirestore;
     private FirebaseAuth mAuth;
 
     private Button btnLogOut;
@@ -40,7 +39,6 @@ public class HomeActivity extends AppCompatActivity {
 
     /** Asigna los componentes de la interfaz */
     private void asignarComponentes() {
-        mFirestore = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
         btnLogOut = findViewById(R.id.btnLogOutCliente);
         btnPerfil = findViewById(R.id.btnPerfilCliente);
