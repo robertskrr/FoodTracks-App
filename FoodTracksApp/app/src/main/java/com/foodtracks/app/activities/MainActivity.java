@@ -23,21 +23,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
  * @since 20/01
  */
 public class MainActivity extends AppCompatActivity {
-    private FirebaseFirestore mFirestore;
-    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        asignarComponentes();
-    }
-
-    /** Asigna los componentes de la interfaz */
-    private void asignarComponentes() {
-        mFirestore = FirebaseFirestore.getInstance();
-        mAuth = FirebaseAuth.getInstance();
     }
 
     /**
@@ -67,46 +57,5 @@ public class MainActivity extends AppCompatActivity {
      */
     public void invitado(View view) {
         startActivity(new Intent(getApplicationContext(), HomeActivity.class));
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) {
-            // Dependiendo del tipo de usuario abre una activity u otra
-            String uid = mAuth.getCurrentUser().getUid();
-            // Consultamos el tipo de usuario en la colección
-            mFirestore
-                    .collection("usuarios")
-                    .document(uid)
-                    .get()
-                    .addOnSuccessListener(
-                            document -> {
-                                String rol = document.getString("rol");
-                                Intent intent;
-
-                                if (rol.equals("admin")) {
-                                    intent =
-                                            new Intent(
-                                                    getApplicationContext(), AdminActivity.class);
-                                } else if (rol.equals("local")) {
-                                    intent =
-                                            new Intent(
-                                                    getApplicationContext(),
-                                                    DashBoardLocalActivity.class);
-                                } else {
-                                    intent =
-                                            new Intent(getApplicationContext(), HomeActivity.class);
-                                }
-
-                                // Limpiamos historial de activities para que no pueda volver atrás
-                                intent.setFlags(
-                                        Intent.FLAG_ACTIVITY_NEW_TASK
-                                                | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                startActivity(intent);
-                                finish();
-                            });
-        }
     }
 }

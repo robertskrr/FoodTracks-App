@@ -11,6 +11,8 @@ import com.foodtracks.app.R;
 import com.foodtracks.app.api.imagekit.ImageKitResponse;
 import com.foodtracks.app.models.RegistroBorradoUsuario;
 import com.foodtracks.app.models.Usuario;
+import com.foodtracks.app.models.UsuarioAdmin;
+import com.foodtracks.app.models.UsuarioCliente;
 import com.foodtracks.app.models.UsuarioLocal;
 import com.foodtracks.app.repositories.interfaces.IRegistroBorradoRepository;
 import com.foodtracks.app.repositories.interfaces.IStorageRepository;
@@ -55,7 +57,20 @@ public class UsuarioService implements IUsuarioService {
                             // Si el usuario existe lo devuelve, en caso contrario devuelve la
                             // excepción NOT FOUND
                             if (task.isSuccessful() && doc != null && doc.exists()) {
-                                return Tasks.forResult(doc.toObject(Usuario.class));
+                                String rol = doc.getString("rol");
+                                Usuario usuario;
+
+                                // Transformamos al tipo de usuario correspondiente
+                                assert rol != null;
+                                if (rol.equals("local")) {
+                                    usuario = doc.toObject(UsuarioLocal.class);
+                                } else if (rol.equals("admin")) {
+                                    usuario = doc.toObject(UsuarioAdmin.class);
+                                } else {
+                                    usuario = doc.toObject(UsuarioCliente.class);
+                                }
+
+                                return Tasks.forResult(usuario);
                             } else {
                                 return Tasks.forException(
                                         new FoodTracksNotFoundException(
