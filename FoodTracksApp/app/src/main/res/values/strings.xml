@@ -23,6 +23,7 @@
     <string name="valoracion_not_found_error_message">La valoración no existe.</string>
     <string name="like_not_found_error_message">El "Me gusta" no existe.</string>
     <string name="like_duplicated_error_message">El "Me gusta" no existe.</string>
+    <string name="address_not_found_error_message">No hemos podido localizar la dirección. Por favor, comprueba que está bien escrita.</string>
 
 
 
