@@ -49,4 +49,10 @@ public class UsuarioLocal extends Usuario {
     @Setter(onMethod_ = {@PropertyName("total_valoraciones")})
     @Builder.Default
     private long totalValoraciones = 0;
+
+    @PropertyName("latitud")
+    private double latitud;
+
+    @PropertyName("longitud")
+    private double longitud;
 }
