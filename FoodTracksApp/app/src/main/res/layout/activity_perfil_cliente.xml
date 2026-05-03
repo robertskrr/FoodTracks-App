@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/fondo"
+    android:background="@color/primary"
     android:padding="25dp">
 
     <LinearLayout
@@ -24,10 +24,10 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:scaleType="centerCrop"
+                android:src="@drawable/avatar_default"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
-                android:src="@drawable/avatar_default" />
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent" />
 
             <!-- Nombre -->
             <TextView
@@ -102,10 +102,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:text="@string/preferencias_alimenticias"
             android:textColor="#CCCCCC"
-            android:textSize="14sp"
-            android:layout_marginBottom="10dp"/>
+            android:textSize="14sp" />
 
         <!-- PREFERENCIAS -->
         <com.google.android.material.chip.ChipGroup
