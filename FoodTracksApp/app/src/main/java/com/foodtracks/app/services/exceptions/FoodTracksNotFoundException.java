@@ -12,9 +12,9 @@ import lombok.Getter;
  */
 @Getter
 public class FoodTracksNotFoundException extends Exception {
-    private final int resId;
+    private final int errorResId;
 
     public FoodTracksNotFoundException(int resId) {
-        this.resId = resId;
+        this.errorResId = resId;
     }
 }

@@ -64,4 +64,6 @@
     <string name="no_tienes_cuenta_registrate">¿No tienes cuenta? Regístrate aquí</string>
     <string name="comes_o_cocinas">¿COMES O COCINAS?</string>
     <string name="miembro_desde">Miembro desde</string>
+    <string name="sin_preferencias">Sin preferencias específicas</string>
+
 </resources>

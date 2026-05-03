@@ -9,7 +9,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="50dp"
         android:orientation="vertical">
 
         <!-- CABECERA  -->
@@ -84,7 +84,7 @@
 
         <!-- INFORMACIÓN ADICIONAL -->
         <TextView
-            android:id="@+id/tvFechaRegistro"
+            android:id="@+id/tvMiembroDesde"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/miembro_desde"

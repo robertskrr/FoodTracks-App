@@ -1,17 +1,28 @@
-/** © FoodTracks Project ===robertskrr=== */
+/**
+ * © FoodTracks Project ===robertskrr===
+ */
 
 package com.foodtracks.app.activities.cliente;
 
 import android.os.Bundle;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.activity.EdgeToEdge;
+
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.foodtracks.app.R;
 
+import com.foodtracks.app.models.Usuario;
+import com.foodtracks.app.services.ServiceFactory;
+import com.foodtracks.app.services.exceptions.FoodTracksNotFoundException;
+import com.foodtracks.app.services.exceptions.FoodTracksValidationException;
+import com.foodtracks.app.services.interfaces.IUsuarioService;
+import com.foodtracks.app.utils.DateUtils;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
  * @author Robert
@@ -19,83 +30,135 @@ import com.google.firebase.firestore.FirebaseFirestore;
  */
 public class PerfilClienteActivity extends AppCompatActivity {
 
-    private TextView tvNombre, tvUsername, tvEmail, tvPreferencias;
+    private TextView tvNombre, tvUsername, tvCiudad, tvFechaRegistro;
+    private ShapeableImageView imgPerfil;
+    private ChipGroup chipGroupPreferencias;
     private String uidCliente;
-    private FirebaseFirestore mFirestore;
     private FirebaseAuth mAuth;
+    private IUsuarioService usuarioService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_perfil_cliente);
 
-        asignarComponentes();
+        // TODO: Pantalla de carga para mostrar los datos
+        inicializar();
         mostrarDatosCliente();
     }
 
-    /** Asigna los componentes a la interfaz */
-    private void asignarComponentes() {
-        // Firebase
-        mFirestore = FirebaseFirestore.getInstance();
+    /**
+     * Asigna los componentes a la interfaz
+     */
+    private void inicializar() {
         mAuth = FirebaseAuth.getInstance();
+        assert mAuth.getCurrentUser() != null;
         uidCliente = mAuth.getCurrentUser().getUid();
+        usuarioService = ServiceFactory.provideUsuarioService(this);
 
         // TextView
         tvNombre = findViewById(R.id.tvNombreCliente);
         tvUsername = findViewById(R.id.tvUsernameCliente);
-        tvEmail = findViewById(R.id.tvEmailCliente);
-        tvPreferencias = findViewById(R.id.tvPrefCliente);
+        tvCiudad = findViewById(R.id.tvCiudadCliente);
+        tvFechaRegistro = findViewById(R.id.tvFechaRegistroCliente);
+
+        // Foto perfil
+        imgPerfil = findViewById(R.id.imgPerfilCliente);
+
+        // Preferencias
+        chipGroupPreferencias = findViewById(R.id.chipGroupPreferencias);
     }
 
-    /** Muestra los datos del cliente */
+    /**
+     * Muestra los datos del cliente
+     */
     private void mostrarDatosCliente() {
-        mFirestore
-                .collection("usuarios")
-                .document(uidCliente)
-                .get()
-                .addOnSuccessListener(
-                        document -> {
-                            if (document.exists()) {
-                                // Datos básicos
-                                tvNombre.setText(document.getString("nombre"));
-                                tvUsername.setText(document.getString("username"));
-                                tvEmail.setText(document.getString("email"));
+        // TODO: Obtener el perfil desde username seria lo ideal para otros usuarios
+        usuarioService.getPerfil(uidCliente).addOnSuccessListener(usuario -> {
+            tvNombre.setText(usuario.getNombre());
+            tvUsername.setText("@" + usuario.getUsername());
+            tvCiudad.setText(usuario.getCiudad());
+            tvFechaRegistro.setText(DateUtils.getFechaFormateada(usuario.getFechaRegistro()));
 
-                                // Preferencias
-                                StringBuilder sb = new StringBuilder();
+            if (usuario.getFotoPerfil() != null) {
+                Glide.with(this).load(usuario.getFotoPerfil()).into(imgPerfil);
+            }
 
-                                if (Boolean.TRUE.equals(document.getBoolean("es_vegano")))
-                                    sb.append("\uD83C\uDF31 Vegano  \n");
-                                if (Boolean.TRUE.equals(document.getBoolean("es_vegetariano")))
-                                    sb.append("\uD83C\uDF3F Vegetariano  \n");
-                                if (Boolean.TRUE.equals(document.getBoolean("sin_lactosa")))
-                                    sb.append("\uD83E\uDD5B Sin Lactosa  \n");
-                                if (Boolean.TRUE.equals(document.getBoolean("es_celiaco")))
-                                    sb.append("\uD83C\uDF3E Celíaco  \n");
+            cargarChipsPreferencias(usuario);
 
-                                // Manejo de "otraPreferencia"
-                                Object otra = document.get("otra_preferencia");
-                                if (otra instanceof String) {
-                                    sb.append("\uD83D\uDCDD ").append(otra.toString());
-                                }
+        }).addOnFailureListener(e -> {
+            if (e
+                    instanceof
+                    FoodTracksValidationException
+                            ex) {
+                Toast.makeText(
+                                this,
+                                ex.getErrorResId(),
+                                Toast.LENGTH_SHORT)
+                        .show();
+            } else if (e
+                    instanceof
+                    FoodTracksNotFoundException
+                            ex) {
+                Toast.makeText(
+                                this,
+                                ex.getErrorResId(),
+                                Toast.LENGTH_SHORT)
+                        .show();
+            } else {
+                Toast.makeText(
+                                this, getString(R.string.loading_profile_error_message) + ": " + e.getMessage(),
+                                Toast.LENGTH_SHORT)
+                        .show();
+            }
+        });
+    }
 
-                                String resultado = sb.toString().trim();
+    /**
+     * Inyecta los chips de preferencias basados en los datos del usuario.
+     */
+    private void cargarChipsPreferencias(Usuario usuario) {
+        // Limpiamos los chips anteriores por si la vista se recarga
+        chipGroupPreferencias.removeAllViews(); //[cite: 25]
 
-                                if (resultado.isEmpty()) {
-                                    tvPreferencias.setText("Ninguna");
-                                } else {
-                                    tvPreferencias.setText(resultado);
-                                }
-                            }
-                        })
-                .addOnFailureListener(
-                        e -> {
-                            Toast.makeText(
-                                            this,
-                                            R.string.loading_profile_error_message,
-                                            Toast.LENGTH_SHORT)
-                                    .show();
-                        });
+        if (usuario.isEsVegano()) {
+            addChip("\uD83C\uDF31" + getString(R.string.vegano));
+        }
+        if (usuario.isEsVegetariano()) {
+            addChip("\uD83C\uDF3F" + getString(R.string.vegetariano));
+        }
+        if (usuario.isSinLactosa()) {
+            addChip("\uD83E\uDD5B" + getString(R.string.sin_lactosa));
+        }
+        if (usuario.isEsCeliaco()) {
+            addChip("\uD83C\uDF3E" + getString(R.string.celiaco));
+        }
+
+        if (usuario.getOtraPreferencia() instanceof String otraPreferencia) {
+            addChip("\uD83D\uDCDD" + otraPreferencia);
+        }
+
+        // Si el usuario no tiene ninguna preferencia marcada, mostramos un chip por defecto
+        if (chipGroupPreferencias.getChildCount() == 0) {
+            addChip(getString(R.string.sin_preferencias));
+        }
+    }
+
+    /**
+     * Crea un Chip visual y lo añade al ChipGroup de la interfaz.
+     */
+    private void addChip(String texto) {
+        Chip chip = new Chip(this);
+        chip.setText(texto);
+
+        // Solo lectura
+        chip.setCheckable(false);
+        chip.setClickable(false);
+
+        // TODO: personalizar los colores
+        // chip.setChipBackgroundColorResource(R.color.tertiary);
+        // chip.setTextColor(getResources().getColor(R.color.white));
+
+        chipGroupPreferencias.addView(chip);
     }
 }
