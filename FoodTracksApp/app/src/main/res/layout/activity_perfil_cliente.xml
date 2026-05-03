@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/fondo"
@@ -8,77 +9,113 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="20dp"
         android:orientation="vertical">
 
+        <!-- CABECERA  -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp">
+
+            <!-- Foto de perfil -->
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/imgPerfilCliente"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:scaleType="centerCrop"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
+                android:src="@drawable/avatar_default" />
+
+            <!-- Nombre -->
+            <TextView
+                android:id="@+id/tvNombreCliente"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:text="@string/nombre_completo"
+                android:textColor="@color/white"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/imgPerfilCliente"
+                app:layout_constraintTop_toTopOf="@+id/imgPerfilCliente" />
+
+            <!-- Username -->
+            <TextView
+                android:id="@+id/tvUsernameCliente"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="4dp"
+                android:text="@string/nombre_de_usuario"
+                android:textColor="@color/tertiary"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/imgPerfilCliente"
+                app:layout_constraintTop_toBottomOf="@+id/tvNombreCliente" />
+
+            <!-- Ciudad -->
+            <TextView
+                android:id="@+id/tvCiudadCliente"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="8dp"
+                android:drawablePadding="8dp"
+                android:text="@string/ciudad"
+                android:textColor="#CCCCCC"
+                android:textSize="14sp"
+                app:drawableStartCompat="@drawable/ic_location"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/imgPerfilCliente"
+                app:layout_constraintTop_toBottomOf="@+id/tvUsernameCliente" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- SEPARADOR VISUAL -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginBottom="20dp"
+            android:background="#333333" />
+
+        <!-- INFORMACIÓN ADICIONAL -->
         <TextView
+            android:id="@+id/tvFechaRegistro"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/miembro_desde"
+            android:textColor="#CCCCCC"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tvFechaRegistroCliente"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
-            android:text="@string/mi_perfil"
-            android:textColor="@color/tertiary"
-            android:textSize="28sp"
-            android:textStyle="bold" />
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Nombre completo:"
+            android:text="@string/preferencias_alimenticias"
             android:textColor="#CCCCCC"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:layout_marginBottom="10dp"/>
 
-        <TextView
-            android:id="@+id/tvNombreCliente"
+        <!-- PREFERENCIAS -->
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroupPreferencias"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
-            android:textColor="#FFFFFF"
-            android:textSize="18sp" />
+            android:layout_marginBottom="20dp"
+            app:singleSelection="false">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Nombre de usuario:"
-            android:textColor="#CCCCCC"
-            android:textSize="14sp" />
-
-        <TextView
-            android:id="@+id/tvUsernameCliente"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
-            android:textColor="#FFFFFF"
-            android:textSize="18sp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Correo electrónico:"
-            android:textColor="#CCCCCC"
-            android:textSize="14sp" />
-
-        <TextView
-            android:id="@+id/tvEmailCliente"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="15dp"
-            android:textColor="#FFFFFF"
-            android:textSize="18sp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Preferencias Alimenticias:"
-            android:textColor="#CCCCCC"
-            android:textSize="14sp" />
-
-        <TextView
-            android:id="@+id/tvPrefCliente"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textColor="#FFFFFF"
-            android:textSize="18sp"
-            android:textStyle="italic" />
+        </com.google.android.material.chip.ChipGroup>
 
     </LinearLayout>
 </ScrollView>
