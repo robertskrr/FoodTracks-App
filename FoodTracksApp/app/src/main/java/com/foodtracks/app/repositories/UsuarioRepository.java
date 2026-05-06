@@ -55,7 +55,7 @@ public class UsuarioRepository implements IUsuarioRepository {
                 .orderBy("username")
                 .startAt(query)
                 .endAt(query + "\uf8ff")
-                .limit(10)
+                .limit(20)
                 .get();
     }
 

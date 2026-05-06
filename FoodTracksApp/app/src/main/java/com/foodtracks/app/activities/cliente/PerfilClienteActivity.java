@@ -57,6 +57,7 @@ public class PerfilClienteActivity extends AppCompatActivity {
         inicializar();
         mostrarDatosCliente();
         cargarPublicaciones();
+        // TODO: Si hay tiempo, opciones de editar perfil / cerrar sesión si eres el usuario principal
     }
 
     /**
@@ -64,8 +65,8 @@ public class PerfilClienteActivity extends AppCompatActivity {
      */
     private void inicializar() {
         mAuth = FirebaseAuth.getInstance();
-        assert mAuth.getCurrentUser() != null;
-        uidCliente = mAuth.getCurrentUser().getUid();
+        uidCliente = getUidPerfil(mAuth);
+
         usuarioService = ServiceFactory.provideUsuarioService(this);
         publicacionService = ServiceFactory.providePublicacionService(this);
 
@@ -90,6 +91,20 @@ public class PerfilClienteActivity extends AppCompatActivity {
         // Pantalla de carga
         progressBar = findViewById(R.id.progressBarPerfil);
         layoutContenido = findViewById(R.id.layoutContenidoPerfil);
+    }
+
+    private String getUidPerfil(FirebaseAuth mAuth){
+        // Intentamos recuperar el UID si venimos de pulsar en el perfil de otra persona
+        String uidOtroUsuario = getIntent().getStringExtra("UID_USUARIO");
+
+        if (uidOtroUsuario != null && !uidOtroUsuario.isEmpty()) {
+            // Cargamos el perfil del usuario en cuestión
+            return uidOtroUsuario;
+        } else {
+            // Si el Intent viene vacío, significa que el usuario quiere ver su propio perfil
+            assert mAuth.getCurrentUser() != null;
+            return mAuth.getCurrentUser().getUid();
+        }
     }
 
     /**
