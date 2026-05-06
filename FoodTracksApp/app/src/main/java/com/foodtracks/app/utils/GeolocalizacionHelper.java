@@ -1,12 +1,14 @@
-package com.foodtracks.app.utils;
+/** © FoodTracks Project ===robertskrr=== */
 
-import android.content.Context;
-import android.location.Address;
-import android.location.Geocoder;
+package com.foodtracks.app.utils;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+
+import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
 
 /**
  * Clase de ayuda para la geolocalización de los locales
@@ -14,7 +16,6 @@ import java.util.Locale;
  * @author Robert
  * @since 02/05
  */
-
 public class GeolocalizacionHelper {
     /**
      * Convierte una dirección de texto en coordenadas (Latitud y Longitud).
@@ -35,7 +36,7 @@ public class GeolocalizacionHelper {
                 double latitud = direccionEncontrada.getLatitude();
                 double longitud = direccionEncontrada.getLongitude();
 
-                return new double[]{latitud, longitud};
+                return new double[] {latitud, longitud};
             }
         } catch (IOException e) {
             // Error de red o servicio de Google Play no disponible

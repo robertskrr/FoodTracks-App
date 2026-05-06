@@ -14,7 +14,6 @@ import com.foodtracks.app.activities.MainActivity;
 import com.foodtracks.app.activities.cliente.PerfilClienteActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
  * @author Robert

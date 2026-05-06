@@ -1,10 +1,12 @@
-package com.foodtracks.app.utils;
+/** © FoodTracks Project ===robertskrr=== */
 
-import com.google.firebase.Timestamp;
+package com.foodtracks.app.utils;
 
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
+
+import com.google.firebase.Timestamp;
 
 /**
  * Clase de utilidad para la manipulación de fechas.
@@ -15,13 +17,13 @@ import java.util.Locale;
  * @since 03/05
  */
 public class DateUtils {
-    public static String getFechaFormateadaLong(Timestamp fecha){
+    public static String getFechaFormateadaLong(Timestamp fecha) {
         Date fechaObjeto = fecha.toDate();
         DateFormat formatoFecha = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
         return formatoFecha.format(fechaObjeto);
     }
 
-    public static String getFechaFormateadaShort(Timestamp fecha){
+    public static String getFechaFormateadaShort(Timestamp fecha) {
         Date fechaObjeto = fecha.toDate();
         DateFormat formatoFecha = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault());
         return formatoFecha.format(fechaObjeto);

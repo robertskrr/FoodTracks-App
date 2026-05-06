@@ -1,23 +1,17 @@
-/**
- * © FoodTracks Project ===robertskrr===
- */
+/** © FoodTracks Project ===robertskrr=== */
 
 package com.foodtracks.app.activities.cliente;
 
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.foodtracks.app.R;
-
 import com.foodtracks.app.adapters.PublicacionAdapter;
 import com.foodtracks.app.models.Usuario;
 import com.foodtracks.app.services.ServiceFactory;
@@ -26,6 +20,8 @@ import com.foodtracks.app.services.exceptions.FoodTracksValidationException;
 import com.foodtracks.app.services.interfaces.IPublicacionService;
 import com.foodtracks.app.services.interfaces.IUsuarioService;
 import com.foodtracks.app.utils.DateUtils;
+
+import com.bumptech.glide.Glide;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.imageview.ShapeableImageView;
@@ -55,11 +51,12 @@ public class PerfilClienteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_perfil_cliente);
 
-        getWindow().setNavigationBarColor(androidx.core.content.ContextCompat.getColor(this, R.color.primary));
+        configTheme();
         inicializar();
         mostrarDatosCliente();
         cargarPublicaciones();
-        // TODO: Si hay tiempo, opciones de editar perfil / cerrar sesión si eres el usuario principal
+        // TODO: Si hay tiempo, opciones de editar perfil / cerrar sesión si eres el usuario
+        // principal
     }
 
     /**
@@ -95,7 +92,7 @@ public class PerfilClienteActivity extends AppCompatActivity {
         layoutContenido = findViewById(R.id.layoutContenidoPerfil);
     }
 
-    private String getUidPerfil(FirebaseAuth mAuth){
+    private String getUidPerfil(FirebaseAuth mAuth) {
         // Intentamos recuperar el UID si venimos de pulsar en el perfil de otra persona
         String uidOtroUsuario = getIntent().getStringExtra("UID_USUARIO");
 
@@ -113,45 +110,40 @@ public class PerfilClienteActivity extends AppCompatActivity {
      * Muestra los datos del cliente
      */
     private void mostrarDatosCliente() {
-        usuarioService.getPerfil(uidCliente).addOnSuccessListener(usuario -> {
-            tvNombre.setText(usuario.getNombre());
-            tvUsername.setText("@" + usuario.getUsername());
-            tvCiudad.setText(usuario.getCiudad());
-            tvFechaRegistro.setText(DateUtils.getFechaFormateadaLong(usuario.getFechaRegistro()));
+        usuarioService
+                .getPerfil(uidCliente)
+                .addOnSuccessListener(
+                        usuario -> {
+                            tvNombre.setText(usuario.getNombre());
+                            tvUsername.setText("@" + usuario.getUsername());
+                            tvCiudad.setText(usuario.getCiudad());
+                            tvFechaRegistro.setText(
+                                    DateUtils.getFechaFormateadaLong(usuario.getFechaRegistro()));
 
-            if (usuario.getFotoPerfil() != null) {
-                Glide.with(this).load(usuario.getFotoPerfil()).into(imgPerfil);
-            }
+                            if (usuario.getFotoPerfil() != null) {
+                                Glide.with(this).load(usuario.getFotoPerfil()).into(imgPerfil);
+                            }
 
-            cargarChipsPreferencias(usuario);
-            comprobarCargaCompleta();
-        }).addOnFailureListener(e -> {
-            if (e
-                    instanceof
-                    FoodTracksValidationException
-                            ex) {
-                Toast.makeText(
-                                this,
-                                ex.getErrorResId(),
-                                Toast.LENGTH_SHORT)
-                        .show();
-            } else if (e
-                    instanceof
-                    FoodTracksNotFoundException
-                            ex) {
-                Toast.makeText(
-                                this,
-                                ex.getErrorResId(),
-                                Toast.LENGTH_SHORT)
-                        .show();
-            } else {
-                Toast.makeText(
-                                this, getString(R.string.loading_profile_error_message) + ": " + e.getMessage(),
-                                Toast.LENGTH_SHORT)
-                        .show();
-            }
-            comprobarCargaCompleta();
-        });
+                            cargarChipsPreferencias(usuario);
+                            comprobarCargaCompleta();
+                        })
+                .addOnFailureListener(
+                        e -> {
+                            if (e instanceof FoodTracksValidationException ex) {
+                                Toast.makeText(this, ex.getErrorResId(), Toast.LENGTH_SHORT).show();
+                            } else if (e instanceof FoodTracksNotFoundException ex) {
+                                Toast.makeText(this, ex.getErrorResId(), Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(
+                                                this,
+                                                getString(R.string.loading_profile_error_message)
+                                                        + ": "
+                                                        + e.getMessage(),
+                                                Toast.LENGTH_SHORT)
+                                        .show();
+                            }
+                            comprobarCargaCompleta();
+                        });
     }
 
     /**
@@ -196,7 +188,6 @@ public class PerfilClienteActivity extends AppCompatActivity {
         chip.setCheckable(false);
         chip.setClickable(false);
 
-
         chip.setChipBackgroundColorResource(R.color.tertiary);
         chip.setTextColor(getResources().getColor(R.color.white, null));
 
@@ -207,29 +198,33 @@ public class PerfilClienteActivity extends AppCompatActivity {
      * Carga las publicaciones del usuario.
      */
     private void cargarPublicaciones() {
-        publicacionService.getPublicacionesByUsuario(uidCliente)
-                .addOnSuccessListener(publicaciones -> {
+        publicacionService
+                .getPublicacionesByUsuario(uidCliente)
+                .addOnSuccessListener(
+                        publicaciones -> {
+                            if (publicaciones == null || publicaciones.isEmpty()) {
+                                tvSinPublicaciones.setVisibility(android.view.View.VISIBLE);
+                                recyclerPublicaciones.setVisibility(android.view.View.GONE);
+                            } else {
+                                tvSinPublicaciones.setVisibility(android.view.View.GONE);
+                                recyclerPublicaciones.setVisibility(android.view.View.VISIBLE);
 
-                    if (publicaciones == null || publicaciones.isEmpty()) {
-                        tvSinPublicaciones.setVisibility(android.view.View.VISIBLE);
-                        recyclerPublicaciones.setVisibility(android.view.View.GONE);
-                    } else {
-                        tvSinPublicaciones.setVisibility(android.view.View.GONE);
-                        recyclerPublicaciones.setVisibility(android.view.View.VISIBLE);
+                                adapter = new PublicacionAdapter(publicaciones, this);
+                                recyclerPublicaciones.setAdapter(adapter);
+                            }
 
-                        adapter = new PublicacionAdapter(
-                                publicaciones,
-                                this
-                        );
-                        recyclerPublicaciones.setAdapter(adapter);
-                    }
-
-                    comprobarCargaCompleta();
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, R.string.publicaciones_loading_error_message + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    comprobarCargaCompleta();
-                });
+                            comprobarCargaCompleta();
+                        })
+                .addOnFailureListener(
+                        e -> {
+                            Toast.makeText(
+                                            this,
+                                            R.string.publicaciones_loading_error_message
+                                                    + e.getMessage(),
+                                            Toast.LENGTH_SHORT)
+                                    .show();
+                            comprobarCargaCompleta();
+                        });
     }
 
     /**
@@ -243,5 +238,14 @@ public class PerfilClienteActivity extends AppCompatActivity {
             progressBar.setVisibility(android.view.View.GONE);
             layoutContenido.setVisibility(android.view.View.VISIBLE);
         }
+    }
+
+    /**
+     * Configura la barra de navegación y de estado
+     */
+    private void configTheme() {
+        getWindow()
+                .setNavigationBarColor(
+                        androidx.core.content.ContextCompat.getColor(this, R.color.primary));
     }
 }

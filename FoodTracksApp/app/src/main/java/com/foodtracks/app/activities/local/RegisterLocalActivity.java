@@ -20,8 +20,8 @@ import com.foodtracks.app.models.UsuarioLocal;
 import com.foodtracks.app.services.ServiceFactory;
 import com.foodtracks.app.services.exceptions.FoodTracksValidationException;
 import com.foodtracks.app.services.interfaces.IUsuarioService;
-
 import com.foodtracks.app.utils.GeolocalizacionHelper;
+
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
@@ -157,13 +157,16 @@ public class RegisterLocalActivity extends AppCompatActivity {
                                         : false)
                         .build();
 
-        double[] coordenadas = GeolocalizacionHelper.obtenerCoordenadas(this, newUsuario.getDireccion(), newUsuario.getCiudad());
-        if (coordenadas != null){
+        double[] coordenadas =
+                GeolocalizacionHelper.obtenerCoordenadas(
+                        this, newUsuario.getDireccion(), newUsuario.getCiudad());
+        if (coordenadas != null) {
             newUsuario.setLatitud(coordenadas[0]);
             newUsuario.setLongitud(coordenadas[1]);
         } else {
             // Si no encuentra la dirección, detenemos el proceso
-            Toast.makeText(this, R.string.address_not_found_error_message, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.address_not_found_error_message, Toast.LENGTH_LONG)
+                    .show();
 
             if (mAuth.getCurrentUser() != null) {
                 // Rollback: Elimina al usuario creado en Auth

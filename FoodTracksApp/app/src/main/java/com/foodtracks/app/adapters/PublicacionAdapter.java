@@ -1,8 +1,8 @@
-/**
- * © FoodTracks Project ===robertskrr===
- */
+/** © FoodTracks Project ===robertskrr=== */
 
 package com.foodtracks.app.adapters;
+
+import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,20 +11,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.foodtracks.app.R;
 import com.foodtracks.app.activities.cliente.PerfilClienteActivity;
 import com.foodtracks.app.models.Publicacion;
 import com.foodtracks.app.services.ServiceFactory;
 import com.foodtracks.app.services.interfaces.IUsuarioService;
 import com.foodtracks.app.utils.DateUtils;
-import com.google.android.material.imageview.ShapeableImageView;
 
-import java.util.List;
+import com.bumptech.glide.Glide;
+import com.google.android.material.imageview.ShapeableImageView;
 
 /**
  * Adapter para gestionar y renderizar la lista de publicaciones.
@@ -32,7 +30,8 @@ import java.util.List;
  * @author Robert
  * @since 06/05
  */
-public class PublicacionAdapter extends RecyclerView.Adapter<PublicacionAdapter.PublicacionViewHolder> {
+public class PublicacionAdapter
+        extends RecyclerView.Adapter<PublicacionAdapter.PublicacionViewHolder> {
 
     private final List<Publicacion> listaPublicaciones;
     private final Context context;
@@ -72,15 +71,16 @@ public class PublicacionAdapter extends RecyclerView.Adapter<PublicacionAdapter.
         // Cargamos los datos del autor de la publicación
         cargarDatosAutor(holder, publicacion.getUidUsuario());
 
-        View.OnClickListener irAlPerfilListener = v -> {
-            // Intent dirigido a la Activity del perfil
-            Intent intent = new Intent(context, PerfilClienteActivity.class);
+        View.OnClickListener irAlPerfilListener =
+                v -> {
+                    // Intent dirigido a la Activity del perfil
+                    Intent intent = new Intent(context, PerfilClienteActivity.class);
 
-            // Pasamos el UID del dueño de la publicación
-            intent.putExtra("UID_USUARIO", publicacion.getUidUsuario());
+                    // Pasamos el UID del dueño de la publicación
+                    intent.putExtra("UID_USUARIO", publicacion.getUidUsuario());
 
-            context.startActivity(intent);
-        };
+                    context.startActivity(intent);
+                };
 
         // Asignamos el listener a la foto de perfil y al nombre de usuario
         holder.imgAvatarAutor.setOnClickListener(irAlPerfilListener);
@@ -95,22 +95,26 @@ public class PublicacionAdapter extends RecyclerView.Adapter<PublicacionAdapter.
         holder.tvUsernameAutor.setText(R.string.cargando);
         holder.imgAvatarAutor.setImageResource(R.drawable.avatar_default);
 
-        usuarioService.getPerfil(uidAutor)
-                .addOnSuccessListener(usuario -> {
-                    if (usuario != null) {
-                        holder.tvUsernameAutor.setText("@" + usuario.getUsername());
+        usuarioService
+                .getPerfil(uidAutor)
+                .addOnSuccessListener(
+                        usuario -> {
+                            if (usuario != null) {
+                                holder.tvUsernameAutor.setText("@" + usuario.getUsername());
 
-                        if (usuario.getFotoPerfil() != null && !usuario.getFotoPerfil().isEmpty()) {
-                            Glide.with(context)
-                                    .load(usuario.getFotoPerfil())
-                                    .into(holder.imgAvatarAutor);
-                        }
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    holder.tvUsernameAutor.setText("@usuario_desconocido");
-                    Log.e("PublicacionAdapter", "Error cargando autor: " + e.getMessage());
-                });
+                                if (usuario.getFotoPerfil() != null
+                                        && !usuario.getFotoPerfil().isEmpty()) {
+                                    Glide.with(context)
+                                            .load(usuario.getFotoPerfil())
+                                            .into(holder.imgAvatarAutor);
+                                }
+                            }
+                        })
+                .addOnFailureListener(
+                        e -> {
+                            holder.tvUsernameAutor.setText("@usuario_desconocido");
+                            Log.e("PublicacionAdapter", "Error cargando autor: " + e.getMessage());
+                        });
     }
 
     @Override
