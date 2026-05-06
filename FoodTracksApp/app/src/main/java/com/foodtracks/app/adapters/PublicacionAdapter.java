@@ -5,6 +5,7 @@
 package com.foodtracks.app.adapters;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.foodtracks.app.R;
+import com.foodtracks.app.activities.cliente.PerfilClienteActivity;
 import com.foodtracks.app.models.Publicacion;
 import com.foodtracks.app.services.ServiceFactory;
 import com.foodtracks.app.services.interfaces.IUsuarioService;
@@ -69,6 +71,20 @@ public class PublicacionAdapter extends RecyclerView.Adapter<PublicacionAdapter.
 
         // Cargamos los datos del autor de la publicación
         cargarDatosAutor(holder, publicacion.getUidUsuario());
+
+        View.OnClickListener irAlPerfilListener = v -> {
+            // Intent dirigido a la Activity del perfil
+            Intent intent = new Intent(context, PerfilClienteActivity.class);
+
+            // Pasamos el UID del dueño de la publicación
+            intent.putExtra("UID_USUARIO", publicacion.getUidUsuario());
+
+            context.startActivity(intent);
+        };
+
+        // Asignamos el listener a la foto de perfil y al nombre de usuario
+        holder.imgAvatarAutor.setOnClickListener(irAlPerfilListener);
+        holder.tvUsernameAutor.setOnClickListener(irAlPerfilListener);
     }
 
     /**

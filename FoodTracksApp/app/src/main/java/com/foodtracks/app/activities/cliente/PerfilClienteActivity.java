@@ -218,7 +218,7 @@ public class PerfilClienteActivity extends AppCompatActivity {
 
                         adapter = new PublicacionAdapter(
                                 publicaciones,
-                                PerfilClienteActivity.this
+                                this
                         );
                         recyclerPublicaciones.setAdapter(adapter);
                     }
