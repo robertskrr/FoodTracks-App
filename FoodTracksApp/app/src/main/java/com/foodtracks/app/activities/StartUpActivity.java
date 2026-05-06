@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.ProgressBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.foodtracks.app.R;
 import com.foodtracks.app.activities.admin.AdminActivity;
@@ -37,6 +38,9 @@ public class StartUpActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_up);
+
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.white)); // Color barra de estado
+        getWindow().setNavigationBarColor(androidx.core.content.ContextCompat.getColor(this, R.color.white));
 
         inicializar();
         comprobarSesion();

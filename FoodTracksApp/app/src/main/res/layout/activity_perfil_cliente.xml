@@ -5,6 +5,30 @@
     android:layout_height="match_parent"
     android:background="@color/primary">
 
+    <!-- TOP BAR (Barra superior fija tipo Instagram) -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/topBarPerfil"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/fondo"
+        android:paddingHorizontal="25dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tvUsernameCliente"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <!-- CÍRCULO DE CARGA (Visible por defecto) -->
     <ProgressBar
         android:id="@+id/progressBarPerfil"
@@ -13,27 +37,31 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/topBarPerfil" />
 
     <!-- TODO EL CONTENIDO DEL PERFIL (Oculto por defecto con visibility="gone") -->
     <androidx.core.widget.NestedScrollView
         android:id="@+id/layoutContenidoPerfil"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="25dp"
-        android:visibility="gone">
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/topBarPerfil">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="20dp"
             android:orientation="vertical">
 
-            <!-- CABECERA  -->
+            <!-- CABECERA DE DATOS (Sin el username) -->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="30dp">
+                android:layout_marginBottom="30dp"
+                android:paddingHorizontal="25dp">
 
                 <!-- Foto de perfil -->
                 <com.google.android.material.imageview.ShapeableImageView
@@ -46,33 +74,20 @@
                     app:layout_constraintTop_toTopOf="parent"
                     app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent" />
 
-                <!-- Nombre -->
+                <!-- Nombre Completo -->
                 <TextView
                     android:id="@+id/tvNombreCliente"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
+                    android:layout_marginTop="20dp"
                     android:text="@string/nombre_completo"
-                    android:textColor="@color/white"
-                    android:textSize="22sp"
+                    android:textColor="#E0E0E0"
+                    android:textSize="18sp"
                     android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/imgPerfilCliente"
                     app:layout_constraintTop_toTopOf="@+id/imgPerfilCliente" />
-
-                <!-- Username -->
-                <TextView
-                    android:id="@+id/tvUsernameCliente"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="4dp"
-                    android:text="@string/nombre_de_usuario"
-                    android:textColor="@color/tertiary"
-                    android:textSize="16sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/imgPerfilCliente"
-                    app:layout_constraintTop_toBottomOf="@+id/tvNombreCliente" />
 
                 <!-- Ciudad -->
                 <TextView
@@ -80,7 +95,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="15dp"
                     android:drawablePadding="8dp"
                     android:text="@string/ciudad"
                     android:textColor="#CCCCCC"
@@ -88,7 +103,7 @@
                     app:drawableStartCompat="@drawable/ic_location"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/imgPerfilCliente"
-                    app:layout_constraintTop_toBottomOf="@+id/tvUsernameCliente" />
+                    app:layout_constraintTop_toBottomOf="@+id/tvNombreCliente" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -97,48 +112,54 @@
                 android:layout_width="match_parent"
                 android:layout_height="5dp"
                 android:layout_marginBottom="20dp"
-                android:background="#333333" />
+                android:background="@color/black" />
 
-            <!-- INFORMACIÓN ADICIONAL -->
-            <TextView
-                android:id="@+id/tvMiembroDesde"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/miembro_desde"
-                android:textColor="#CCCCCC"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/tvFechaRegistroCliente"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                android:textColor="#FFFFFF"
-                android:textSize="16sp" />
+                android:orientation="vertical"
+                android:paddingHorizontal="25dp">
+                <!-- INFORMACIÓN ADICIONAL -->
+                <TextView
+                    android:id="@+id/tvMiembroDesde"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/miembro_desde"
+                    android:textColor="#CCCCCC"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:text="@string/preferencias_alimenticias"
-                android:textColor="#CCCCCC"
-                android:textSize="14sp" />
+                <TextView
+                    android:id="@+id/tvFechaRegistroCliente"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp" />
 
-            <!-- PREFERENCIAS -->
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/chipGroupPreferencias"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
-                app:singleSelection="false">
-            </com.google.android.material.chip.ChipGroup>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="10dp"
+                    android:text="@string/preferencias_alimenticias"
+                    android:textColor="#CCCCCC"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
+                <!-- PREFERENCIAS -->
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroupPreferencias"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="20dp"
+                    app:singleSelection="false"></com.google.android.material.chip.ChipGroup>
+            </LinearLayout>
             <!-- SEPARADOR VISUAL PARA PUBLICACIONES -->
             <View
                 android:layout_width="match_parent"
                 android:layout_height="5dp"
                 android:layout_marginBottom="20dp"
-                android:background="#333333" />
+                android:background="@color/black" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -161,15 +182,15 @@
                 android:textAlignment="center"
                 android:textColor="#888888"
                 android:textSize="16sp"
-                android:textStyle="italic"
-                android:visibility="gone" />
+                android:textStyle="italic" />
 
             <!-- LISTA DE PUBLICACIONES -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recyclerPublicacionesCliente"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="false" />
+                android:nestedScrollingEnabled="false"
+                android:paddingHorizontal="25dp" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

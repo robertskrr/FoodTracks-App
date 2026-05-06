@@ -4,6 +4,7 @@
 
 package com.foodtracks.app.activities.cliente;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -54,6 +55,7 @@ public class PerfilClienteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_perfil_cliente);
 
+        getWindow().setNavigationBarColor(androidx.core.content.ContextCompat.getColor(this, R.color.primary));
         inicializar();
         mostrarDatosCliente();
         cargarPublicaciones();
@@ -111,7 +113,6 @@ public class PerfilClienteActivity extends AppCompatActivity {
      * Muestra los datos del cliente
      */
     private void mostrarDatosCliente() {
-        // TODO: Obtener el perfil desde username seria lo ideal para otros usuarios
         usuarioService.getPerfil(uidCliente).addOnSuccessListener(usuario -> {
             tvNombre.setText(usuario.getNombre());
             tvUsername.setText("@" + usuario.getUsername());
@@ -195,9 +196,9 @@ public class PerfilClienteActivity extends AppCompatActivity {
         chip.setCheckable(false);
         chip.setClickable(false);
 
-        // TODO: personalizar los colores
-        // chip.setChipBackgroundColorResource(R.color.tertiary);
-        // chip.setTextColor(getResources().getColor(R.color.white));
+
+        chip.setChipBackgroundColorResource(R.color.tertiary);
+        chip.setTextColor(getResources().getColor(R.color.white, null));
 
         chipGroupPreferencias.addView(chip);
     }
