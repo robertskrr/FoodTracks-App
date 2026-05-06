@@ -5,11 +5,14 @@
 package com.foodtracks.app.activities.cliente;
 
 import android.os.Bundle;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.foodtracks.app.R;
@@ -33,18 +36,18 @@ import com.google.firebase.auth.FirebaseAuth;
  */
 public class PerfilClienteActivity extends AppCompatActivity {
 
-    private TextView tvNombre, tvUsername, tvCiudad, tvFechaRegistro;
+    private TextView tvNombre, tvUsername, tvCiudad, tvFechaRegistro, tvSinPublicaciones;
     private ShapeableImageView imgPerfil;
     private ChipGroup chipGroupPreferencias;
+    private RecyclerView recyclerPublicaciones;
     private String uidCliente;
     private FirebaseAuth mAuth;
     private IUsuarioService usuarioService;
-
-    private TextView tvSinPublicaciones;
-    private androidx.recyclerview.widget.RecyclerView recyclerPublicaciones;
     private IPublicacionService publicacionService;
-
-    private PublicacionAdapter adapter; // TODO: Lo descomentarás cuando crees tu Adapter
+    private PublicacionAdapter adapter;
+    private ProgressBar progressBar;
+    private NestedScrollView layoutContenido;
+    private int tareasCompletadas = 0; // Contador de tareas de Firebase para la pantalla de carga
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +87,10 @@ public class PerfilClienteActivity extends AppCompatActivity {
         // Publicaciones
         recyclerPublicaciones = findViewById(R.id.recyclerPublicacionesCliente);
         recyclerPublicaciones.setLayoutManager(new LinearLayoutManager(this));
+
+        // Pantalla de carga
+        progressBar = findViewById(R.id.progressBarPerfil);
+        layoutContenido = findViewById(R.id.layoutContenidoPerfil);
     }
 
     /**
@@ -102,7 +109,7 @@ public class PerfilClienteActivity extends AppCompatActivity {
             }
 
             cargarChipsPreferencias(usuario);
-
+            comprobarCargaCompleta();
         }).addOnFailureListener(e -> {
             if (e
                     instanceof
@@ -128,6 +135,7 @@ public class PerfilClienteActivity extends AppCompatActivity {
                                 Toast.LENGTH_SHORT)
                         .show();
             }
+            comprobarCargaCompleta();
         });
     }
 
@@ -201,9 +209,25 @@ public class PerfilClienteActivity extends AppCompatActivity {
                         );
                         recyclerPublicaciones.setAdapter(adapter);
                     }
+                    
+                    comprobarCargaCompleta();
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(this, R.string.publicaciones_loading_error_message + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    comprobarCargaCompleta();
                 });
+    }
+
+    /**
+     * Aumenta el contador y, si ambas peticiones han terminado, muestra la pantalla.
+     */
+    private synchronized void comprobarCargaCompleta() {
+        tareasCompletadas++;
+
+        // 2 tareas: 1. Cargar perfil, 2. Cargar publicaciones
+        if (tareasCompletadas >= 2) {
+            progressBar.setVisibility(android.view.View.GONE);
+            layoutContenido.setVisibility(android.view.View.VISIBLE);
+        }
     }
 }
