@@ -9,14 +9,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.foodtracks.app.R;
 
+import com.foodtracks.app.adapters.PublicacionAdapter;
 import com.foodtracks.app.models.Usuario;
 import com.foodtracks.app.services.ServiceFactory;
 import com.foodtracks.app.services.exceptions.FoodTracksNotFoundException;
 import com.foodtracks.app.services.exceptions.FoodTracksValidationException;
+import com.foodtracks.app.services.interfaces.IPublicacionService;
 import com.foodtracks.app.services.interfaces.IUsuarioService;
 import com.foodtracks.app.utils.DateUtils;
 import com.google.android.material.chip.Chip;
@@ -37,6 +40,12 @@ public class PerfilClienteActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private IUsuarioService usuarioService;
 
+    private TextView tvSinPublicaciones;
+    private androidx.recyclerview.widget.RecyclerView recyclerPublicaciones;
+    private IPublicacionService publicacionService;
+
+    private PublicacionAdapter adapter; // TODO: Lo descomentarás cuando crees tu Adapter
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +54,7 @@ public class PerfilClienteActivity extends AppCompatActivity {
         // TODO: Pantalla de carga para mostrar los datos
         inicializar();
         mostrarDatosCliente();
+        cargarPublicaciones();
     }
 
     /**
@@ -55,6 +65,7 @@ public class PerfilClienteActivity extends AppCompatActivity {
         assert mAuth.getCurrentUser() != null;
         uidCliente = mAuth.getCurrentUser().getUid();
         usuarioService = ServiceFactory.provideUsuarioService(this);
+        publicacionService = ServiceFactory.providePublicacionService(this); // Inyectamos el nuevo servicio
 
         // TextView
         tvNombre = findViewById(R.id.tvNombreCliente);
@@ -62,11 +73,17 @@ public class PerfilClienteActivity extends AppCompatActivity {
         tvCiudad = findViewById(R.id.tvCiudadCliente);
         tvFechaRegistro = findViewById(R.id.tvFechaRegistroCliente);
 
+        tvSinPublicaciones = findViewById(R.id.tvSinPublicaciones);
+
         // Foto perfil
         imgPerfil = findViewById(R.id.imgPerfilCliente);
 
         // Preferencias
         chipGroupPreferencias = findViewById(R.id.chipGroupPreferencias);
+
+        // Publicaciones
+        recyclerPublicaciones = findViewById(R.id.recyclerPublicacionesCliente);
+        recyclerPublicaciones.setLayoutManager(new LinearLayoutManager(this));
     }
 
     /**
@@ -78,7 +95,7 @@ public class PerfilClienteActivity extends AppCompatActivity {
             tvNombre.setText(usuario.getNombre());
             tvUsername.setText("@" + usuario.getUsername());
             tvCiudad.setText(usuario.getCiudad());
-            tvFechaRegistro.setText(DateUtils.getFechaFormateada(usuario.getFechaRegistro()));
+            tvFechaRegistro.setText(DateUtils.getFechaFormateadaLong(usuario.getFechaRegistro()));
 
             if (usuario.getFotoPerfil() != null) {
                 Glide.with(this).load(usuario.getFotoPerfil()).into(imgPerfil);
@@ -146,6 +163,7 @@ public class PerfilClienteActivity extends AppCompatActivity {
 
     /**
      * Crea un Chip visual y lo añade al ChipGroup de la interfaz.
+     * @param texto Texto de la preferencia.
      */
     private void addChip(String texto) {
         Chip chip = new Chip(this);
@@ -160,5 +178,32 @@ public class PerfilClienteActivity extends AppCompatActivity {
         // chip.setTextColor(getResources().getColor(R.color.white));
 
         chipGroupPreferencias.addView(chip);
+    }
+
+    /**
+     * Carga las publicaciones del usuario.
+     */
+    private void cargarPublicaciones() {
+        publicacionService.getPublicacionesByUsuario(uidCliente)
+                .addOnSuccessListener(publicaciones -> {
+
+                    if (publicaciones == null || publicaciones.isEmpty()) {
+                        tvSinPublicaciones.setVisibility(android.view.View.VISIBLE);
+                        recyclerPublicaciones.setVisibility(android.view.View.GONE);
+                    } else {
+                        tvSinPublicaciones.setVisibility(android.view.View.GONE);
+                        recyclerPublicaciones.setVisibility(android.view.View.VISIBLE);
+
+                        // Inicializamos el Adapter simplificado
+                        adapter = new PublicacionAdapter(
+                                publicaciones,
+                                PerfilClienteActivity.this
+                        );
+                        recyclerPublicaciones.setAdapter(adapter);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, R.string.publicaciones_loading_error_message + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
     }
 }

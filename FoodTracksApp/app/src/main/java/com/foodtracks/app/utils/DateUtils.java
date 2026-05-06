@@ -15,9 +15,15 @@ import java.util.Locale;
  * @since 03/05
  */
 public class DateUtils {
-    public static String getFechaFormateada(Timestamp fecha){
+    public static String getFechaFormateadaLong(Timestamp fecha){
         Date fechaObjeto = fecha.toDate();
         DateFormat formatoFecha = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
+        return formatoFecha.format(fechaObjeto);
+    }
+
+    public static String getFechaFormateadaShort(Timestamp fecha){
+        Date fechaObjeto = fecha.toDate();
+        DateFormat formatoFecha = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault());
         return formatoFecha.format(fechaObjeto);
     }
 }
