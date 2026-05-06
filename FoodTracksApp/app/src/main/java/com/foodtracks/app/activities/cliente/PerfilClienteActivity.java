@@ -54,7 +54,6 @@ public class PerfilClienteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_perfil_cliente);
 
-        // TODO: Pantalla de carga para mostrar los datos
         inicializar();
         mostrarDatosCliente();
         cargarPublicaciones();
@@ -68,7 +67,7 @@ public class PerfilClienteActivity extends AppCompatActivity {
         assert mAuth.getCurrentUser() != null;
         uidCliente = mAuth.getCurrentUser().getUid();
         usuarioService = ServiceFactory.provideUsuarioService(this);
-        publicacionService = ServiceFactory.providePublicacionService(this); // Inyectamos el nuevo servicio
+        publicacionService = ServiceFactory.providePublicacionService(this);
 
         // TextView
         tvNombre = findViewById(R.id.tvNombreCliente);
@@ -144,7 +143,7 @@ public class PerfilClienteActivity extends AppCompatActivity {
      */
     private void cargarChipsPreferencias(Usuario usuario) {
         // Limpiamos los chips anteriores por si la vista se recarga
-        chipGroupPreferencias.removeAllViews(); //[cite: 25]
+        chipGroupPreferencias.removeAllViews();
 
         if (usuario.isEsVegano()) {
             addChip("\uD83C\uDF31" + getString(R.string.vegano));
@@ -163,7 +162,7 @@ public class PerfilClienteActivity extends AppCompatActivity {
             addChip("\uD83D\uDCDD" + otraPreferencia);
         }
 
-        // Si el usuario no tiene ninguna preferencia marcada, mostramos un chip por defecto
+        // Si el usuario no tiene ninguna preferencia, mostramos por defecto
         if (chipGroupPreferencias.getChildCount() == 0) {
             addChip(getString(R.string.sin_preferencias));
         }
@@ -202,14 +201,13 @@ public class PerfilClienteActivity extends AppCompatActivity {
                         tvSinPublicaciones.setVisibility(android.view.View.GONE);
                         recyclerPublicaciones.setVisibility(android.view.View.VISIBLE);
 
-                        // Inicializamos el Adapter simplificado
                         adapter = new PublicacionAdapter(
                                 publicaciones,
                                 PerfilClienteActivity.this
                         );
                         recyclerPublicaciones.setAdapter(adapter);
                     }
-                    
+
                     comprobarCargaCompleta();
                 })
                 .addOnFailureListener(e -> {
