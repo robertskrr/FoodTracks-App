@@ -6,23 +6,28 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.foodtracks.app.R;
 import com.foodtracks.app.activities.cliente.PerfilClienteActivity;
+import com.foodtracks.app.models.LikePublicacion;
 import com.foodtracks.app.models.Publicacion;
 import com.foodtracks.app.services.ServiceFactory;
+import com.foodtracks.app.services.interfaces.ILikeService;
 import com.foodtracks.app.services.interfaces.IUsuarioService;
 import com.foodtracks.app.utils.DateUtils;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.imageview.ShapeableImageView;
+import com.google.firebase.auth.FirebaseAuth;
 
 /**
  * Adapter para gestionar y renderizar la lista de publicaciones.
@@ -36,12 +41,25 @@ public class PublicacionAdapter
     private final List<Publicacion> listaPublicaciones;
     private final Context context;
     private final IUsuarioService usuarioService;
+    private final ILikeService likeService;
+    private final String currentUid; // Usuario que está usando la publicación
+    private FirebaseAuth mAuth;
 
     public PublicacionAdapter(List<Publicacion> listaPublicaciones, Context context) {
         this.listaPublicaciones = listaPublicaciones;
         this.context = context;
         this.usuarioService = ServiceFactory.provideUsuarioService(context);
+        this.likeService = ServiceFactory.provideLikeService();
+        mAuth = FirebaseAuth.getInstance();
+
+        // Obtenemos el usuario logueado para comprobar sus propios likes
+        if (mAuth.getCurrentUser() != null) {
+            this.currentUid = mAuth.getCurrentUser().getUid();
+        } else {
+            this.currentUid = "";
+        }
     }
+
 
     @NonNull
     @Override
@@ -85,6 +103,60 @@ public class PublicacionAdapter
         // Asignamos el listener a la foto de perfil y al nombre de usuario
         holder.imgAvatarAutor.setOnClickListener(irAlPerfilListener);
         holder.tvUsernameAutor.setOnClickListener(irAlPerfilListener);
+
+        // Configuramos el evento de Poner / Quitar like
+        holder.imgLike.setOnClickListener(v -> {
+            boolean isLiked = holder.imgLike.getTag() != null && (boolean) holder.imgLike.getTag();
+            holder.imgLike.setEnabled(false); // Evita el doble click rápido
+
+            if (isLiked) {
+                // QUITAR LIKE
+                likeService.eliminarLike(currentUid, publicacion.getUid())
+                        .addOnSuccessListener(unused -> {
+                            marcarComoLike(holder, false);
+
+                            // Restamos 1 al contador de likes en tiempo real
+                            // Aunque se cambie en Firebase así evitamos tener que hacer otra petición innecesaria para recoger este dato
+                            long nuevosLikes = publicacion.getNumLikes() - 1;
+                            publicacion.setNumLikes(Math.max(0, nuevosLikes)); // Evitar números negativos
+                            holder.tvContadorLikes.setText(String.valueOf(publicacion.getNumLikes()));
+
+                            holder.imgLike.setEnabled(true);
+                        })
+                        .addOnFailureListener(e -> holder.imgLike.setEnabled(true));
+            } else {
+                // DAR LIKE
+                LikePublicacion nuevoLike = LikePublicacion.builder()
+                        .uidUsuario(currentUid)
+                        .uidPublicacion(publicacion.getUid())
+                        .build();
+
+                likeService.addLike(nuevoLike)
+                        .addOnSuccessListener(unused -> {
+                            marcarComoLike(holder, true);
+
+                            // Sumamos 1 al contador de likes en tiempo real
+                            long nuevosLikes = publicacion.getNumLikes() + 1;
+                            publicacion.setNumLikes(nuevosLikes);
+                            holder.tvContadorLikes.setText(String.valueOf(publicacion.getNumLikes()));
+
+                            holder.imgLike.setEnabled(true);
+                        })
+                        .addOnFailureListener(e -> holder.imgLike.setEnabled(true));
+            }
+        });
+    }
+
+    /**
+     * Método auxiliar para cambiar el color y el estado del botón Like
+     */
+    private void marcarComoLike(PublicacionViewHolder holder, boolean isLiked) {
+        holder.imgLike.setTag(isLiked);
+        if (isLiked) {
+            holder.imgLike.setColorFilter(Color.parseColor("#E91E63")); // Rojo
+        } else {
+            holder.imgLike.setColorFilter(Color.parseColor("#FFFFFF")); // Blanco
+        }
     }
 
     /**
@@ -112,7 +184,7 @@ public class PublicacionAdapter
                         })
                 .addOnFailureListener(
                         e -> {
-                            holder.tvUsernameAutor.setText("@usuario_desconocido");
+                            holder.tvUsernameAutor.setText(R.string.usuario_desconocido);
                             Log.e("PublicacionAdapter", "Error cargando autor: " + e.getMessage());
                         });
     }
@@ -123,8 +195,9 @@ public class PublicacionAdapter
     }
 
     public static class PublicacionViewHolder extends RecyclerView.ViewHolder {
-        TextView tvUsernameAutor, tvFecha, tvTexto;
+        TextView tvUsernameAutor, tvFecha, tvTexto, tvContadorLikes;
         ShapeableImageView imgAvatarAutor, imgPublicacion;
+        ImageView imgLike;
 
         public PublicacionViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -133,6 +206,8 @@ public class PublicacionAdapter
             tvFecha = itemView.findViewById(R.id.tvFechaPublicacion);
             tvTexto = itemView.findViewById(R.id.tvTextoPublicacion);
             imgPublicacion = itemView.findViewById(R.id.imgPublicacion);
+            imgLike = itemView.findViewById(R.id.imgLike);
+            tvContadorLikes = itemView.findViewById(R.id.tvContadorLikes);
         }
     }
 }

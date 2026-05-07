@@ -68,5 +68,7 @@
     <string name="publicaciones">PUBLICACIONES</string>
     <string name="no_hay_publicaciones_aun">No hay publicaciones aún.</string>
     <string name="cargando">Cargando...</string>
+    <string name="zero_likes">0</string>
+    <string name="usuario_desconocido">\@usuario_desconocido</string>
 
 </resources>
