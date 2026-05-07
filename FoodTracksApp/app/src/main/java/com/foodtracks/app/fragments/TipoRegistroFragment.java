@@ -1,4 +1,6 @@
-/** © FoodTracks Project ===robertskrr=== */
+/**
+ * © FoodTracks Project ===robertskrr===
+ */
 
 package com.foodtracks.app.fragments;
 
@@ -8,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
 import androidx.fragment.app.DialogFragment;
 
 import com.foodtracks.app.R;
@@ -28,16 +31,20 @@ public class TipoRegistroFragment extends DialogFragment {
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_tipo_registro, container, false);
-
-        btnCliente = v.findViewById(R.id.btnIniciarSesion);
-        btnLocal = v.findViewById(R.id.btnRegistroLocal);
+        inicializar(v);
 
         btnCliente.setOnClickListener(
                 v1 -> startActivity(new Intent(getContext(), RegisterClienteActivity.class)));
 
         btnLocal.setOnClickListener(
                 v2 -> startActivity(new Intent(getContext(), RegisterLocalActivity.class)));
+
         return v;
+    }
+
+    private void inicializar(View v) {
+        btnCliente = v.findViewById(R.id.btnIniciarSesion);
+        btnLocal = v.findViewById(R.id.btnRegistroLocal);
     }
 
     @Override
