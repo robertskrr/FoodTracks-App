@@ -5,6 +5,8 @@
 package com.foodtracks.app.activities.local;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -174,16 +176,41 @@ public class PerfilLocalActivity extends AppCompatActivity {
                         tvNombre.setText(local.getNombre());
                         tvUsername.setText("@" + local.getUsername());
                         tvDireccion.setText(local.getDireccion() + ", " + local.getCiudad());
-                        tvTelefono.setText(local.getTelefono());
+                        String telefonoLocal = local.getTelefono();
+                        // Configuración teléfono clickable
+                        tvTelefono.setText(telefonoLocal);
+
+                        if (telefonoLocal != null && !telefonoLocal.trim().isEmpty()) {
+                            tvTelefono.setOnClickListener(v -> {
+                                Intent intent = new android.content.Intent(android.content.Intent.ACTION_DIAL);
+                                intent.setData(Uri.parse("tel:" + telefonoLocal)); // Abre app de teléfono con el número
+                                startActivity(intent);
+                            });
+                        }
 
                         // Refrescamos la nota media aquí
                         tvPuntuacion.setText(String.format("%.1f", local.getPuntuacionMedia()));
 
-                        if (local.getSitioWeb() != null && !local.getSitioWeb().isEmpty()) {
-                            tvSitioWeb.setText(local.getSitioWeb());
+                        // Configuración sitio web clickable
+                        String webLocal = local.getSitioWeb();
+                        if (webLocal != null && !webLocal.trim().isEmpty()) {
+                            tvSitioWeb.setText(webLocal);
+                            tvSitioWeb.setTextColor(getResources().getColor(R.color.tertiary, null));
+
+                            tvSitioWeb.setOnClickListener(v -> {
+                                String url = webLocal;
+                                // Asegurarnos prefijo correcto para que el navegador lo entienda
+                                if (!url.startsWith("http://") && !url.startsWith("https://")) {
+                                    url = "https://" + url;
+                                }
+                                Intent intent = new Intent(android.content.Intent.ACTION_VIEW);
+                                intent.setData(android.net.Uri.parse(url)); // Abre el navegador con la página del local
+                                startActivity(intent);
+                            });
                         } else {
                             tvSitioWeb.setText(R.string.no_disponible);
                             tvSitioWeb.setTextColor(getResources().getColor(R.color.black, null));
+                            tvSitioWeb.setOnClickListener(null); // Desactivamos el click si no hay web
                         }
 
                         if (local.getFotoPerfil() != null) {
