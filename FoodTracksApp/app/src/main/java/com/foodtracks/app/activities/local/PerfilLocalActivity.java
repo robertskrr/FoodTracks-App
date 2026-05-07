@@ -1,4 +1,6 @@
-/** © FoodTracks Project ===robertskrr=== */
+/**
+ * © FoodTracks Project ===robertskrr===
+ */
 
 package com.foodtracks.app.activities.local;
 
@@ -23,6 +25,7 @@ import com.foodtracks.app.adapters.PublicacionAdapter;
 import com.foodtracks.app.models.UsuarioLocal;
 import com.foodtracks.app.models.ValoracionLocal;
 import com.foodtracks.app.services.ServiceFactory;
+import com.foodtracks.app.services.exceptions.FoodTracksValidationException;
 import com.foodtracks.app.services.interfaces.IPublicacionService;
 import com.foodtracks.app.services.interfaces.IUsuarioService;
 import com.foodtracks.app.services.interfaces.IValoracionLocalService;
@@ -80,9 +83,8 @@ public class PerfilLocalActivity extends AppCompatActivity implements OnMapReady
         inicializar();
         mostrarDatosLocal();
         cargarPublicaciones();
-        if (uidUsuarioActual !=null){
-            verificarRolYMostrarValoracion();
-        }
+        verificarRolYMostrarValoracion();
+
     }
 
     private void inicializar() {
@@ -91,16 +93,19 @@ public class PerfilLocalActivity extends AppCompatActivity implements OnMapReady
         publicacionService = ServiceFactory.providePublicacionService(this);
         valoracionLocalService = ServiceFactory.provideValoracionLocalService();
 
-        if (mAuth.getCurrentUser() != null){
+        // El usuario actual puede ser NULL si es invitado
+        if (mAuth.getCurrentUser() != null) {
             uidUsuarioActual = mAuth.getCurrentUser().getUid();
+        } else {
+            uidUsuarioActual = null;
         }
 
-        // Verificamos de quién es el perfil
-        String uidOtroUsuario = getIntent().getStringExtra("UID_USUARIO");
-        if (uidOtroUsuario != null && !uidOtroUsuario.isEmpty()) {
-            uidLocalVisitado = uidOtroUsuario;
-        } else {
-            uidLocalVisitado = uidUsuarioActual;
+        uidLocalVisitado = getUidPerfil(mAuth);
+
+        if (uidLocalVisitado == null) {
+            Toast.makeText(this, "Perfil no disponible", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
         }
 
         tvNombre = findViewById(R.id.tvNombreLocal);
@@ -130,6 +135,22 @@ public class PerfilLocalActivity extends AppCompatActivity implements OnMapReady
         if (mapFragment != null) {
             mapFragment.getMapAsync(this);
         }
+    }
+
+    private String getUidPerfil(FirebaseAuth mAuth) {
+        String uidOtroUsuario = getIntent().getStringExtra("UID_USUARIO");
+
+        if (uidOtroUsuario != null && !uidOtroUsuario.isEmpty()) {
+            return uidOtroUsuario;
+        }
+
+        // Si no hay Intent, comprobamos si es su propio perfil
+        if (mAuth.getCurrentUser() != null) {
+            return mAuth.getCurrentUser().getUid();
+        }
+
+        // Este caso es el de un invitado que ha entrado a un perfil
+        return null;
     }
 
     private void mostrarDatosLocal() {
@@ -170,7 +191,7 @@ public class PerfilLocalActivity extends AppCompatActivity implements OnMapReady
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "Error al cargar el perfil: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, getString(R.string.loading_profile_error_message) + e.getMessage(), Toast.LENGTH_SHORT).show();
                     comprobarCargaCompleta();
                 });
     }
@@ -209,6 +230,10 @@ public class PerfilLocalActivity extends AppCompatActivity implements OnMapReady
 
     /** Muestra el bloque de estrellas y gestiona el envío de la valoración a la base de datos */
     private void verificarRolYMostrarValoracion() {
+        if (uidUsuarioActual == null) { // Si es invitado no muestra nada
+            return;
+        }
+
         usuarioService.getPerfil(uidUsuarioActual)
                 .addOnSuccessListener(usuarioActual -> {
                     // Si es un cliente y no está viendo su propio perfil, le dejamos valorar
@@ -227,7 +252,7 @@ public class PerfilLocalActivity extends AppCompatActivity implements OnMapReady
                                     ratingBarLocal.setRating(0f);
                                 });
 
-                        // Botón de enviar (Lógica limpia delegada al servicio)
+                        // Botón de enviar valoración
                         btnEnviarValoracion.setOnClickListener(v -> {
                             // Evitamos doble click
                             btnEnviarValoracion.setEnabled(false);
@@ -250,8 +275,8 @@ public class PerfilLocalActivity extends AppCompatActivity implements OnMapReady
                                         btnEnviarValoracion.setEnabled(true);
                                     })
                                     .addOnFailureListener(e -> {
-                                        // Capturamos tu excepción de validación personalizada igual que en Register
-                                        if (e instanceof com.foodtracks.app.services.exceptions.FoodTracksValidationException ex) {
+
+                                        if (e instanceof FoodTracksValidationException ex) {
                                             Toast.makeText(this, ex.getErrorResId(), Toast.LENGTH_SHORT).show();
                                         } else {
                                             Toast.makeText(this, "Error al enviar: " + e.getMessage(), Toast.LENGTH_SHORT).show();

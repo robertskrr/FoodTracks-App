@@ -26,7 +26,7 @@
     <string name="address_not_found_error_message">No hemos podido localizar la dirección.</string>
     <string name="publicaciones_loading_error_message">Error al cargar las publicaciones.</string>
     <string name="invalid_valoracion_error_message">Selecciona al menos media estrella</string>
-
+    <string name="inicia_sesion_para_dar_like">Inicia sesión para dar Like</string>
 
 
     <!-- LAYOUTS STRINGS -->

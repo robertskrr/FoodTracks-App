@@ -93,17 +93,19 @@ public class PerfilClienteActivity extends AppCompatActivity {
     }
 
     private String getUidPerfil(FirebaseAuth mAuth) {
-        // Intentamos recuperar el UID si venimos de pulsar en el perfil de otra persona
         String uidOtroUsuario = getIntent().getStringExtra("UID_USUARIO");
 
         if (uidOtroUsuario != null && !uidOtroUsuario.isEmpty()) {
-            // Cargamos el perfil del usuario en cuestión
             return uidOtroUsuario;
-        } else {
-            // Si el Intent viene vacío, significa que el usuario quiere ver su propio perfil
-            assert mAuth.getCurrentUser() != null;
+        }
+
+        // Si no hay Intent, comprobamos si es su propio perfil
+        if (mAuth.getCurrentUser() != null) {
             return mAuth.getCurrentUser().getUid();
         }
+
+        // Este caso es el de un invitado que ha entrado a un perfil
+        return null;
     }
 
     /**
