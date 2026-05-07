@@ -15,7 +15,6 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.foodtracks.app.R;
-import com.foodtracks.app.activities.cliente.HomeActivity;
 import com.foodtracks.app.models.UsuarioLocal;
 import com.foodtracks.app.services.ServiceFactory;
 import com.foodtracks.app.services.exceptions.FoodTracksValidationException;
@@ -179,7 +178,7 @@ public class RegisterLocalActivity extends AppCompatActivity {
                 .registrarUsuario(newUsuario, uriFotoSeleccionada)
                 .addOnSuccessListener(
                         unused -> {
-                            irAHome();
+                            irADashboard();
                         })
                 .addOnFailureListener(
                         e -> {
@@ -257,10 +256,10 @@ public class RegisterLocalActivity extends AppCompatActivity {
     }
 
     /**
-     * Navega a la activity Home.
+     * Navega a la activity Dashboard.
      */
-    private void irAHome() {
-        Intent intent = new Intent(this, HomeActivity.class);
+    private void irADashboard() {
+        Intent intent = new Intent(this, DashBoardLocalActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();

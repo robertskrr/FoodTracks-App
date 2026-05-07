@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -106,6 +107,16 @@ public class PublicacionAdapter
         // Configuramos el evento de Poner / Quitar like
         holder.imgLike.setOnClickListener(
                 v -> {
+                    // Si no hay currenUid es un usuario Invitado
+                    if (currentUid == null || currentUid.isEmpty()) {
+                        Toast.makeText(
+                                        context,
+                                        R.string.inicia_sesion_para_dar_like,
+                                        Toast.LENGTH_SHORT)
+                                .show();
+                        return;
+                    }
+
                     boolean isLiked =
                             holder.imgLike.getTag() != null && (boolean) holder.imgLike.getTag();
                     holder.imgLike.setEnabled(false); // Evita el doble click rápido

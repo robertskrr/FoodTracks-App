@@ -25,7 +25,9 @@
     <string name="like_duplicated_error_message">El "Me gusta" no existe.</string>
     <string name="address_not_found_error_message">No hemos podido localizar la dirección.</string>
     <string name="publicaciones_loading_error_message">Error al cargar las publicaciones.</string>
-
+    <string name="send_valoracion_error_mensaje">Error al enviar valoración.</string>
+    <string name="delete_valoracion_error_mensaje">Error al borrar valoración.</string>
+    <string name="inicia_sesion_para_dar_like">Inicia sesión para dar Like</string>
 
 
     <!-- LAYOUTS STRINGS -->
@@ -58,9 +60,10 @@
     <string name="registro_local">Registro local</string>
     <string name="nombre_del_establecimiento">Nombre del establecimiento</string>
     <string name="direccion_requerimientos">Dirección (Calle, Número)</string>
-    <string name="telefono">Teléfono</string>
+    <string name="telefono">Teléfono de contacto</string>
     <string name="sitio_web">Sitio web</string>
     <string name="opciones_alimenticias_que_ofrece">Opciones alimenticias que ofrece</string>
+    <string name="opciones_alimenticias">Opciones alimenticias</string>
     <string name="no_tienes_cuenta_registrate">¿No tienes cuenta? Regístrate aquí</string>
     <string name="comes_o_cocinas">¿COMES O COCINAS?</string>
     <string name="miembro_desde">Miembro desde</string>
@@ -70,5 +73,11 @@
     <string name="cargando">Cargando...</string>
     <string name="zero_likes">0</string>
     <string name="usuario_desconocido">\@usuario_desconocido</string>
+    <string name="ubicacion">Ubicación</string>
+    <string name="que_te_ha_parecido_este_local">¿Qué te ha parecido este local?</string>
+    <string name="enviar_valoracion">Enviar Valoración</string>
+    <string name="valoracion_enviada">¡Gracias por tu valoración!</string>
+    <string name="valoracion_eliminada">Valoración eliminada correctamente.</string>
+    <string name="no_disponible">No disponible.</string>
 
 </resources>
