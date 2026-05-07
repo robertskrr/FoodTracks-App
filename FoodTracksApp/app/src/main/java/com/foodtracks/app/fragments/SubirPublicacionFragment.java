@@ -24,6 +24,7 @@ import com.foodtracks.app.services.interfaces.IPublicacionService;
 import com.foodtracks.app.services.interfaces.IUsuarioService;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 
 /**
@@ -34,6 +35,7 @@ public class SubirPublicacionFragment extends DialogFragment {
 
     private TextView tvUsernameAutor;
     private TextInputEditText txtTextoPublicacion, txtMencionarLocal;
+    private TextInputLayout layoutMencionarLocal;
     private ShapeableImageView imgVistaPreviaFoto;
     private Button btnAdjuntarFoto, btnPublicar;
 
@@ -69,6 +71,7 @@ public class SubirPublicacionFragment extends DialogFragment {
         tvUsernameAutor = v.findViewById(R.id.tvUsernameAutor);
         txtTextoPublicacion = v.findViewById(R.id.txtTextoPublicacion);
         txtMencionarLocal = v.findViewById(R.id.txtMencionarLocal);
+        layoutMencionarLocal = v.findViewById(R.id.layoutMencionarLocal);
         imgVistaPreviaFoto = v.findViewById(R.id.imgVistaPreviaFoto);
         btnAdjuntarFoto = v.findViewById(R.id.btnAdjuntarFoto);
         btnPublicar = v.findViewById(R.id.btnPublicar);
@@ -81,7 +84,7 @@ public class SubirPublicacionFragment extends DialogFragment {
     }
 
     /**
-     * Consulta el perfil del usuario actual para mostrar su username.
+     * Consulta el perfil del usuario actual para mostrar su username y configurar la vista según su rol.
      */
     private void cargarDatosAutor() {
         if (uidUsuarioActual == null) {
@@ -89,10 +92,14 @@ public class SubirPublicacionFragment extends DialogFragment {
             return;
         }
 
-        // Usamos el servicio para traer el perfil y pintar su nombre en el encabezado
         usuarioService.getPerfil(uidUsuarioActual)
                 .addOnSuccessListener(usuario -> {
                     tvUsernameAutor.setText("@" + usuario.getUsername());
+
+                    // Solo muestra el layout de mención si no es un local
+                    if (!"local".equals(usuario.getRol())) {
+                        layoutMencionarLocal.setVisibility(View.VISIBLE);
+                    }
                 })
                 .addOnFailureListener(e -> {
                     tvUsernameAutor.setText(R.string.usuario_desconocido);
@@ -137,7 +144,6 @@ public class SubirPublicacionFragment extends DialogFragment {
     @Override
     public void onStart() {
         super.onStart();
-        // Igual que en el LoginFragment, ajustamos el tamaño de la ventana al 90%
         if (getDialog() != null && getDialog().getWindow() != null) {
             getDialog().getWindow().setBackgroundDrawableResource(android.R.color.transparent);
             int width = getResources().getDisplayMetrics().widthPixels;
