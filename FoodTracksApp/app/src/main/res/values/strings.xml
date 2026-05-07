@@ -29,6 +29,8 @@
     <string name="delete_valoracion_error_mensaje">Error al borrar valoración.</string>
     <string name="inicia_sesion_para_dar_like">Inicia sesión para dar Like</string>
     <string name="complete_todos_los_campos">Complete todos los campos</string>
+    <string name="subir_publicacion_error_mensaje">Error al publicar.</string>
+
 
 
     <!-- LAYOUTS STRINGS -->
@@ -80,5 +82,13 @@
     <string name="valoracion_enviada">¡Gracias por tu valoración!</string>
     <string name="valoracion_eliminada">Valoración eliminada correctamente.</string>
     <string name="no_disponible">No disponible.</string>
+    <string name="publicacion_subida">¡Publicación subida!</string>
+    <string name="adjuntar_imagen">Adjuntar Imagen</string>
+    <string name="publicar">Publicar</string>
+    <string name="mencionar_a_un_local">Mencionar a un local (Opcional)</string>
+    <string name="que_quieres_compartir">¿Qué quieres compartir?</string>
+    <string name="nueva_publicacion">Nueva publicación</string>
+    <string name="subiendo">Subiendo...</string>
+
 
 </resources>
