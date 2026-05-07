@@ -42,7 +42,7 @@
         android:id="@+id/layoutContenidoPerfilLocal"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -127,14 +127,31 @@
                     android:secondaryProgressTint="#FFC107"
                     android:stepSize="0.5" />
 
-                <Button
-                    android:id="@+id/btnEnviarValoracion"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:backgroundTint="@color/tertiary"
-                    android:text="@string/enviar_valoracion"
-                    app:cornerRadius="8dp" />
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btnEnviarValoracion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:backgroundTint="@color/tertiary"
+                        android:text="@string/enviar_valoracion"
+                        app:cornerRadius="8dp" />
+
+                    <Button
+                        android:id="@+id/btnBorrarValoracion"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:backgroundTint="#FF3B30"
+                        android:text="Borrar"
+                        android:visibility="gone"
+                        app:cornerRadius="8dp" />
+                </LinearLayout>
             </LinearLayout>
 
             <View
@@ -197,13 +214,11 @@
                     android:textColor="#FFFFFF"
                     android:textSize="16sp" />
 
-                <androidx.fragment.app.FragmentContainerView
-                    android:id="@+id/mapLocal"
-                    android:name="com.google.android.gms.maps.SupportMapFragment"
+                <org.osmdroid.views.MapView
+                    android:id="@+id/mapOsm"
                     android:layout_width="match_parent"
                     android:layout_height="200dp"
-                    android:layout_marginBottom="25dp"
-                    tools:layout="@android:layout/simple_gallery_item" />
+                    android:layout_marginBottom="25dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -219,8 +234,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="25dp"
-                    app:singleSelection="false">
-                </com.google.android.material.chip.ChipGroup>
+                    app:singleSelection="false"></com.google.android.material.chip.ChipGroup>
 
             </LinearLayout>
 

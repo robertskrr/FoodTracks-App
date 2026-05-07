@@ -25,7 +25,8 @@
     <string name="like_duplicated_error_message">El "Me gusta" no existe.</string>
     <string name="address_not_found_error_message">No hemos podido localizar la dirección.</string>
     <string name="publicaciones_loading_error_message">Error al cargar las publicaciones.</string>
-    <string name="invalid_valoracion_error_message">Selecciona al menos media estrella</string>
+    <string name="send_valoracion_error_mensaje">Error al enviar valoración.</string>
+    <string name="delete_valoracion_error_mensaje">Error al borrar valoración.</string>
     <string name="inicia_sesion_para_dar_like">Inicia sesión para dar Like</string>
 
 
@@ -75,6 +76,8 @@
     <string name="ubicacion">Ubicación</string>
     <string name="que_te_ha_parecido_este_local">¿Qué te ha parecido este local?</string>
     <string name="enviar_valoracion">Enviar Valoración</string>
-
+    <string name="valoracion_enviada">¡Gracias por tu valoración!</string>
+    <string name="valoracion_eliminada">Valoración eliminada correctamente.</string>
+    <string name="no_disponible">No disponible.</string>
 
 </resources>

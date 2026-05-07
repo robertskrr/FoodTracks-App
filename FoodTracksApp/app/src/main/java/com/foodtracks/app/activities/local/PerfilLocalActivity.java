@@ -4,6 +4,7 @@
 
 package com.foodtracks.app.activities.local;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -13,7 +14,6 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -29,22 +29,23 @@ import com.foodtracks.app.services.exceptions.FoodTracksValidationException;
 import com.foodtracks.app.services.interfaces.IPublicacionService;
 import com.foodtracks.app.services.interfaces.IUsuarioService;
 import com.foodtracks.app.services.interfaces.IValoracionLocalService;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;
 
+import org.osmdroid.config.Configuration;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.CustomZoomButtonsController;
+import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.Marker;
+
 /**
  * @author Robert
  * @since 18/02
  */
-public class PerfilLocalActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class PerfilLocalActivity extends AppCompatActivity {
 
     private TextView tvNombre, tvUsername, tvDireccion, tvTelefono, tvPuntuacion, tvSitioWeb, tvSinPublicaciones;
     private ShapeableImageView imgPerfil;
@@ -55,7 +56,7 @@ public class PerfilLocalActivity extends AppCompatActivity implements OnMapReady
     // Valoración
     private LinearLayout layoutValoracion;
     private RatingBar ratingBarLocal;
-    private Button btnEnviarValoracion;
+    private Button btnEnviarValoracion, btnBorrarValoracion;
 
     // Publicaciones
     private RecyclerView recyclerPublicaciones;
@@ -63,13 +64,12 @@ public class PerfilLocalActivity extends AppCompatActivity implements OnMapReady
     private IPublicacionService publicacionService;
     private int tareasCompletadas = 0; // Contador de tareas para la carga
 
-    private String uidLocalVisitado;
-    private String uidUsuarioActual;
+    private String uidLocalVisitado, uidUsuarioActual;
     private IUsuarioService usuarioService;
-    private IValoracionLocalService valoracionLocalService; // NUEVO SERVICIO
+    private IValoracionLocalService valoracionLocalService;
 
     // Variables para el mapa
-    private GoogleMap mMap;
+    private MapView mapOsm;
     private double latitudLocal = 0.0;
     private double longitudLocal = 0.0;
     private String nombreLocal = "";
@@ -84,7 +84,6 @@ public class PerfilLocalActivity extends AppCompatActivity implements OnMapReady
         mostrarDatosLocal();
         cargarPublicaciones();
         verificarRolYMostrarValoracion();
-
     }
 
     private void inicializar() {
@@ -93,7 +92,7 @@ public class PerfilLocalActivity extends AppCompatActivity implements OnMapReady
         publicacionService = ServiceFactory.providePublicacionService(this);
         valoracionLocalService = ServiceFactory.provideValoracionLocalService();
 
-        // El usuario actual puede ser NULL si es invitado
+        // El usuario actual puede ser null si es invitado
         if (mAuth.getCurrentUser() != null) {
             uidUsuarioActual = mAuth.getCurrentUser().getUid();
         } else {
@@ -122,6 +121,7 @@ public class PerfilLocalActivity extends AppCompatActivity implements OnMapReady
         layoutValoracion = findViewById(R.id.layoutValoracion);
         ratingBarLocal = findViewById(R.id.ratingBarLocal);
         btnEnviarValoracion = findViewById(R.id.btnEnviarValoracion);
+        btnBorrarValoracion = findViewById(R.id.btnBorrarValoracion);
 
         // Publicaciones
         tvSinPublicaciones = findViewById(R.id.tvSinPublicacionesLocal);
@@ -129,19 +129,30 @@ public class PerfilLocalActivity extends AppCompatActivity implements OnMapReady
         recyclerPublicaciones.setLayoutManager(new LinearLayoutManager(this));
 
         // Mapa
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.mapLocal);
+        configMapa();
+    }
 
-        if (mapFragment != null) {
-            mapFragment.getMapAsync(this);
-        }
+    @SuppressLint("ClickableViewAccessibility")
+    private void configMapa(){
+        Configuration.getInstance().setUserAgentValue(getPackageName());
+
+        mapOsm = findViewById(R.id.mapOsm);
+        mapOsm.setTileSource(TileSourceFactory.MAPNIK); // Estilo de mapa estándar
+        mapOsm.setMultiTouchControls(true); // Permitir zoom con dos dedos
+        mapOsm.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.NEVER); // Elimina los botones de zoom
+
+        // Evita que el NestedScrollView interrumpa el gesto de desplazamiento del mapa
+        mapOsm.setOnTouchListener((v, event) -> {
+            v.getParent().requestDisallowInterceptTouchEvent(true);
+            return false;
+        });
     }
 
     private String getUidPerfil(FirebaseAuth mAuth) {
-        String uidOtroUsuario = getIntent().getStringExtra("UID_USUARIO");
+        String uidOtroUsuarioLocal = getIntent().getStringExtra("UID_USUARIO");
 
-        if (uidOtroUsuario != null && !uidOtroUsuario.isEmpty()) {
-            return uidOtroUsuario;
+        if (uidOtroUsuarioLocal != null && !uidOtroUsuarioLocal.isEmpty()) {
+            return uidOtroUsuarioLocal;
         }
 
         // Si no hay Intent, comprobamos si es su propio perfil
@@ -171,7 +182,7 @@ public class PerfilLocalActivity extends AppCompatActivity implements OnMapReady
                         if (local.getSitioWeb() != null && !local.getSitioWeb().isEmpty()) {
                             tvSitioWeb.setText(local.getSitioWeb());
                         } else {
-                            tvSitioWeb.setText("No disponible");
+                            tvSitioWeb.setText(R.string.no_disponible);
                             tvSitioWeb.setTextColor(getResources().getColor(R.color.black, null));
                         }
 
@@ -228,9 +239,10 @@ public class PerfilLocalActivity extends AppCompatActivity implements OnMapReady
         }
     }
 
-    /** Muestra el bloque de estrellas y gestiona el envío de la valoración a la base de datos */
+    /** Muestra el bloque de estrellas y gestiona el envío/borrado de la valoración */
     private void verificarRolYMostrarValoracion() {
-        if (uidUsuarioActual == null) { // Si es invitado no muestra nada
+        // Si no hay usuario logueado (invitado), salimos discretamente
+        if (uidUsuarioActual == null) {
             return;
         }
 
@@ -240,65 +252,88 @@ public class PerfilLocalActivity extends AppCompatActivity implements OnMapReady
                     if ("cliente".equals(usuarioActual.getRol()) && !uidUsuarioActual.equals(uidLocalVisitado)) {
                         layoutValoracion.setVisibility(View.VISIBLE);
 
-                        // Recuperamos si ya había votado antes para pintar las estrellas
+                        // Recuperamos si ya había votado antes
                         valoracionLocalService.getValoracionUsuario(uidUsuarioActual, uidLocalVisitado)
                                 .addOnSuccessListener(valoracion -> {
                                     if (valoracion != null) {
+                                        // Pinta las estrellas y muestra el botón de borrar
                                         ratingBarLocal.setRating((float) valoracion.getPuntuacion());
+                                        btnBorrarValoracion.setVisibility(View.VISIBLE);
                                     }
                                 })
                                 .addOnFailureListener(e -> {
-                                    // Asumimos que no ha votado todavía y se queda en 0
+                                    // Asumimos que no ha votado todavía
                                     ratingBarLocal.setRating(0f);
+                                    btnBorrarValoracion.setVisibility(View.GONE);
                                 });
 
                         // Botón de enviar valoración
                         btnEnviarValoracion.setOnClickListener(v -> {
-                            // Evitamos doble click
-                            btnEnviarValoracion.setEnabled(false);
-
+                            btnEnviarValoracion.setEnabled(false); // Evitamos el doble click rápido
                             float puntuacionElegida = ratingBarLocal.getRating();
 
-                            // Construimos el objeto y dejamos que el Servicio decida si es válido
                             ValoracionLocal nuevaValoracion = ValoracionLocal.builder()
                                     .uidCliente(uidUsuarioActual)
                                     .uidLocal(uidLocalVisitado)
                                     .puntuacion(puntuacionElegida)
                                     .build();
 
-                            // Guarda y actualiza la media
                             valoracionLocalService.valorarLocal(nuevaValoracion)
                                     .addOnSuccessListener(unused -> {
-                                        Toast.makeText(this, "¡Valoración enviada!", Toast.LENGTH_SHORT).show();
-                                        // Recargamos el perfil
-                                        mostrarDatosLocal();
+                                        Toast.makeText(this, R.string.valoracion_enviada, Toast.LENGTH_SHORT).show();
+                                        mostrarDatosLocal(); // Recarga la media en tiempo real
+                                        btnBorrarValoracion.setVisibility(View.VISIBLE); // Mostramos el botón de borrar
                                         btnEnviarValoracion.setEnabled(true);
                                     })
                                     .addOnFailureListener(e -> {
-
                                         if (e instanceof FoodTracksValidationException ex) {
                                             Toast.makeText(this, ex.getErrorResId(), Toast.LENGTH_SHORT).show();
                                         } else {
-                                            Toast.makeText(this, "Error al enviar: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(this, getString(R.string.send_valoracion_error_mensaje) + e.getMessage(), Toast.LENGTH_SHORT).show();
                                         }
                                         btnEnviarValoracion.setEnabled(true);
+                                    });
+                        });
+
+                        // Botón de borrar valoración
+                        btnBorrarValoracion.setOnClickListener(v -> {
+                            btnBorrarValoracion.setEnabled(false);
+
+                            valoracionLocalService.eliminarValoracion(uidUsuarioActual, uidLocalVisitado)
+                                    .addOnSuccessListener(unused -> {
+                                        Toast.makeText(this, R.string.valoracion_eliminada, Toast.LENGTH_SHORT).show();
+                                        ratingBarLocal.setRating(0f); // Reseteamos las estrellas
+                                        btnBorrarValoracion.setVisibility(View.GONE); // Ocultamos el botón
+                                        mostrarDatosLocal(); // Recarga la media sin este voto
+                                        btnBorrarValoracion.setEnabled(true);
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Toast.makeText(this, getString(R.string.delete_valoracion_error_mensaje) + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                        btnBorrarValoracion.setEnabled(true);
                                     });
                         });
                     }
                 });
     }
 
-    @Override
-    public void onMapReady(@NonNull GoogleMap googleMap) {
-        mMap = googleMap;
-        actualizarChinchetaMapa();
-    }
 
     private void actualizarChinchetaMapa() {
-        if (mMap != null && latitudLocal != 0.0 && longitudLocal != 0.0) {
-            LatLng ubicacion = new LatLng(latitudLocal, longitudLocal);
-            mMap.addMarker(new MarkerOptions().position(ubicacion).title(nombreLocal));
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ubicacion, 15f));
+        if (mapOsm != null && latitudLocal != 0.0 && longitudLocal != 0.0) {
+            GeoPoint startPoint = new GeoPoint(latitudLocal, longitudLocal);
+
+            // Centrar el mapa
+            mapOsm.getController().setZoom(17.0);
+            mapOsm.getController().setCenter(startPoint);
+
+            // Añadir el marcador
+            Marker startMarker = new Marker(mapOsm);
+            startMarker.setPosition(startPoint);
+            startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+            startMarker.setTitle(nombreLocal);
+
+            mapOsm.getOverlays().clear();
+            mapOsm.getOverlays().add(startMarker);
+            mapOsm.invalidate();
         }
     }
 
@@ -332,5 +367,17 @@ public class PerfilLocalActivity extends AppCompatActivity implements OnMapReady
     private void configTheme() {
         getWindow().setStatusBarColor(androidx.core.content.ContextCompat.getColor(this, R.color.fondo));
         getWindow().setNavigationBarColor(androidx.core.content.ContextCompat.getColor(this, R.color.primary));
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mapOsm != null) mapOsm.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mapOsm != null) mapOsm.onPause();
     }
 }
