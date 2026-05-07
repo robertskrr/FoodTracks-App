@@ -41,7 +41,8 @@ public interface IPublicacionRepository {
     Task<Void> deletePublicacion(String uid);
 
     /**
-     * Recupera todas las publicaciones de un usuario específico.
+     * Recupera todas las publicaciones de un usuario específico,
+     * ordenadas de más reciente a más antigua.
      *
      * @param uidUsuario ID del usuario autor.
      * @return Task con la lista de publicaciones.
