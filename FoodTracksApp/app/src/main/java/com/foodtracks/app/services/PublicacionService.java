@@ -234,7 +234,7 @@ public class PublicacionService implements IPublicacionService {
      */
     private void normalizarDatos(Publicacion publicacion) {
         if (publicacion.getTexto() != null) {
-            publicacion.setTexto(StringUtils.capitalize(publicacion.getTexto()));
+            publicacion.setTexto(StringUtils.capitalizePrimeraLetra(publicacion.getTexto()));
         }
     }
 

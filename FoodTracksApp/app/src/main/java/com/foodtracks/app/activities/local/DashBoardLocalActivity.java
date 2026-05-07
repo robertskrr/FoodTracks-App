@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.foodtracks.app.R;
 import com.foodtracks.app.activities.MainActivity;
 
+import com.foodtracks.app.fragments.SubirPublicacionFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -91,5 +92,15 @@ public class DashBoardLocalActivity extends AppCompatActivity {
      */
     public void miPerfil(View view) {
         startActivity(new Intent(getApplicationContext(), PerfilLocalActivity.class));
+    }
+
+    /**
+     * Muestra el fragment para subir una publicación
+     *
+     * @param view
+     */
+    public void publicar(View view) {
+        SubirPublicacionFragment fm = new SubirPublicacionFragment();
+        fm.show(getSupportFragmentManager(), "Fragment publicacion");
     }
 }
