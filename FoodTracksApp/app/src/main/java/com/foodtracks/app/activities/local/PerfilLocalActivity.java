@@ -1,6 +1,4 @@
-/**
- * © FoodTracks Project ===robertskrr===
- */
+/** © FoodTracks Project ===robertskrr=== */
 
 package com.foodtracks.app.activities.local;
 
@@ -15,13 +13,11 @@ import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.foodtracks.app.R;
 import com.foodtracks.app.adapters.PublicacionAdapter;
 import com.foodtracks.app.models.UsuarioLocal;
@@ -31,11 +27,12 @@ import com.foodtracks.app.services.exceptions.FoodTracksValidationException;
 import com.foodtracks.app.services.interfaces.IPublicacionService;
 import com.foodtracks.app.services.interfaces.IUsuarioService;
 import com.foodtracks.app.services.interfaces.IValoracionLocalService;
+
+import com.bumptech.glide.Glide;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;
-
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
@@ -49,7 +46,13 @@ import org.osmdroid.views.overlay.Marker;
  */
 public class PerfilLocalActivity extends AppCompatActivity {
 
-    private TextView tvNombre, tvUsername, tvDireccion, tvTelefono, tvPuntuacion, tvSitioWeb, tvSinPublicaciones;
+    private TextView tvNombre,
+            tvUsername,
+            tvDireccion,
+            tvTelefono,
+            tvPuntuacion,
+            tvSitioWeb,
+            tvSinPublicaciones;
     private ShapeableImageView imgPerfil;
     private ChipGroup chipGroupOpciones;
     private ProgressBar progressBar;
@@ -135,19 +138,23 @@ public class PerfilLocalActivity extends AppCompatActivity {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private void configMapa(){
+    private void configMapa() {
         Configuration.getInstance().setUserAgentValue(getPackageName());
 
         mapOsm = findViewById(R.id.mapOsm);
         mapOsm.setTileSource(TileSourceFactory.MAPNIK); // Estilo de mapa estándar
         mapOsm.setMultiTouchControls(true); // Permitir zoom con dos dedos
-        mapOsm.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.NEVER); // Elimina los botones de zoom
+        mapOsm.getZoomController()
+                .setVisibility(
+                        CustomZoomButtonsController.Visibility
+                                .NEVER); // Elimina los botones de zoom
 
         // Evita que el NestedScrollView interrumpa el gesto de desplazamiento del mapa
-        mapOsm.setOnTouchListener((v, event) -> {
-            v.getParent().requestDisallowInterceptTouchEvent(true);
-            return false;
-        });
+        mapOsm.setOnTouchListener(
+                (v, event) -> {
+                    v.getParent().requestDisallowInterceptTouchEvent(true);
+                    return false;
+                });
     }
 
     private String getUidPerfil(FirebaseAuth mAuth) {
@@ -170,90 +177,125 @@ public class PerfilLocalActivity extends AppCompatActivity {
         // Reiniciamos temporalmente los textos para que se note la actualización en tiempo real
         tvPuntuacion.setText("...");
 
-        usuarioService.getPerfil(uidLocalVisitado)
-                .addOnSuccessListener(usuario -> {
-                    if (usuario instanceof UsuarioLocal local) {
-                        tvNombre.setText(local.getNombre());
-                        tvUsername.setText("@" + local.getUsername());
-                        tvDireccion.setText(local.getDireccion() + ", " + local.getCiudad());
-                        String telefonoLocal = local.getTelefono();
-                        // Configuración teléfono clickable
-                        tvTelefono.setText(telefonoLocal);
+        usuarioService
+                .getPerfil(uidLocalVisitado)
+                .addOnSuccessListener(
+                        usuario -> {
+                            if (usuario instanceof UsuarioLocal local) {
+                                tvNombre.setText(local.getNombre());
+                                tvUsername.setText("@" + local.getUsername());
+                                tvDireccion.setText(
+                                        local.getDireccion() + ", " + local.getCiudad());
+                                String telefonoLocal = local.getTelefono();
+                                // Configuración teléfono clickable
+                                tvTelefono.setText(telefonoLocal);
 
-                        if (telefonoLocal != null && !telefonoLocal.trim().isEmpty()) {
-                            tvTelefono.setOnClickListener(v -> {
-                                Intent intent = new android.content.Intent(android.content.Intent.ACTION_DIAL);
-                                intent.setData(Uri.parse("tel:" + telefonoLocal)); // Abre app de teléfono con el número
-                                startActivity(intent);
-                            });
-                        }
-
-                        // Refrescamos la nota media aquí
-                        tvPuntuacion.setText(String.format("%.1f", local.getPuntuacionMedia()));
-
-                        // Configuración sitio web clickable
-                        String webLocal = local.getSitioWeb();
-                        if (webLocal != null && !webLocal.trim().isEmpty()) {
-                            tvSitioWeb.setText(webLocal);
-                            tvSitioWeb.setTextColor(getResources().getColor(R.color.tertiary, null));
-
-                            tvSitioWeb.setOnClickListener(v -> {
-                                String url = webLocal;
-                                // Asegurarnos prefijo correcto para que el navegador lo entienda
-                                if (!url.startsWith("http://") && !url.startsWith("https://")) {
-                                    url = "https://" + url;
+                                if (telefonoLocal != null && !telefonoLocal.trim().isEmpty()) {
+                                    tvTelefono.setOnClickListener(
+                                            v -> {
+                                                Intent intent =
+                                                        new android.content.Intent(
+                                                                android.content.Intent.ACTION_DIAL);
+                                                intent.setData(
+                                                        Uri.parse("tel:" + telefonoLocal)); // Abre
+                                                // app de
+                                                // teléfono con el número
+                                                startActivity(intent);
+                                            });
                                 }
-                                Intent intent = new Intent(android.content.Intent.ACTION_VIEW);
-                                intent.setData(android.net.Uri.parse(url)); // Abre el navegador con la página del local
-                                startActivity(intent);
-                            });
-                        } else {
-                            tvSitioWeb.setText(R.string.no_disponible);
-                            tvSitioWeb.setTextColor(getResources().getColor(R.color.black, null));
-                            tvSitioWeb.setOnClickListener(null); // Desactivamos el click si no hay web
-                        }
 
-                        if (local.getFotoPerfil() != null) {
-                            Glide.with(this).load(local.getFotoPerfil()).into(imgPerfil);
-                        }
+                                // Refrescamos la nota media aquí
+                                tvPuntuacion.setText(
+                                        String.format("%.1f", local.getPuntuacionMedia()));
 
-                        cargarChipsOpciones(local);
+                                // Configuración sitio web clickable
+                                String webLocal = local.getSitioWeb();
+                                if (webLocal != null && !webLocal.trim().isEmpty()) {
+                                    tvSitioWeb.setText(webLocal);
+                                    tvSitioWeb.setTextColor(
+                                            getResources().getColor(R.color.tertiary, null));
 
-                        // Guardar coordenadas y actualizar el mapa si ya cargó
-                        latitudLocal = local.getLatitud();
-                        longitudLocal = local.getLongitud();
-                        nombreLocal = local.getNombre();
-                        actualizarChinchetaMapa();
+                                    tvSitioWeb.setOnClickListener(
+                                            v -> {
+                                                String url = webLocal;
+                                                // Asegurarnos prefijo correcto para que el
+                                                // navegador lo entienda
+                                                if (!url.startsWith("http://")
+                                                        && !url.startsWith("https://")) {
+                                                    url = "https://" + url;
+                                                }
+                                                Intent intent =
+                                                        new Intent(
+                                                                android.content.Intent.ACTION_VIEW);
+                                                intent.setData(
+                                                        android.net.Uri.parse(
+                                                                url)); // Abre el navegador con la
+                                                // página del local
+                                                startActivity(intent);
+                                            });
+                                } else {
+                                    tvSitioWeb.setText(R.string.no_disponible);
+                                    tvSitioWeb.setTextColor(
+                                            getResources().getColor(R.color.black, null));
+                                    tvSitioWeb.setOnClickListener(
+                                            null); // Desactivamos el click si no hay web
+                                }
 
-                        comprobarCargaCompleta();
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, getString(R.string.loading_profile_error_message) + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    comprobarCargaCompleta();
-                });
+                                if (local.getFotoPerfil() != null) {
+                                    Glide.with(this).load(local.getFotoPerfil()).into(imgPerfil);
+                                }
+
+                                cargarChipsOpciones(local);
+
+                                // Guardar coordenadas y actualizar el mapa si ya cargó
+                                latitudLocal = local.getLatitud();
+                                longitudLocal = local.getLongitud();
+                                nombreLocal = local.getNombre();
+                                actualizarChinchetaMapa();
+
+                                comprobarCargaCompleta();
+                            }
+                        })
+                .addOnFailureListener(
+                        e -> {
+                            Toast.makeText(
+                                            this,
+                                            getString(R.string.loading_profile_error_message)
+                                                    + e.getMessage(),
+                                            Toast.LENGTH_SHORT)
+                                    .show();
+                            comprobarCargaCompleta();
+                        });
     }
 
     /** Carga las publicaciones publicadas por este local */
     private void cargarPublicaciones() {
-        publicacionService.getPublicacionesByUsuario(uidLocalVisitado)
-                .addOnSuccessListener(publicaciones -> {
-                    if (publicaciones == null || publicaciones.isEmpty()) {
-                        tvSinPublicaciones.setVisibility(View.VISIBLE);
-                        recyclerPublicaciones.setVisibility(View.GONE);
-                    } else {
-                        tvSinPublicaciones.setVisibility(View.GONE);
-                        recyclerPublicaciones.setVisibility(View.VISIBLE);
+        publicacionService
+                .getPublicacionesByUsuario(uidLocalVisitado)
+                .addOnSuccessListener(
+                        publicaciones -> {
+                            if (publicaciones == null || publicaciones.isEmpty()) {
+                                tvSinPublicaciones.setVisibility(View.VISIBLE);
+                                recyclerPublicaciones.setVisibility(View.GONE);
+                            } else {
+                                tvSinPublicaciones.setVisibility(View.GONE);
+                                recyclerPublicaciones.setVisibility(View.VISIBLE);
 
-                        adapter = new PublicacionAdapter(publicaciones, this);
-                        recyclerPublicaciones.setAdapter(adapter);
-                    }
-                    comprobarCargaCompleta();
-                })
-                .addOnFailureListener(e -> {
-                    Toast.makeText(this, getString(R.string.publicaciones_loading_error_message) + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    comprobarCargaCompleta();
-                });
+                                adapter = new PublicacionAdapter(publicaciones, this);
+                                recyclerPublicaciones.setAdapter(adapter);
+                            }
+                            comprobarCargaCompleta();
+                        })
+                .addOnFailureListener(
+                        e -> {
+                            Toast.makeText(
+                                            this,
+                                            getString(R.string.publicaciones_loading_error_message)
+                                                    + e.getMessage(),
+                                            Toast.LENGTH_SHORT)
+                                    .show();
+                            comprobarCargaCompleta();
+                        });
     }
 
     /** Sincroniza las tareas de red para mostrar la pantalla solo cuando todo esté listo */
@@ -266,83 +308,157 @@ public class PerfilLocalActivity extends AppCompatActivity {
         }
     }
 
+    // TODO -> Probarlo cuando se acceda desde un cliente
+    // TODO -> Añadir sonido al valorar cuando se pruebe desde un cliente
     /** Muestra el bloque de estrellas y gestiona el envío/borrado de la valoración */
-    private void verificarRolYMostrarValoracion() { // TODO -> Probarlo cuando se acceda desde un cliente
+    private void verificarRolYMostrarValoracion() {
         // Si no hay usuario logueado (invitado), salimos discretamente
         if (uidUsuarioActual == null) {
             return;
         }
 
-        usuarioService.getPerfil(uidUsuarioActual)
-                .addOnSuccessListener(usuarioActual -> {
-                    // Si es un cliente y no está viendo su propio perfil, le dejamos valorar
-                    if ("cliente".equals(usuarioActual.getRol()) && !uidUsuarioActual.equals(uidLocalVisitado)) {
-                        layoutValoracion.setVisibility(View.VISIBLE);
+        usuarioService
+                .getPerfil(uidUsuarioActual)
+                .addOnSuccessListener(
+                        usuarioActual -> {
+                            // Si es un cliente y no está viendo su propio perfil, le dejamos
+                            // valorar
+                            if ("cliente".equals(usuarioActual.getRol())
+                                    && !uidUsuarioActual.equals(uidLocalVisitado)) {
+                                layoutValoracion.setVisibility(View.VISIBLE);
 
-                        // Recuperamos si ya había votado antes
-                        valoracionLocalService.getValoracionUsuario(uidUsuarioActual, uidLocalVisitado)
-                                .addOnSuccessListener(valoracion -> {
-                                    if (valoracion != null) {
-                                        // Pinta las estrellas y muestra el botón de borrar
-                                        ratingBarLocal.setRating((float) valoracion.getPuntuacion());
-                                        btnBorrarValoracion.setVisibility(View.VISIBLE);
-                                    }
-                                })
-                                .addOnFailureListener(e -> {
-                                    // Asumimos que no ha votado todavía
-                                    ratingBarLocal.setRating(0f);
-                                    btnBorrarValoracion.setVisibility(View.GONE);
-                                });
+                                // Recuperamos si ya había votado antes
+                                valoracionLocalService
+                                        .getValoracionUsuario(uidUsuarioActual, uidLocalVisitado)
+                                        .addOnSuccessListener(
+                                                valoracion -> {
+                                                    if (valoracion != null) {
+                                                        // Pinta las estrellas y muestra el botón de
+                                                        // borrar
+                                                        ratingBarLocal.setRating(
+                                                                (float) valoracion.getPuntuacion());
+                                                        btnBorrarValoracion.setVisibility(
+                                                                View.VISIBLE);
+                                                    }
+                                                })
+                                        .addOnFailureListener(
+                                                e -> {
+                                                    // Asumimos que no ha votado todavía
+                                                    ratingBarLocal.setRating(0f);
+                                                    btnBorrarValoracion.setVisibility(View.GONE);
+                                                });
 
-                        // Botón de enviar valoración
-                        btnEnviarValoracion.setOnClickListener(v -> {
-                            btnEnviarValoracion.setEnabled(false); // Evitamos el doble click rápido
-                            float puntuacionElegida = ratingBarLocal.getRating();
+                                // Botón de enviar valoración
+                                btnEnviarValoracion.setOnClickListener(
+                                        v -> {
+                                            btnEnviarValoracion.setEnabled(
+                                                    false); // Evitamos el doble click rápido
+                                            float puntuacionElegida = ratingBarLocal.getRating();
 
-                            ValoracionLocal nuevaValoracion = ValoracionLocal.builder()
-                                    .uidCliente(uidUsuarioActual)
-                                    .uidLocal(uidLocalVisitado)
-                                    .puntuacion(puntuacionElegida)
-                                    .build();
+                                            ValoracionLocal nuevaValoracion =
+                                                    ValoracionLocal.builder()
+                                                            .uidCliente(uidUsuarioActual)
+                                                            .uidLocal(uidLocalVisitado)
+                                                            .puntuacion(puntuacionElegida)
+                                                            .build();
 
-                            valoracionLocalService.valorarLocal(nuevaValoracion)
-                                    .addOnSuccessListener(unused -> {
-                                        Toast.makeText(this, R.string.valoracion_enviada, Toast.LENGTH_SHORT).show();
-                                        mostrarDatosLocal(); // Recarga la media en tiempo real
-                                        btnBorrarValoracion.setVisibility(View.VISIBLE); // Mostramos el botón de borrar
-                                        btnEnviarValoracion.setEnabled(true);
-                                    })
-                                    .addOnFailureListener(e -> {
-                                        if (e instanceof FoodTracksValidationException ex) {
-                                            Toast.makeText(this, ex.getErrorResId(), Toast.LENGTH_SHORT).show();
-                                        } else {
-                                            Toast.makeText(this, getString(R.string.send_valoracion_error_mensaje) + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                        }
-                                        btnEnviarValoracion.setEnabled(true);
-                                    });
+                                            valoracionLocalService
+                                                    .valorarLocal(nuevaValoracion)
+                                                    .addOnSuccessListener(
+                                                            unused -> {
+                                                                Toast.makeText(
+                                                                                this,
+                                                                                R.string
+                                                                                        .valoracion_enviada,
+                                                                                Toast.LENGTH_SHORT)
+                                                                        .show();
+                                                                mostrarDatosLocal(); // Recarga la
+                                                                // media en
+                                                                // tiempo real
+                                                                btnBorrarValoracion.setVisibility(
+                                                                        View
+                                                                                .VISIBLE); // Mostramos el botón de borrar
+                                                                btnEnviarValoracion.setEnabled(
+                                                                        true);
+                                                            })
+                                                    .addOnFailureListener(
+                                                            e -> {
+                                                                if (e
+                                                                        instanceof
+                                                                        FoodTracksValidationException
+                                                                        ex) {
+                                                                    Toast.makeText(
+                                                                                    this,
+                                                                                    ex
+                                                                                            .getErrorResId(),
+                                                                                    Toast
+                                                                                            .LENGTH_SHORT)
+                                                                            .show();
+                                                                } else {
+                                                                    Toast.makeText(
+                                                                                    this,
+                                                                                    getString(
+                                                                                                    R
+                                                                                                            .string
+                                                                                                            .send_valoracion_error_mensaje)
+                                                                                            + e
+                                                                                                    .getMessage(),
+                                                                                    Toast
+                                                                                            .LENGTH_SHORT)
+                                                                            .show();
+                                                                }
+                                                                btnEnviarValoracion.setEnabled(
+                                                                        true);
+                                                            });
+                                        });
+
+                                // Botón de borrar valoración
+                                btnBorrarValoracion.setOnClickListener(
+                                        v -> {
+                                            btnBorrarValoracion.setEnabled(false);
+
+                                            valoracionLocalService
+                                                    .eliminarValoracion(
+                                                            uidUsuarioActual, uidLocalVisitado)
+                                                    .addOnSuccessListener(
+                                                            unused -> {
+                                                                Toast.makeText(
+                                                                                this,
+                                                                                R.string
+                                                                                        .valoracion_eliminada,
+                                                                                Toast.LENGTH_SHORT)
+                                                                        .show();
+                                                                ratingBarLocal.setRating(
+                                                                        0f); // Reseteamos las
+                                                                // estrellas
+                                                                btnBorrarValoracion.setVisibility(
+                                                                        View.GONE); // Ocultamos
+                                                                // el botón
+                                                                mostrarDatosLocal(); // Recarga la
+                                                                // media sin
+                                                                // este voto
+                                                                btnBorrarValoracion.setEnabled(
+                                                                        true);
+                                                            })
+                                                    .addOnFailureListener(
+                                                            e -> {
+                                                                Toast.makeText(
+                                                                                this,
+                                                                                getString(
+                                                                                                R
+                                                                                                        .string
+                                                                                                        .delete_valoracion_error_mensaje)
+                                                                                        + e
+                                                                                                .getMessage(),
+                                                                                Toast.LENGTH_SHORT)
+                                                                        .show();
+                                                                btnBorrarValoracion.setEnabled(
+                                                                        true);
+                                                            });
+                                        });
+                            }
                         });
-
-                        // Botón de borrar valoración
-                        btnBorrarValoracion.setOnClickListener(v -> {
-                            btnBorrarValoracion.setEnabled(false);
-
-                            valoracionLocalService.eliminarValoracion(uidUsuarioActual, uidLocalVisitado)
-                                    .addOnSuccessListener(unused -> {
-                                        Toast.makeText(this, R.string.valoracion_eliminada, Toast.LENGTH_SHORT).show();
-                                        ratingBarLocal.setRating(0f); // Reseteamos las estrellas
-                                        btnBorrarValoracion.setVisibility(View.GONE); // Ocultamos el botón
-                                        mostrarDatosLocal(); // Recarga la media sin este voto
-                                        btnBorrarValoracion.setEnabled(true);
-                                    })
-                                    .addOnFailureListener(e -> {
-                                        Toast.makeText(this, getString(R.string.delete_valoracion_error_mensaje) + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                        btnBorrarValoracion.setEnabled(true);
-                                    });
-                        });
-                    }
-                });
     }
-
 
     private void actualizarChinchetaMapa() {
         if (mapOsm != null && latitudLocal != 0.0 && longitudLocal != 0.0) {
@@ -392,8 +508,12 @@ public class PerfilLocalActivity extends AppCompatActivity {
     }
 
     private void configTheme() {
-        getWindow().setStatusBarColor(androidx.core.content.ContextCompat.getColor(this, R.color.tertiary));
-        getWindow().setNavigationBarColor(androidx.core.content.ContextCompat.getColor(this, R.color.secondary));
+        getWindow()
+                .setStatusBarColor(
+                        androidx.core.content.ContextCompat.getColor(this, R.color.tertiary));
+        getWindow()
+                .setNavigationBarColor(
+                        androidx.core.content.ContextCompat.getColor(this, R.color.secondary));
     }
 
     @Override
