@@ -234,7 +234,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="25dp"
-                    app:singleSelection="false"></com.google.android.material.chip.ChipGroup>
+                    app:singleSelection="false"/>
 
             </LinearLayout>
 
