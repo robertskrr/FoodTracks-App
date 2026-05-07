@@ -386,14 +386,14 @@ public class PerfilLocalActivity extends AppCompatActivity {
         chip.setText(texto);
         chip.setCheckable(false);
         chip.setClickable(false);
-        chip.setChipBackgroundColorResource(R.color.tertiary);
-        chip.setTextColor(getResources().getColor(R.color.white, null));
+        chip.setChipBackgroundColorResource(R.color.primary);
+        chip.setTextColor(getResources().getColor(R.color.black, null));
         chipGroupOpciones.addView(chip);
     }
 
     private void configTheme() {
-        getWindow().setStatusBarColor(androidx.core.content.ContextCompat.getColor(this, R.color.fondo));
-        getWindow().setNavigationBarColor(androidx.core.content.ContextCompat.getColor(this, R.color.primary));
+        getWindow().setStatusBarColor(androidx.core.content.ContextCompat.getColor(this, R.color.tertiary));
+        getWindow().setNavigationBarColor(androidx.core.content.ContextCompat.getColor(this, R.color.secondary));
     }
 
     @Override
