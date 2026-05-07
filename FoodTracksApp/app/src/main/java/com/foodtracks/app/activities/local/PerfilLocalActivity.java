@@ -267,7 +267,7 @@ public class PerfilLocalActivity extends AppCompatActivity {
     }
 
     /** Muestra el bloque de estrellas y gestiona el envío/borrado de la valoración */
-    private void verificarRolYMostrarValoracion() {
+    private void verificarRolYMostrarValoracion() { // TODO -> Probarlo cuando se acceda desde un cliente
         // Si no hay usuario logueado (invitado), salimos discretamente
         if (uidUsuarioActual == null) {
             return;
