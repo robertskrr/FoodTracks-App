@@ -28,6 +28,7 @@
     <string name="send_valoracion_error_mensaje">Error al enviar valoración.</string>
     <string name="delete_valoracion_error_mensaje">Error al borrar valoración.</string>
     <string name="inicia_sesion_para_dar_like">Inicia sesión para dar Like</string>
+    <string name="complete_todos_los_campos">Complete todos los campos</string>
 
 
     <!-- LAYOUTS STRINGS -->

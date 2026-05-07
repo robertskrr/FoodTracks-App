@@ -11,15 +11,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 import com.foodtracks.app.R;
 import com.foodtracks.app.activities.admin.AdminActivity;
 import com.foodtracks.app.activities.cliente.HomeActivity;
 import com.foodtracks.app.activities.local.DashBoardLocalActivity;
+import com.foodtracks.app.models.Usuario;
+import com.foodtracks.app.services.ServiceFactory;
+import com.foodtracks.app.services.interfaces.IUsuarioService;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
  * @author Robert
@@ -30,37 +34,34 @@ public class LoginFragment extends DialogFragment {
     private EditText email, password;
     private TextView irARegistro;
     private Button btnLogin;
+
     private FirebaseAuth mAuth;
-    private FirebaseFirestore mFirestore;
+    private IUsuarioService usuarioService;
 
     /**
      * Asigna los componentes a la interfaz
      *
-     * @param v
+     * @param v Vista del fragmento
      */
-    private void asignarComponentes(View v) {
+    private void inicializar(View v) {
         btnLogin = v.findViewById(R.id.btnAcceder);
         email = v.findViewById(R.id.txtLoginEmail);
         password = v.findViewById(R.id.txtLoginPassword);
         irARegistro = v.findViewById(R.id.txtVolverARegistro);
 
         mAuth = FirebaseAuth.getInstance();
-        mFirestore = FirebaseFirestore.getInstance();
+        usuarioService = ServiceFactory.provideUsuarioService(requireContext());
     }
 
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_login, container, false);
-        asignarComponentes(v);
+        inicializar(v);
 
         irARegistro.setOnClickListener(
                 v1 -> {
-                    // Cerramos fragment
                     dismiss();
-
-                    // Abrimos fragmento de registro
                     TipoRegistroFragment registroFragment = new TipoRegistroFragment();
                     registroFragment.show(getParentFragmentManager(), "Fragment registro");
                 });
@@ -73,12 +74,14 @@ public class LoginFragment extends DialogFragment {
                     if (emailLogin.isEmpty() || passwordLogin.isEmpty()) {
                         Toast.makeText(
                                         getContext(),
-                                        "Complete todos los campos",
+                                        R.string.complete_todos_los_campos,
                                         Toast.LENGTH_SHORT)
                                 .show();
                         return;
                     }
 
+                    // Evitamos dobles clicks
+                    btnLogin.setEnabled(false);
                     loginUser(emailLogin, passwordLogin);
                 });
 
@@ -87,72 +90,63 @@ public class LoginFragment extends DialogFragment {
 
     private void loginUser(String emailLogin, String passwordLogin) {
         mAuth.signInWithEmailAndPassword(emailLogin, passwordLogin)
-                .addOnCompleteListener(
-                        task -> {
-                            if (task.isSuccessful()) {
-                                String uid = mAuth.getCurrentUser().getUid();
+                .addOnSuccessListener(
+                        authResult -> {
+                            if (authResult.getUser() != null) {
+                                String uid = authResult.getUser().getUid();
 
-                                // Consultamos el tipo de usuario en la colección
-                                mFirestore
-                                        .collection("usuarios")
-                                        .document(uid)
-                                        .get()
+                                usuarioService.getPerfil(uid)
                                         .addOnSuccessListener(
-                                                document -> {
-                                                    String rol = document.getString("rol");
-                                                    Intent intent;
-
-                                                    if (rol.equals("admin")) {
-                                                        intent =
-                                                                new Intent(
-                                                                        getContext(),
-                                                                        AdminActivity.class);
-                                                    } else if (rol.equals("local")) {
-                                                        intent =
-                                                                new Intent(
-                                                                        getContext(),
-                                                                        DashBoardLocalActivity
-                                                                                .class);
-                                                    } else {
-                                                        intent =
-                                                                new Intent(
-                                                                        getContext(),
-                                                                        HomeActivity.class);
-                                                    }
-
-                                                    // Limpiamos historial de activities para
-                                                    // que no pueda volver atrás
-                                                    intent.setFlags(
-                                                            Intent.FLAG_ACTIVITY_NEW_TASK
-                                                                    | Intent
-                                                                            .FLAG_ACTIVITY_CLEAR_TASK);
-                                                    dismiss();
-                                                    startActivity(intent);
+                                                this::cambiarActivity)
+                                        .addOnFailureListener(
+                                                e -> {
+                                                    Toast.makeText(getContext(), "Error al cargar el perfil: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                    btnLogin.setEnabled(true);
                                                 });
                             }
                         })
                 .addOnFailureListener(
-                        e ->
-                                Toast.makeText(
-                                                getContext(),
-                                                "Error al iniciar sesión",
-                                                Toast.LENGTH_SHORT)
-                                        .show());
+                        e -> {
+                            Toast.makeText(getContext(), "Error al iniciar sesión", Toast.LENGTH_SHORT).show();
+                            btnLogin.setEnabled(true);
+                        });
+    }
+
+    private void cambiarActivity(Usuario usuario){
+        Intent intent = getIntent(usuario);
+
+        // Limpiamos historial de activities
+        intent.setFlags(
+                Intent.FLAG_ACTIVITY_NEW_TASK
+                        | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        dismiss();
+        startActivity(intent);
+    }
+    @NonNull
+    private Intent getIntent(Usuario usuario) {
+        Intent intent;
+        String rol = usuario.getRol();
+
+        if ("admin".equals(rol)) {
+            intent = new Intent(getContext(), AdminActivity.class);
+        } else if ("local".equals(rol)) {
+            intent = new Intent(getContext(), DashBoardLocalActivity.class);
+        } else {
+            intent = new Intent(getContext(), HomeActivity.class);
+        }
+        return intent;
     }
 
     @Override
     public void onStart() {
         super.onStart();
         if (getDialog() != null && getDialog().getWindow() != null) {
-            // Elimina el recuadro blanco que Android pone por defecto detrás del fragment
             getDialog().getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-
-            // Obtenemos el ancho de la pantalla actual
             int width = getResources().getDisplayMetrics().widthPixels;
-            // Calculamos el 85% del ancho
             int desiredWidth = (int) (width * 0.85);
-            // Lo asignamos al dialog del fragmento
             getDialog().getWindow().setLayout(desiredWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
     }
+
+
 }
