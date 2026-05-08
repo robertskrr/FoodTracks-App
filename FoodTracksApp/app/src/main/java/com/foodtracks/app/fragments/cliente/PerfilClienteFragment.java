@@ -1,6 +1,6 @@
 /** © FoodTracks Project ===robertskrr=== */
 
-package com.foodtracks.app.fragments;
+package com.foodtracks.app.fragments.cliente;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
