@@ -5,7 +5,6 @@ package com.foodtracks.app.activities.cliente;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -13,6 +12,7 @@ import com.foodtracks.app.R;
 import com.foodtracks.app.activities.MainActivity;
 import com.foodtracks.app.fragments.SubirPublicacionFragment;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
 /**
@@ -22,8 +22,7 @@ import com.google.firebase.auth.FirebaseAuth;
 public class HomeActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
-
-    private Button btnLogOut, btnPerfil, btnSubirPublicacion;
+    private BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,55 +33,62 @@ public class HomeActivity extends AppCompatActivity {
         mostrarInterfazCliente();
     }
 
-    /** Asigna los componentes de la interfaz */
     private void asignarComponentes() {
         mAuth = FirebaseAuth.getInstance();
-        btnLogOut = findViewById(R.id.btnLogOutCliente);
-        btnPerfil = findViewById(R.id.btnPerfilCliente);
-        btnSubirPublicacion = findViewById(R.id.btnPublicacionCliente);
+        bottomNavigationView = findViewById(R.id.bottomNavigation);
     }
 
-    /** Si no es un invitado muestra la interfaz de usuario */
+    /** Si no es un invitado, muestra la barra y la configura */
     private void mostrarInterfazCliente() {
         if (mAuth.getCurrentUser() != null) {
-            btnLogOut.setVisibility(View.VISIBLE);
-            btnPerfil.setVisibility(View.VISIBLE);
-            btnSubirPublicacion.setVisibility(View.VISIBLE);
+            bottomNavigationView.setVisibility(View.VISIBLE);
+            configurarNavegacion();
+        } else {
+            // Si entra un invitado, ocultamos la barra
+            bottomNavigationView.setVisibility(View.GONE);
         }
+    }
+
+    private void configurarNavegacion() {
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            int itemId = item.getItemId();
+
+            if (itemId == R.id.nav_home) {
+                // TODO: Cargar el Feed principal (publicaciones recientes)
+                return true; // Devuelve true para que se marque visualmente
+
+            } else if (itemId == R.id.nav_busqueda) {
+                // TODO: Cargar el fragmento de Búsqueda de locales/usuarios
+                Toast.makeText(this, "Sección de Búsqueda", Toast.LENGTH_SHORT).show();
+                return true;
+
+            } else if (itemId == R.id.nav_publicar) {
+                SubirPublicacionFragment fm = new SubirPublicacionFragment();
+                fm.show(getSupportFragmentManager(), "Fragment publicacion");
+                return false;
+
+            } else if (itemId == R.id.nav_perfil) {
+                startActivity(new Intent(getApplicationContext(), PerfilClienteActivity.class));
+                return false;
+
+            } else if (itemId == R.id.nav_ajustes) {
+                logOut();
+                return false;
+            }
+
+            return false;
+        });
     }
 
     /**
      * Cierra la sesión del usuario
-     *
-     * @param view
      */
-    public void logOut(View view) {
+    private void logOut() {
         mAuth.signOut();
         Intent intent = new Intent(HomeActivity.this, MainActivity.class);
-
-        // Limpiamos historial de activities para que no pueda volver atrás
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         Toast.makeText(getApplicationContext(), R.string.despedida_app, Toast.LENGTH_SHORT).show();
         startActivity(intent);
         finish();
-    }
-
-    /**
-     * Visualizar el perfil
-     *
-     * @param view
-     */
-    public void miPerfil(View view) {
-        startActivity(new Intent(getApplicationContext(), PerfilClienteActivity.class));
-    }
-
-    /**
-     * Muestra el fragment para subir una publicación
-     *
-     * @param view
-     */
-    public void publicar(View view) {
-        SubirPublicacionFragment fm = new SubirPublicacionFragment();
-        fm.show(getSupportFragmentManager(), "Fragment publicacion");
     }
 }
