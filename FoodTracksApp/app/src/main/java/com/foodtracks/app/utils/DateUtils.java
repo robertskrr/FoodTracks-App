@@ -25,7 +25,7 @@ public class DateUtils {
 
     public static String getFechaFormateadaShort(Timestamp fecha) {
         Date fechaObjeto = fecha.toDate();
-        DateFormat formatoFecha = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault());
+        DateFormat formatoFecha = DateFormat.getDateTimeInstance(DateFormat.SHORT,DateFormat.SHORT, Locale.getDefault());
         return formatoFecha.format(fechaObjeto);
     }
 }
