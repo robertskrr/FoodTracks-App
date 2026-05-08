@@ -31,6 +31,7 @@
     <string name="complete_todos_los_campos">Complete todos los campos</string>
     <string name="subir_publicacion_error_message">Error al publicar.</string>
     <string name="camera_permissions_error">Se necesita permiso de cámara para tomar fotos.</string>
+    <string name="login_error_message">Error al iniciar sesión</string>
 
 
     <!-- LAYOUTS STRINGS -->

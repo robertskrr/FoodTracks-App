@@ -103,6 +103,10 @@ public class SubirPublicacionFragment extends DialogFragment {
         return v;
     }
 
+    /**
+     * Asigna los componentes a la interfaz
+     * @param v Vista del fragmento
+     */
     private void inicializar(View v) {
         tvUsernameAutor = v.findViewById(R.id.tvUsernameAutor);
         txtTextoPublicacion = v.findViewById(R.id.txtTextoPublicacion);
@@ -142,6 +146,9 @@ public class SubirPublicacionFragment extends DialogFragment {
                 });
     }
 
+    /**
+     * Configura los botones de la interfaz
+     */
     private void configurarBotones() {
         // Mostramos el menú de opciones
         btnAdjuntarFoto.setOnClickListener(v -> mostrarOpcionesImagen());

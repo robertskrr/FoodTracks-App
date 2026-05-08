@@ -4,6 +4,7 @@ package com.foodtracks.app.fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,21 +38,6 @@ public class LoginFragment extends DialogFragment {
 
     private FirebaseAuth mAuth;
     private IUsuarioService usuarioService;
-
-    /**
-     * Asigna los componentes a la interfaz
-     *
-     * @param v Vista del fragmento
-     */
-    private void inicializar(View v) {
-        btnLogin = v.findViewById(R.id.btnAcceder);
-        email = v.findViewById(R.id.txtLoginEmail);
-        password = v.findViewById(R.id.txtLoginPassword);
-        irARegistro = v.findViewById(R.id.txtVolverARegistro);
-
-        mAuth = FirebaseAuth.getInstance();
-        usuarioService = ServiceFactory.provideUsuarioService(requireContext());
-    }
 
     @Override
     public View onCreateView(
@@ -88,6 +74,26 @@ public class LoginFragment extends DialogFragment {
         return v;
     }
 
+    /**
+     * Asigna los componentes a la interfaz
+     *
+     * @param v Vista del fragmento
+     */
+    private void inicializar(View v) {
+        btnLogin = v.findViewById(R.id.btnAcceder);
+        email = v.findViewById(R.id.txtLoginEmail);
+        password = v.findViewById(R.id.txtLoginPassword);
+        irARegistro = v.findViewById(R.id.txtVolverARegistro);
+
+        mAuth = FirebaseAuth.getInstance();
+        usuarioService = ServiceFactory.provideUsuarioService(requireContext());
+    }
+
+    /**
+     * Proceso de login del usuario
+     * @param emailLogin Correo electrónico
+     * @param passwordLogin Contraseña
+     */
     private void loginUser(String emailLogin, String passwordLogin) {
         mAuth.signInWithEmailAndPassword(emailLogin, passwordLogin)
                 .addOnSuccessListener(
@@ -100,18 +106,23 @@ public class LoginFragment extends DialogFragment {
                                                 this::cambiarActivity)
                                         .addOnFailureListener(
                                                 e -> {
-                                                    Toast.makeText(getContext(), "Error al cargar el perfil: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(getContext(), getString(R.string.loading_profile_error_message), Toast.LENGTH_SHORT).show();
+                                                    Log.d("ERROR", getString(R.string.loading_profile_error_message) + e.getMessage());
                                                     btnLogin.setEnabled(true);
                                                 });
                             }
                         })
                 .addOnFailureListener(
                         e -> {
-                            Toast.makeText(getContext(), "Error al iniciar sesión", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), R.string.login_error_message, Toast.LENGTH_SHORT).show();
                             btnLogin.setEnabled(true);
                         });
     }
 
+    /**
+     * Cambia a la activity correspondiente
+     * @param usuario Usuario logueado
+     */
     private void cambiarActivity(Usuario usuario){
         Intent intent = getIntent(usuario);
 
@@ -122,6 +133,12 @@ public class LoginFragment extends DialogFragment {
         dismiss();
         startActivity(intent);
     }
+
+    /**
+     * Filtra la activity resultante según el rol
+     * @param usuario Usuario logueado
+     * @return Intent de la activity filtrada
+     */
     @NonNull
     private Intent getIntent(Usuario usuario) {
         Intent intent;
