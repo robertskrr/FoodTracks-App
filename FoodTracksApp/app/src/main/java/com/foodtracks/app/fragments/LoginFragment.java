@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
@@ -101,20 +100,35 @@ public class LoginFragment extends DialogFragment {
                             if (authResult.getUser() != null) {
                                 String uid = authResult.getUser().getUid();
 
-                                usuarioService.getPerfil(uid)
-                                        .addOnSuccessListener(
-                                                this::cambiarActivity)
+                                usuarioService
+                                        .getPerfil(uid)
+                                        .addOnSuccessListener(this::cambiarActivity)
                                         .addOnFailureListener(
                                                 e -> {
-                                                    Toast.makeText(getContext(), getString(R.string.loading_profile_error_message), Toast.LENGTH_SHORT).show();
-                                                    Log.d("ERROR", getString(R.string.loading_profile_error_message) + e.getMessage());
+                                                    Toast.makeText(
+                                                                    getContext(),
+                                                                    getString(
+                                                                            R.string
+                                                                                    .loading_profile_error_message),
+                                                                    Toast.LENGTH_SHORT)
+                                                            .show();
+                                                    Log.d(
+                                                            "ERROR",
+                                                            getString(
+                                                                            R.string
+                                                                                    .loading_profile_error_message)
+                                                                    + e.getMessage());
                                                     btnLogin.setEnabled(true);
                                                 });
                             }
                         })
                 .addOnFailureListener(
                         e -> {
-                            Toast.makeText(getContext(), R.string.login_error_message, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(
+                                            getContext(),
+                                            R.string.login_error_message,
+                                            Toast.LENGTH_SHORT)
+                                    .show();
                             btnLogin.setEnabled(true);
                         });
     }
@@ -123,13 +137,11 @@ public class LoginFragment extends DialogFragment {
      * Cambia a la activity correspondiente
      * @param usuario Usuario logueado
      */
-    private void cambiarActivity(Usuario usuario){
+    private void cambiarActivity(Usuario usuario) {
         Intent intent = getIntent(usuario);
 
         // Limpiamos historial de activities
-        intent.setFlags(
-                Intent.FLAG_ACTIVITY_NEW_TASK
-                        | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         dismiss();
         startActivity(intent);
     }
@@ -164,6 +176,4 @@ public class LoginFragment extends DialogFragment {
             getDialog().getWindow().setLayout(desiredWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
         }
     }
-
-
 }

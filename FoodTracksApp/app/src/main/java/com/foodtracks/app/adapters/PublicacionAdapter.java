@@ -197,17 +197,23 @@ public class PublicacionAdapter
                                             .into(holder.imgAvatarAutor);
                                 }
 
-                                View.OnClickListener irAlPerfilListener = v -> {
-                                    Intent intent;
-                                    if ("local".equals(usuario.getRol())) {
-                                        intent = new Intent(context, PerfilLocalActivity.class);
-                                    } else {
-                                        intent = new Intent(context, PerfilClienteActivity.class);
-                                    }
+                                View.OnClickListener irAlPerfilListener =
+                                        v -> {
+                                            Intent intent;
+                                            if ("local".equals(usuario.getRol())) {
+                                                intent =
+                                                        new Intent(
+                                                                context, PerfilLocalActivity.class);
+                                            } else {
+                                                intent =
+                                                        new Intent(
+                                                                context,
+                                                                PerfilClienteActivity.class);
+                                            }
 
-                                    intent.putExtra("UID_USUARIO", uidAutor);
-                                    context.startActivity(intent);
-                                };
+                                            intent.putExtra("UID_USUARIO", uidAutor);
+                                            context.startActivity(intent);
+                                        };
 
                                 // Asignamos el listener ya configurado
                                 holder.imgAvatarAutor.setOnClickListener(irAlPerfilListener);
@@ -220,6 +226,7 @@ public class PublicacionAdapter
                             Log.e("PublicacionAdapter", "Error cargando autor: " + e.getMessage());
                         });
     }
+
     /**
      * Consulta si el usuario actual ya le había dado like a esta publicación
      * para pintar el corazón del color correcto al abrir la pantalla.
@@ -235,16 +242,19 @@ public class PublicacionAdapter
         // Mientras comprobamos, bloqueamos el botón para que el usuario no pueda hacer click
         holder.imgLike.setEnabled(false);
 
-        likeService.getLike(currentUid, uidPublicacion)
-                .addOnSuccessListener(like -> {
-                    // Si no existe, lo dejamos blanco
-                    marcarComoLike(holder, like != null); // Si existe, lo pintamos de rojo
-                    holder.imgLike.setEnabled(true);
-                })
-                .addOnFailureListener(e -> {
-                    marcarComoLike(holder, false);
-                    holder.imgLike.setEnabled(true);
-                });
+        likeService
+                .getLike(currentUid, uidPublicacion)
+                .addOnSuccessListener(
+                        like -> {
+                            // Si no existe, lo dejamos blanco
+                            marcarComoLike(holder, like != null); // Si existe, lo pintamos de rojo
+                            holder.imgLike.setEnabled(true);
+                        })
+                .addOnFailureListener(
+                        e -> {
+                            marcarComoLike(holder, false);
+                            holder.imgLike.setEnabled(true);
+                        });
     }
 
     @Override

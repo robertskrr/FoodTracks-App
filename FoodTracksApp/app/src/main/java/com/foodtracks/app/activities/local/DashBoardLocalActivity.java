@@ -12,8 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.foodtracks.app.R;
 import com.foodtracks.app.activities.MainActivity;
-
 import com.foodtracks.app.fragments.SubirPublicacionFragment;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
