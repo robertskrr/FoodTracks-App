@@ -18,7 +18,7 @@ import androidx.fragment.app.DialogFragment;
 import com.foodtracks.app.R;
 import com.foodtracks.app.activities.admin.AdminActivity;
 import com.foodtracks.app.activities.cliente.MainClienteActivity;
-import com.foodtracks.app.activities.local.DashBoardLocalActivity;
+import com.foodtracks.app.activities.local.MainLocalActivity;
 import com.foodtracks.app.models.Usuario;
 import com.foodtracks.app.services.ServiceFactory;
 import com.foodtracks.app.services.interfaces.IUsuarioService;
@@ -159,7 +159,7 @@ public class LoginFragment extends DialogFragment {
         if ("admin".equals(rol)) {
             intent = new Intent(getContext(), AdminActivity.class);
         } else if ("local".equals(rol)) {
-            intent = new Intent(getContext(), DashBoardLocalActivity.class);
+            intent = new Intent(getContext(), MainLocalActivity.class);
         } else {
             intent = new Intent(getContext(), MainClienteActivity.class);
         }

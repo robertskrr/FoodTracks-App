@@ -5,11 +5,11 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/fondo"
-    tools:context=".activities.cliente.MainClienteActivity">
+    android:background="@color/tertiary"
+    tools:context=".activities.local.MainLocalActivity">
 
     <FrameLayout
-        android:id="@+id/contenedorPrincipalCliente"
+        android:id="@+id/contenedorPrincipalLocal"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigation"
@@ -21,12 +21,12 @@
         android:id="@+id/bottomNavigation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@color/secondary"
+        android:background="@color/primary"
         app:itemIconTint="@color/black"
         app:itemTextColor="@color/black"
         app:labelVisibilityMode="unlabeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/menu_bottom_nav_cliente" />
+        app:menu="@menu/menu_bottom_nav_local" />
 </androidx.constraintlayout.widget.ConstraintLayout>

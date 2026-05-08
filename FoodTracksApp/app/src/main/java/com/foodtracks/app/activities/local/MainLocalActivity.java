@@ -2,7 +2,7 @@
  * © FoodTracks Project ===robertskrr===
  */
 
-package com.foodtracks.app.activities.cliente;
+package com.foodtracks.app.activities.local;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,9 +14,8 @@ import androidx.fragment.app.Fragment;
 
 import com.foodtracks.app.R;
 import com.foodtracks.app.activities.MainActivity;
-import com.foodtracks.app.fragments.cliente.PerfilClienteFragment;
+import com.foodtracks.app.fragments.local.PerfilLocalFragment;
 import com.foodtracks.app.fragments.SubirPublicacionFragment;
-
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -24,7 +23,7 @@ import com.google.firebase.auth.FirebaseAuth;
  * @author Robert
  * @since 17/02
  */
-public class MainClienteActivity extends AppCompatActivity {
+public class MainLocalActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private BottomNavigationView bottomNavigationView;
@@ -32,20 +31,19 @@ public class MainClienteActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_cliente);
+        setContentView(R.layout.activity_main_local);
 
         configTheme();
         inicializar();
-        mostrarInterfazCliente();
+        mostrarInterfazLocal();
 
-        // Cargar un fragmento por defecto en home al iniciar si no hay estado previo guardado
-        if (savedInstanceState == null) {
+        if (savedInstanceState == null && mAuth.getCurrentUser() != null) {
             bottomNavigationView.setSelectedItemId(R.id.nav_home);
         }
     }
 
     /**
-     * Asigna los componentes de la interfaz.
+     * Asigna los componentes a la interfaz.
      */
     private void inicializar() {
         mAuth = FirebaseAuth.getInstance();
@@ -55,7 +53,7 @@ public class MainClienteActivity extends AppCompatActivity {
     /**
      * Muestra la barra de navegación configurada.
      */
-    private void mostrarInterfazCliente() {
+    private void mostrarInterfazLocal() {
         bottomNavigationView.setVisibility(View.VISIBLE);
         configurarNavegacion();
     }
@@ -66,7 +64,7 @@ public class MainClienteActivity extends AppCompatActivity {
     private void cargarFragmento(Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.contenedorPrincipalCliente, fragment)
+                .replace(R.id.contenedorPrincipalLocal, fragment)
                 .commit();
     }
 
@@ -79,31 +77,23 @@ public class MainClienteActivity extends AppCompatActivity {
             int itemId = item.getItemId();
 
             if (itemId == R.id.nav_home) {
-                // TODO: CargarFragmento(new FeedFragment());
+                // TODO: cargarFragmento(new FeedLocalFragment());
                 return true;
 
+            } else if (itemId == R.id.nav_dashboard) {
+                // TODO: cargarFragmento(new DashboardFragment());
+                return true;
             } else if (itemId == R.id.nav_busqueda) {
-                // TODO: CargarFragmento(new BusquedaFragment());
+                // TODO: cargarFragmento(new BusquedaFragment());
                 return true;
 
             } else if (itemId == R.id.nav_publicar) {
-                if (esInvitado()) {
-                    Toast.makeText(this, R.string.inicia_sesion_para_usar_esto, Toast.LENGTH_SHORT).show();
-                    return false; // Bloquea la navegación
-                }
-
                 SubirPublicacionFragment fm = new SubirPublicacionFragment();
                 fm.show(getSupportFragmentManager(), "Fragment publicacion");
                 return false;
 
             } else if (itemId == R.id.nav_perfil) {
-                if (esInvitado()) {
-                    Toast.makeText(this, R.string.inicia_sesion_para_usar_esto, Toast.LENGTH_SHORT).show();
-                    return false;
-                }
-
-                // Cambia el centro de la pantalla al fragmento de perfil
-                cargarFragmento(new PerfilClienteFragment());
+                cargarFragmento(new PerfilLocalFragment());
                 return true;
 
             } else if (itemId == R.id.nav_ajustes) {
@@ -115,22 +105,9 @@ public class MainClienteActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Revisa si el usuario que accede es invitado o no.
-     * @return true si es invitado.
-     */
-    private boolean esInvitado(){
-        return mAuth.getCurrentUser() == null;
-    }
-
-    /**
-     * Cierra la sesión del usuario y lo devuelve a la pantalla de inicio.
-     */
     private void logOut() {
-        if (!esInvitado()) {
-            mAuth.signOut();
-        }
-        Intent intent = new Intent(MainClienteActivity.this, MainActivity.class);
+        mAuth.signOut();
+        Intent intent = new Intent(MainLocalActivity.this, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         Toast.makeText(getApplicationContext(), R.string.despedida_app, Toast.LENGTH_SHORT).show();
         startActivity(intent);
@@ -140,9 +117,9 @@ public class MainClienteActivity extends AppCompatActivity {
     private void configTheme() {
         getWindow()
                 .setStatusBarColor(
-                        androidx.core.content.ContextCompat.getColor(this, R.color.fondo));
+                        androidx.core.content.ContextCompat.getColor(this, R.color.tertiary));
         getWindow()
                 .setNavigationBarColor(
-                        androidx.core.content.ContextCompat.getColor(this, R.color.secondary));
+                        androidx.core.content.ContextCompat.getColor(this, R.color.primary));
     }
 }

@@ -32,7 +32,7 @@
             android:name=".activities.admin.AdminActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.local.DashBoardLocalActivity"
+            android:name=".activities.local.MainLocalActivity"
             android:exported="false" />
         <activity
             android:name=".activities.cliente.MainClienteActivity"

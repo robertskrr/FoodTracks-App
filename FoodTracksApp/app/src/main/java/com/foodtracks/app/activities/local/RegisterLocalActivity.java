@@ -259,7 +259,7 @@ public class RegisterLocalActivity extends AppCompatActivity {
      * Navega a la activity Dashboard.
      */
     private void irADashboard() {
-        Intent intent = new Intent(this, DashBoardLocalActivity.class);
+        Intent intent = new Intent(this, MainLocalActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
