@@ -48,4 +48,18 @@ public class StringUtils {
 
         return Character.toUpperCase(minusculas.charAt(0)) + minusculas.substring(1);
     }
+
+    /**
+     * Capitaliza la primera letra de un texto largo respetando el resto del formato original.
+     * @param texto Texto a formatear.
+     * @return Texto con la primera letra en mayúscula.
+     */
+    public static String capitalizePrimeraLetra(String texto) {
+        if (texto == null || texto.trim().isEmpty()) {
+            return texto;
+        }
+
+        String t = texto.trim();
+        return Character.toUpperCase(t.charAt(0)) + t.substring(1);
+    }
 }

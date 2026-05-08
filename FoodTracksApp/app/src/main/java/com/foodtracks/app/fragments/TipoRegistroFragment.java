@@ -26,18 +26,29 @@ public class TipoRegistroFragment extends DialogFragment {
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_tipo_registro, container, false);
+        inicializar(v);
+        configurarBotones();
 
+        return v;
+    }
+
+    /**
+     * Asigna los componentes a la interfaz
+     *
+     * @param v Vista del fragmento
+     */
+    private void inicializar(View v) {
         btnCliente = v.findViewById(R.id.btnIniciarSesion);
         btnLocal = v.findViewById(R.id.btnRegistroLocal);
+    }
 
+    private void configurarBotones() {
         btnCliente.setOnClickListener(
                 v1 -> startActivity(new Intent(getContext(), RegisterClienteActivity.class)));
 
         btnLocal.setOnClickListener(
                 v2 -> startActivity(new Intent(getContext(), RegisterLocalActivity.class)));
-        return v;
     }
 
     @Override

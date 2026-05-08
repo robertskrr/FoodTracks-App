@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.foodtracks.app.R;
 import com.foodtracks.app.activities.cliente.PerfilClienteActivity;
+import com.foodtracks.app.activities.local.PerfilLocalActivity;
 import com.foodtracks.app.models.LikePublicacion;
 import com.foodtracks.app.models.Publicacion;
 import com.foodtracks.app.services.ServiceFactory;
@@ -78,6 +79,8 @@ public class PublicacionAdapter
             holder.tvFecha.setText(DateUtils.getFechaFormateadaShort(publicacion.getFechaHora()));
         }
 
+        holder.tvContadorLikes.setText(String.valueOf(publicacion.getNumLikes()));
+
         // Cargamos la imagen de la publicación (si existe)
         if (publicacion.getImagen() != null && !publicacion.getImagen().isEmpty()) {
             holder.imgPublicacion.setVisibility(View.VISIBLE);
@@ -88,21 +91,7 @@ public class PublicacionAdapter
 
         // Cargamos los datos del autor de la publicación
         cargarDatosAutor(holder, publicacion.getUidUsuario());
-
-        View.OnClickListener irAlPerfilListener =
-                v -> {
-                    // Intent dirigido a la Activity del perfil
-                    Intent intent = new Intent(context, PerfilClienteActivity.class);
-
-                    // Pasamos el UID del dueño de la publicación
-                    intent.putExtra("UID_USUARIO", publicacion.getUidUsuario());
-
-                    context.startActivity(intent);
-                };
-
-        // Asignamos el listener a la foto de perfil y al nombre de usuario
-        holder.imgAvatarAutor.setOnClickListener(irAlPerfilListener);
-        holder.tvUsernameAutor.setOnClickListener(irAlPerfilListener);
+        comprobarLikeInicial(holder, publicacion.getUid());
 
         // Configuramos el evento de Poner / Quitar like
         holder.imgLike.setOnClickListener(
@@ -190,6 +179,10 @@ public class PublicacionAdapter
         holder.tvUsernameAutor.setText(R.string.cargando);
         holder.imgAvatarAutor.setImageResource(R.drawable.avatar_default);
 
+        // Desactivamos los clicks temporalmente para que el usuario no pulse antes de cargar
+        holder.imgAvatarAutor.setOnClickListener(null);
+        holder.tvUsernameAutor.setOnClickListener(null);
+
         usuarioService
                 .getPerfil(uidAutor)
                 .addOnSuccessListener(
@@ -203,12 +196,64 @@ public class PublicacionAdapter
                                             .load(usuario.getFotoPerfil())
                                             .into(holder.imgAvatarAutor);
                                 }
+
+                                View.OnClickListener irAlPerfilListener =
+                                        v -> {
+                                            Intent intent;
+                                            if ("local".equals(usuario.getRol())) {
+                                                intent =
+                                                        new Intent(
+                                                                context, PerfilLocalActivity.class);
+                                            } else {
+                                                intent =
+                                                        new Intent(
+                                                                context,
+                                                                PerfilClienteActivity.class);
+                                            }
+
+                                            intent.putExtra("UID_USUARIO", uidAutor);
+                                            context.startActivity(intent);
+                                        };
+
+                                // Asignamos el listener ya configurado
+                                holder.imgAvatarAutor.setOnClickListener(irAlPerfilListener);
+                                holder.tvUsernameAutor.setOnClickListener(irAlPerfilListener);
                             }
                         })
                 .addOnFailureListener(
                         e -> {
                             holder.tvUsernameAutor.setText(R.string.usuario_desconocido);
                             Log.e("PublicacionAdapter", "Error cargando autor: " + e.getMessage());
+                        });
+    }
+
+    /**
+     * Consulta si el usuario actual ya le había dado like a esta publicación
+     * para pintar el corazón del color correcto al abrir la pantalla.
+     * @param holder ViewHolder de la publicación
+     * @param uidPublicacion Identificador de la publicación
+     */
+    private void comprobarLikeInicial(PublicacionViewHolder holder, String uidPublicacion) {
+        if (currentUid == null || currentUid.isEmpty()) {
+            marcarComoLike(holder, false);
+            return;
+        }
+
+        // Mientras comprobamos, bloqueamos el botón para que el usuario no pueda hacer click
+        holder.imgLike.setEnabled(false);
+
+        likeService
+                .getLike(currentUid, uidPublicacion)
+                .addOnSuccessListener(
+                        like -> {
+                            // Si no existe, lo dejamos blanco
+                            marcarComoLike(holder, like != null); // Si existe, lo pintamos de rojo
+                            holder.imgLike.setEnabled(true);
+                        })
+                .addOnFailureListener(
+                        e -> {
+                            marcarComoLike(holder, false);
+                            holder.imgLike.setEnabled(true);
                         });
     }
 

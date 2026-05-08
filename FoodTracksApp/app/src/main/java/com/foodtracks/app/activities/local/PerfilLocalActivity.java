@@ -107,7 +107,7 @@ public class PerfilLocalActivity extends AppCompatActivity {
         uidLocalVisitado = getUidPerfil(mAuth);
 
         if (uidLocalVisitado == null) {
-            Toast.makeText(this, "Perfil no disponible", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.loading_profile_error_message, Toast.LENGTH_SHORT).show();
             finish();
             return;
         }

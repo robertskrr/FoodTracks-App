@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.foodtracks.app.R;
 import com.foodtracks.app.activities.MainActivity;
+import com.foodtracks.app.fragments.SubirPublicacionFragment;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -22,8 +23,7 @@ public class HomeActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
 
-    private Button btnLogOut;
-    private Button btnPerfil;
+    private Button btnLogOut, btnPerfil, btnSubirPublicacion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +39,7 @@ public class HomeActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         btnLogOut = findViewById(R.id.btnLogOutCliente);
         btnPerfil = findViewById(R.id.btnPerfilCliente);
+        btnSubirPublicacion = findViewById(R.id.btnPublicacionCliente);
     }
 
     /** Si no es un invitado muestra la interfaz de usuario */
@@ -46,6 +47,7 @@ public class HomeActivity extends AppCompatActivity {
         if (mAuth.getCurrentUser() != null) {
             btnLogOut.setVisibility(View.VISIBLE);
             btnPerfil.setVisibility(View.VISIBLE);
+            btnSubirPublicacion.setVisibility(View.VISIBLE);
         }
     }
 
@@ -60,7 +62,7 @@ public class HomeActivity extends AppCompatActivity {
 
         // Limpiamos historial de activities para que no pueda volver atrás
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        Toast.makeText(getApplicationContext(), "¡Hasta pronto!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), R.string.despedida_app, Toast.LENGTH_SHORT).show();
         startActivity(intent);
         finish();
     }
@@ -72,5 +74,15 @@ public class HomeActivity extends AppCompatActivity {
      */
     public void miPerfil(View view) {
         startActivity(new Intent(getApplicationContext(), PerfilClienteActivity.class));
+    }
+
+    /**
+     * Muestra el fragment para subir una publicación
+     *
+     * @param view
+     */
+    public void publicar(View view) {
+        SubirPublicacionFragment fm = new SubirPublicacionFragment();
+        fm.show(getSupportFragmentManager(), "Fragment publicacion");
     }
 }

@@ -50,7 +50,10 @@ public class PublicacionRepository implements IPublicacionRepository {
 
     @Override
     public Task<QuerySnapshot> getPublicacionesByUsuario(String uidUsuario) {
-        return postsCollection.whereEqualTo("uid_usuario", uidUsuario).get();
+        return postsCollection
+                .whereEqualTo("uid_usuario", uidUsuario)
+                .orderBy("fecha_hora", Query.Direction.DESCENDING)
+                .get();
     }
 
     @Override
