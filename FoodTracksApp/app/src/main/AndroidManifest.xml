@@ -29,7 +29,7 @@
             android:name=".activities.cliente.PerfilClienteActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.admin.AdminActivity"
+            android:name=".activities.admin.MainAdminActivity"
             android:exported="false" />
         <activity
             android:name=".activities.local.MainLocalActivity"

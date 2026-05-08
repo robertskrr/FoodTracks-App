@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.foodtracks.app.R;
-import com.foodtracks.app.activities.admin.AdminActivity;
+import com.foodtracks.app.activities.admin.MainAdminActivity;
 import com.foodtracks.app.activities.cliente.MainClienteActivity;
 import com.foodtracks.app.activities.local.MainLocalActivity;
 import com.foodtracks.app.services.ServiceFactory;
@@ -77,7 +77,7 @@ public class StartUpActivity extends AppCompatActivity {
                                 if (rol.equals("admin")) {
                                     intent =
                                             new Intent(
-                                                    getApplicationContext(), AdminActivity.class);
+                                                    getApplicationContext(), MainAdminActivity.class);
                                 } else if (rol.equals("local")) {
                                     intent =
                                             new Intent(

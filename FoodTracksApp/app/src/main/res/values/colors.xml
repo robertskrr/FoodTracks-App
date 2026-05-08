@@ -6,4 +6,5 @@
     <color name="primary">#E7852F</color>
     <color name="secondary">#9EC438</color>
     <color name="tertiary">#314357</color>
+    <color name="admin_bottom_nav">#818181</color>
 </resources>
