@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/fondo"
+    android:visibility="visible"
     tools:context=".activities.cliente.HomeActivity">
 
     <Button
@@ -16,7 +17,7 @@
         android:backgroundTint="#FF0000"
         android:onClick="logOut"
         android:text="@string/cerrar_sesion"
-        android:visibility="visible"
+        android:visibility="gone"
         app:cornerRadius="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -31,7 +32,7 @@
         android:backgroundTint="@color/secondary"
         android:onClick="miPerfil"
         android:text="@string/perfil"
-        android:visibility="visible"
+        android:visibility="gone"
         app:cornerRadius="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -45,6 +46,7 @@
         android:layout_marginTop="496dp"
         android:onClick="publicar"
         android:text="@string/publicar"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.529"
         app:layout_constraintStart_toStartOf="parent"
