@@ -35,7 +35,7 @@
             android:name=".activities.local.DashBoardLocalActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.cliente.HomeActivity"
+            android:name=".activities.cliente.MainClienteActivity"
             android:exported="false" />
         <activity
             android:name=".activities.local.RegisterLocalActivity"

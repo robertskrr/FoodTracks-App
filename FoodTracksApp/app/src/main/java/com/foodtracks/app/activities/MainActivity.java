@@ -8,7 +8,7 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.foodtracks.app.R;
-import com.foodtracks.app.activities.cliente.HomeActivity;
+import com.foodtracks.app.activities.cliente.MainClienteActivity;
 import com.foodtracks.app.fragments.LoginFragment;
 import com.foodtracks.app.fragments.TipoRegistroFragment;
 
@@ -50,6 +50,6 @@ public class MainActivity extends AppCompatActivity {
      * @param view
      */
     public void invitado(View view) {
-        startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+        startActivity(new Intent(getApplicationContext(), MainClienteActivity.class));
     }
 }

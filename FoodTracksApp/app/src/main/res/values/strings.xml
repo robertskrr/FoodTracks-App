@@ -32,6 +32,7 @@
     <string name="subir_publicacion_error_message">Error al publicar.</string>
     <string name="camera_permissions_error">Se necesita permiso de cámara para tomar fotos.</string>
     <string name="login_error_message">Error al iniciar sesión</string>
+    <string name="inicia_sesion_para_usar_esto">Inicia sesión para usar esto.</string>
 
 
     <!-- LAYOUTS STRINGS -->

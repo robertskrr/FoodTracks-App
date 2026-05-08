@@ -49,7 +49,7 @@ public class PerfilClienteActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_perfil_cliente);
+        setContentView(R.layout.fragment_perfil_cliente);
 
         configTheme();
         inicializar();
