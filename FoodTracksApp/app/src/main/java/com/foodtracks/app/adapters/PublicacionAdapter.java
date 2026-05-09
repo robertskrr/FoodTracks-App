@@ -219,7 +219,6 @@ public class PublicacionAdapter
 
                                 // Asignamos el listener ya configurado
                                 holder.imgAvatarAutor.setOnClickListener(irAlPerfilListener);
-                                holder.tvUsernameAutor.setOnClickListener(irAlPerfilListener);
                             }
                         })
                 .addOnFailureListener(
