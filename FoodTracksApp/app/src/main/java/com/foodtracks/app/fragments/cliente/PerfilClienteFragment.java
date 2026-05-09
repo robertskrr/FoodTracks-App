@@ -64,6 +64,7 @@ public class PerfilClienteFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_perfil_cliente, container, false);
 
+        configTheme();
         inicializar();
         mostrarDatosCliente();
         cargarPublicaciones();
@@ -185,6 +186,16 @@ public class PerfilClienteFragment extends Fragment {
         if (tareasCompletadas >= 2) {
             progressBar.setVisibility(View.GONE);
             layoutContenido.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /**
+     * Configura la barra de navegación y de estado
+     */
+    private void configTheme() {
+        if (getActivity() != null) {
+            getActivity().getWindow().setStatusBarColor(
+                    androidx.core.content.ContextCompat.getColor(requireContext(), R.color.fondo));
         }
     }
 }

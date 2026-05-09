@@ -93,6 +93,7 @@ public class PerfilLocalFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_perfil_local, container, false);
 
+        configTheme();
         inicializar();
         mostrarDatosLocal();
         cargarPublicaciones();
@@ -395,5 +396,15 @@ public class PerfilLocalFragment extends Fragment {
     public void onPause() {
         super.onPause();
         if (mapOsm != null) mapOsm.onPause();
+    }
+
+    /**
+     * Configura la barra de navegación y de estado
+     */
+    private void configTheme() {
+        if (getActivity() != null) {
+            getActivity().getWindow().setStatusBarColor(
+                    androidx.core.content.ContextCompat.getColor(requireContext(), R.color.tertiary));
+        }
     }
 }

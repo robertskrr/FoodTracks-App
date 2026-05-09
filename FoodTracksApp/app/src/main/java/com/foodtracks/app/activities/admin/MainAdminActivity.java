@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 
 import com.foodtracks.app.R;
 import com.foodtracks.app.activities.MainActivity;
+import com.foodtracks.app.fragments.FeedFragment;
 import com.foodtracks.app.fragments.cliente.PerfilClienteFragment;
 import com.foodtracks.app.fragments.SubirPublicacionFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -77,7 +78,7 @@ public class MainAdminActivity extends AppCompatActivity {
             int itemId = item.getItemId();
 
             if (itemId == R.id.nav_home) {
-                // TODO: cargarFragmento(new FeedFragment());
+                cargarFragmento(new FeedFragment());
                 return true;
 
             } else if (itemId == R.id.nav_admin_panel) {
