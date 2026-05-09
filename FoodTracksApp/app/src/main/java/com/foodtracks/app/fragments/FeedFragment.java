@@ -166,8 +166,6 @@ public class FeedFragment extends Fragment {
      */
     private void configTheme() {
         if (getActivity() != null) {
-            getActivity().getWindow().setStatusBarColor(
-                    androidx.core.content.ContextCompat.getColor(requireContext(), R.color.fondo));
 
             if (esAdmin) {
                 getActivity().getWindow().setStatusBarColor(
@@ -178,12 +176,15 @@ public class FeedFragment extends Fragment {
             }
 
             if (esCliente || esInvitado){
+                getActivity().getWindow().setStatusBarColor(
+                        androidx.core.content.ContextCompat.getColor(requireContext(), R.color.fondo));
                 // TODO -> Interfaz de cliente/invitado (colores, etc)
             }
 
             if (esLocal){
                 // TODO -> Interfaz de local (colores, etc)
             }
+            
         }
 
 
