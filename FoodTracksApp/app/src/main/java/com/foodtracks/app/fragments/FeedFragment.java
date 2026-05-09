@@ -71,7 +71,6 @@ public class FeedFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_feed, container, false);
 
-        configTheme();
         inicializar();
         mostrarDatosUsuario();
         cargarPublicaciones();
@@ -118,8 +117,14 @@ public class FeedFragment extends Fragment {
                             esAdmin = true;
                             configTheme();
                         }
-                        case UsuarioCliente ignored -> esCliente = true;
-                        case UsuarioLocal ignored -> esLocal = true;
+                        case UsuarioCliente ignored -> {
+                            esCliente = true;
+                            configTheme();
+                        }
+                        case UsuarioLocal ignored -> {
+                            esLocal = true;
+                            configTheme();
+                        }
                         default -> {
                         }
                     }
@@ -184,7 +189,7 @@ public class FeedFragment extends Fragment {
             if (esLocal){
                 // TODO -> Interfaz de local (colores, etc)
             }
-            
+
         }
 
 
