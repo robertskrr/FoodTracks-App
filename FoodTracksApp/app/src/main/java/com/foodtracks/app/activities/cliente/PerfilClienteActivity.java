@@ -75,7 +75,7 @@ public class PerfilClienteActivity extends AppCompatActivity {
         tvCiudad = findViewById(R.id.tvCiudadCliente);
         tvFechaRegistro = findViewById(R.id.tvFechaRegistroCliente);
 
-        tvSinPublicaciones = findViewById(R.id.tvSinPublicaciones);
+        tvSinPublicaciones = findViewById(R.id.tvSinPublicacionesFeed);
 
         // Foto perfil
         imgPerfil = findViewById(R.id.imgPerfilCliente);
@@ -88,7 +88,7 @@ public class PerfilClienteActivity extends AppCompatActivity {
         recyclerPublicaciones.setLayoutManager(new LinearLayoutManager(this));
 
         // Pantalla de carga
-        progressBar = findViewById(R.id.progressBarPerfil);
+        progressBar = findViewById(R.id.progressBarFeed);
         layoutContenido = findViewById(R.id.layoutContenidoPerfil);
     }
 

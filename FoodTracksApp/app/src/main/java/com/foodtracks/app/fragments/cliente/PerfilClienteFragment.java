@@ -82,12 +82,12 @@ public class PerfilClienteFragment extends Fragment {
         tvUsername = rootView.findViewById(R.id.tvUsernameCliente);
         tvCiudad = rootView.findViewById(R.id.tvCiudadCliente);
         tvFechaRegistro = rootView.findViewById(R.id.tvFechaRegistroCliente);
-        tvSinPublicaciones = rootView.findViewById(R.id.tvSinPublicaciones);
+        tvSinPublicaciones = rootView.findViewById(R.id.tvSinPublicacionesFeed);
         imgPerfil = rootView.findViewById(R.id.imgPerfilCliente);
         chipGroupPreferencias = rootView.findViewById(R.id.chipGroupPreferencias);
         recyclerPublicaciones = rootView.findViewById(R.id.recyclerPublicacionesCliente);
         recyclerPublicaciones.setLayoutManager(new LinearLayoutManager(requireContext()));
-        progressBar = rootView.findViewById(R.id.progressBarPerfil);
+        progressBar = rootView.findViewById(R.id.progressBarFeed);
         layoutContenido = rootView.findViewById(R.id.layoutContenidoPerfil);
     }
 

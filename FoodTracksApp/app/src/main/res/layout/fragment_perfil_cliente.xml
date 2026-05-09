@@ -31,7 +31,7 @@
 
     <!-- CÍRCULO DE CARGA (Visible por defecto) -->
     <ProgressBar
-        android:id="@+id/progressBarPerfil"
+        android:id="@+id/progressBarFeed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -173,7 +173,7 @@
 
             <!-- TEXTO: SIN PUBLICACIONES (Oculto por defecto) -->
             <TextView
-                android:id="@+id/tvSinPublicaciones"
+                android:id="@+id/tvSinPublicacionesFeed"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
