@@ -110,7 +110,6 @@ public class FeedFragment extends Fragment {
                 .addOnSuccessListener(usuario -> {
                     if (!isAdded()) return; // Red de seguridad
                     tvUsername.setText("@" + usuario.getUsername());
-                    comprobarCargaCompleta();
 
                     switch (usuario) {
                         case UsuarioAdmin ignored1 -> {
@@ -128,6 +127,7 @@ public class FeedFragment extends Fragment {
                         default -> {
                         }
                     }
+                    comprobarCargaCompleta();
                 })
                 .addOnFailureListener(e -> {
                     if (!isAdded()) return; // Red de seguridad
