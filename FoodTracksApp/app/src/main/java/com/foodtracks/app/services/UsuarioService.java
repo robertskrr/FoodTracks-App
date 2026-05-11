@@ -2,6 +2,7 @@
 
 package com.foodtracks.app.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.net.Uri;
@@ -319,7 +320,7 @@ public class UsuarioService implements IUsuarioService {
                 .searchUsuariosByField("username", cleanQuery)
                 .continueWith(
                         task -> {
-                            List<Usuario> listaUsuarios = new java.util.ArrayList<>();
+                            List<Usuario> listaUsuarios = new ArrayList<>();
 
                             if (task.isSuccessful() && task.getResult() != null) {
                                 for (DocumentSnapshot doc : task.getResult()) {
@@ -343,6 +344,50 @@ public class UsuarioService implements IUsuarioService {
                             }
                             return listaUsuarios;
                         });
+    }
+
+    @Override
+    public Task<List<Usuario>> buscarLocalesPorFiltros(String ciudad, boolean vegano, boolean vegetariano,
+                                                       boolean sinLactosa, boolean celiaco, String otraPreferencia) {
+
+        String cleanCiudad = (ciudad != null && !ciudad.trim().isEmpty()) ? StringUtils.capitalize(ciudad.trim()) : null;
+        String cleanOtraPreferencia = (otraPreferencia != null && !otraPreferencia.trim().isEmpty()) ? StringUtils.capitalize(otraPreferencia.trim()) : null;
+
+        return usuarioRepository.searchLocalesByFiltros(cleanCiudad, vegano, vegetariano, sinLactosa, celiaco, cleanOtraPreferencia)
+                .continueWith(task -> {
+                    List<Usuario> listaLocales = new ArrayList<>();
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        for (DocumentSnapshot doc : task.getResult()) {
+                            listaLocales.add(doc.toObject(UsuarioLocal.class));
+                        }
+                    }
+                    return listaLocales;
+                });
+    }
+
+    @Override
+    public Task<List<Usuario>> buscarLocalesPorMisPreferencias(String uidUsuario, String ciudadOpcional) {
+        // Recuperamos el perfil del usuario protagonista
+        return getPerfil(uidUsuario).continueWithTask(task -> {
+
+            if (!task.isSuccessful() || task.getResult() == null) {
+                return Tasks.forException(new FoodTracksNotFoundException(R.string.profile_not_available_to_filter));
+            }
+
+            Usuario usuario = task.getResult();
+
+            // Recuperamos la otra preferencia si es String
+            String otraPreferencia = (usuario.getOtraPreferencia() instanceof String) ? (String) usuario.getOtraPreferencia() : null;
+            
+            return buscarLocalesPorFiltros(
+                    ciudadOpcional,
+                    usuario.isEsVegano(),
+                    usuario.isEsVegetariano(),
+                    usuario.isSinLactosa(),
+                    usuario.isEsCeliaco(),
+                    otraPreferencia
+            );
+        });
     }
 
     @Override

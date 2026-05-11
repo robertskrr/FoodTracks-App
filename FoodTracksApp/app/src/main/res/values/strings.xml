@@ -33,6 +33,7 @@
     <string name="camera_permissions_error">Se necesita permiso de cámara para tomar fotos.</string>
     <string name="login_error_message">Error al iniciar sesión</string>
     <string name="inicia_sesion_para_usar_esto">Inicia sesión para usar esto.</string>
+    <string name="profile_not_available_to_filter">No se pudo obtener el perfil para filtrar.</string>
 
 
     <!-- LAYOUTS STRINGS -->
