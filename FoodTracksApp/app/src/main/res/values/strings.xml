@@ -32,6 +32,7 @@
     <string name="subir_publicacion_error_message">Error al publicar.</string>
     <string name="camera_permissions_error">Se necesita permiso de cámara para tomar fotos.</string>
     <string name="login_error_message">Error al iniciar sesión</string>
+    <string name="inicia_sesion_para_usar_esto">Inicia sesión para usar esto.</string>
 
 
     <!-- LAYOUTS STRINGS -->
@@ -42,8 +43,8 @@
     <string name="cerrar_sesion">Cerrar sesión</string>
     <string name="perfil">Perfil</string>
     <string name="succesful_register">¡Usuario registrado con éxito!</string>
-    <string name="admin_panel">ADMIN PANEL</string>
-    <string name="dashboard">DASHBOARD</string>
+    <string name="admin_panel">Admin panel</string>
+    <string name="dashboard">Dashboard</string>
     <string name="mi_perfil">Mi Perfil</string>
     <string name="registro_cliente">Registro cliente</string>
     <string name="cambiar_foto_de_perfil">Cambiar foto de perfil</string>
@@ -93,7 +94,10 @@
     <string name="hacer_foto">Hacer foto</string>
     <string name="elegir_de_la_galeria">Elegir de la galería</string>
     <string name="despedida_app">¡Hasta pronto!</string>
-
+    <string name="busqueda">Búsqueda</string>
+    <string name="ajustes">Ajustes</string>
+    <string name="inicio">Inicio</string>
+    <string name="feed">FEED</string>
 
 
 </resources>

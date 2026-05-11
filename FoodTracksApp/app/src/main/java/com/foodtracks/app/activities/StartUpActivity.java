@@ -13,9 +13,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import com.foodtracks.app.R;
-import com.foodtracks.app.activities.admin.AdminActivity;
-import com.foodtracks.app.activities.cliente.HomeActivity;
-import com.foodtracks.app.activities.local.DashBoardLocalActivity;
+import com.foodtracks.app.activities.admin.MainAdminActivity;
+import com.foodtracks.app.activities.cliente.MainClienteActivity;
+import com.foodtracks.app.activities.local.MainLocalActivity;
 import com.foodtracks.app.services.ServiceFactory;
 import com.foodtracks.app.services.interfaces.IUsuarioService;
 
@@ -77,15 +77,15 @@ public class StartUpActivity extends AppCompatActivity {
                                 if (rol.equals("admin")) {
                                     intent =
                                             new Intent(
-                                                    getApplicationContext(), AdminActivity.class);
+                                                    getApplicationContext(), MainAdminActivity.class);
                                 } else if (rol.equals("local")) {
                                     intent =
                                             new Intent(
                                                     getApplicationContext(),
-                                                    DashBoardLocalActivity.class);
+                                                    MainLocalActivity.class);
                                 } else {
                                     intent =
-                                            new Intent(getApplicationContext(), HomeActivity.class);
+                                            new Intent(getApplicationContext(), MainClienteActivity.class);
                                 }
 
                                 cambiarActivity(intent);

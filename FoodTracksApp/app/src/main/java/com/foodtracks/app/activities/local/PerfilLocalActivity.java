@@ -82,7 +82,7 @@ public class PerfilLocalActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_perfil_local);
+        setContentView(R.layout.fragment_perfil_local);
 
         configTheme();
         inicializar();

@@ -197,6 +197,8 @@ public class PublicacionAdapter
                                             .into(holder.imgAvatarAutor);
                                 }
 
+                                // IMPORTANTE -> Abrirá las activities para diferenciarse de la interfaz principal
+                                // (No barra de navegación)
                                 View.OnClickListener irAlPerfilListener =
                                         v -> {
                                             Intent intent;
@@ -217,7 +219,6 @@ public class PublicacionAdapter
 
                                 // Asignamos el listener ya configurado
                                 holder.imgAvatarAutor.setOnClickListener(irAlPerfilListener);
-                                holder.tvUsernameAutor.setOnClickListener(irAlPerfilListener);
                             }
                         })
                 .addOnFailureListener(

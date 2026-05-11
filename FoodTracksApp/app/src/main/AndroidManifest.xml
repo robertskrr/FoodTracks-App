@@ -29,13 +29,13 @@
             android:name=".activities.cliente.PerfilClienteActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.admin.AdminActivity"
+            android:name=".activities.admin.MainAdminActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.local.DashBoardLocalActivity"
+            android:name=".activities.local.MainLocalActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.cliente.HomeActivity"
+            android:name=".activities.cliente.MainClienteActivity"
             android:exported="false" />
         <activity
             android:name=".activities.local.RegisterLocalActivity"
