@@ -278,7 +278,7 @@ public class UsuarioService implements IUsuarioService {
                                             usuarioModificado.setFotoId(usuarioActual.getFotoId());
                                         }
 
-                                        // Comprueba si se ha cambiado el username
+                                        // Comprueba si se ha cambiado el username // TODO: Cambiar de sitio. Primero comprueba esto antes de subir nada
                                         if (!usuarioActual
                                                 .getUsername()
                                                 .equals(usuarioModificado.getUsername())) {
@@ -319,11 +319,29 @@ public class UsuarioService implements IUsuarioService {
                 .searchUsuariosByUsername(cleanQuery)
                 .continueWith(
                         task -> {
+                            List<Usuario> listaUsuarios = new java.util.ArrayList<>();
+
                             if (task.isSuccessful() && task.getResult() != null) {
-                                return task.getResult().toObjects(Usuario.class);
-                            } else {
-                                return new java.util.ArrayList<>();
+                                for (DocumentSnapshot doc : task.getResult()) {
+                                    String rol = doc.getString("rol");
+
+                                    if (rol != null) {
+                                        switch (rol) {
+                                            case "local":
+                                                listaUsuarios.add(doc.toObject(UsuarioLocal.class));
+                                                break;
+                                            case "admin":
+                                                listaUsuarios.add(doc.toObject(UsuarioAdmin.class));
+                                                break;
+                                            case "cliente":
+                                            default:
+                                                listaUsuarios.add(doc.toObject(UsuarioCliente.class));
+                                                break;
+                                        }
+                                    }
+                                }
                             }
+                            return listaUsuarios;
                         });
     }
 
