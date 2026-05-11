@@ -50,9 +50,9 @@ public class UsuarioRepository implements IUsuarioRepository {
     }
 
     @Override
-    public Task<QuerySnapshot> searchUsuariosByUsername(String query) {
+    public Task<QuerySnapshot> searchUsuariosByField(String field, String query) {
         return usersCollection
-                .orderBy("username")
+                .orderBy(field)
                 .startAt(query)
                 .endAt(query + "\uf8ff")
                 .limit(20)

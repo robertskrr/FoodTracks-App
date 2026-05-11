@@ -316,7 +316,7 @@ public class UsuarioService implements IUsuarioService {
         String cleanQuery = (query != null) ? query.toLowerCase().trim() : "";
 
         return usuarioRepository
-                .searchUsuariosByUsername(cleanQuery)
+                .searchUsuariosByField("username", cleanQuery)
                 .continueWith(
                         task -> {
                             List<Usuario> listaUsuarios = new java.util.ArrayList<>();
