@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 
 import com.foodtracks.app.R;
 import com.foodtracks.app.activities.MainActivity;
+import com.foodtracks.app.fragments.BusquedaFragment;
 import com.foodtracks.app.fragments.FeedFragment;
 import com.foodtracks.app.fragments.cliente.PerfilClienteFragment;
 import com.foodtracks.app.fragments.SubirPublicacionFragment;
@@ -84,7 +85,7 @@ public class MainClienteActivity extends AppCompatActivity {
                 return true;
 
             } else if (itemId == R.id.nav_busqueda) {
-                // TODO: CargarFragmento(new BusquedaFragment());
+                cargarFragmento(new BusquedaFragment());
                 return true;
 
             } else if (itemId == R.id.nav_publicar) {

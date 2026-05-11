@@ -48,6 +48,17 @@
             app:layout_constraintStart_toEndOf="@+id/imgAvatarBusqueda"
             app:layout_constraintTop_toBottomOf="@+id/tvUsernameBusqueda" />
 
+        <ImageView
+            android:id="@+id/imgTipoPerfil"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:src="@drawable/ic_person"
+            app:tint="#888888"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.google.android.material.card.MaterialCardView>

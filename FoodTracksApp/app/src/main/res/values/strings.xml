@@ -98,6 +98,8 @@
     <string name="ajustes">Ajustes</string>
     <string name="inicio">Inicio</string>
     <string name="feed">FEED</string>
+    <string name="sin_resultados">Sin resultados</string>
+    <string name="buscar_usuarios_o_locales">Buscar usuarios o locales...</string>
 
 
 </resources>

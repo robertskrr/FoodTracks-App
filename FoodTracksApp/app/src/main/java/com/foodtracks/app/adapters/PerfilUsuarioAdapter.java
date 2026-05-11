@@ -41,12 +41,10 @@ public class PerfilUsuarioAdapter
 
     private final List<Usuario> listaPerfiles;
     private final Context context;
-    private final IUsuarioService usuarioService;
 
     public PerfilUsuarioAdapter(List<Usuario> listaPerfiles, Context context) {
         this.listaPerfiles = listaPerfiles;
         this.context = context;
-        this.usuarioService = ServiceFactory.provideUsuarioService(context);
     }
 
     @NonNull
@@ -58,77 +56,42 @@ public class PerfilUsuarioAdapter
 
     @Override
     public void onBindViewHolder(@NonNull PerfilUsuarioViewHolder holder, int position) {
-       Usuario usuario = listaPerfiles.get(position);
+        Usuario usuario = listaPerfiles.get(position);
 
-        // Cargamos los datos básicos de la publicación
-        holder.tvUsernameBusqueda.setText(usuario.getUsername());
+        // Textos
+        holder.tvUsernameBusqueda.setText("@" + usuario.getUsername());
+        holder.tvNombreBusqueda.setText(usuario.getNombre());
 
-        // Cargamos la foto de perfil del usuario (si existe)
+        // Foto de perfil
+        holder.imgAvatarBusqueda.setVisibility(View.VISIBLE);
         if (usuario.getFotoPerfil() != null && !usuario.getFotoPerfil().isEmpty()) {
-            holder.imgAvatarBusqueda.setVisibility(View.VISIBLE);
             Glide.with(context).load(usuario.getFotoPerfil()).into(holder.imgAvatarBusqueda);
         } else {
-            holder.imgAvatarBusqueda.setVisibility(View.GONE);
+            holder.imgAvatarBusqueda.setImageResource(R.drawable.avatar_default);
         }
 
-        // Cargamos los datos del autor de la publicación
-        cargarDatosPerfil(holder, usuario.getUid());}
+        // Icono del tipo de usuario
+        if ("local".equals(usuario.getRol())) {
+            holder.imgTipoPerfil.setImageResource(R.drawable.ic_store);
+        } else {
+            holder.imgTipoPerfil.setImageResource(R.drawable.ic_person);
+        }
 
+        // Listener para ir al perfil
+        View.OnClickListener irAlPerfilListener = v -> {
+            Intent intent;
+            if ("local".equals(usuario.getRol())) {
+                intent = new Intent(context, PerfilLocalActivity.class);
+            } else {
+                intent = new Intent(context, PerfilClienteActivity.class);
+            }
+            intent.putExtra("UID_USUARIO", usuario.getUid());
+            context.startActivity(intent);
+        };
 
-    /**
-     * Consulta Firestore para obtener el perfil en la interfaz de búsqueda.
-     */
-    private void cargarDatosPerfil(PerfilUsuarioViewHolder holder, String uid) {
-        // Ponemos valores por defecto mientras carga
-        holder.imgAvatarBusqueda.setImageResource(R.drawable.avatar_default);
-
-        // Desactivamos los clicks temporalmente para que el usuario no pulse antes de cargar
-        holder.imgAvatarBusqueda.setOnClickListener(null);
-        holder.tvUsernameBusqueda.setOnClickListener(null);
-
-        usuarioService
-                .getPerfil(uid)
-                .addOnSuccessListener(
-                        usuario -> {
-                            if (usuario != null) {
-                                holder.tvUsernameBusqueda.setText(usuario.getUsername());
-                                holder.tvNombreBusqueda.setText(usuario.getNombre());
-
-                                if (usuario.getFotoPerfil() != null
-                                        && !usuario.getFotoPerfil().isEmpty()) {
-                                    Glide.with(context)
-                                            .load(usuario.getFotoPerfil())
-                                            .into(holder.imgAvatarBusqueda);
-                                }
-
-                                View.OnClickListener irAlPerfilListener =
-                                        v -> {
-                                            Intent intent;
-                                            if ("local".equals(usuario.getRol())) {
-                                                intent =
-                                                        new Intent(
-                                                                context, PerfilLocalActivity.class);
-                                            } else {
-                                                intent =
-                                                        new Intent(
-                                                                context,
-                                                                PerfilClienteActivity.class);
-                                            }
-
-                                            intent.putExtra("UID_USUARIO", uid);
-                                            context.startActivity(intent);
-                                        };
-
-                                // Asignamos el listener ya configurado
-                                holder.imgAvatarBusqueda.setOnClickListener(irAlPerfilListener);
-                                holder.tvUsernameBusqueda.setOnClickListener(irAlPerfilListener);
-                            }
-                        })
-                .addOnFailureListener(
-                        e -> {
-                            holder.tvUsernameBusqueda.setText(R.string.usuario_desconocido);
-                            Log.e("PerfilUsuarioAdapter", "Error cargando perfil: " + e.getMessage());
-                        });
+        holder.imgAvatarBusqueda.setOnClickListener(irAlPerfilListener);
+        holder.tvUsernameBusqueda.setOnClickListener(irAlPerfilListener);
+        holder.tvNombreBusqueda.setOnClickListener(irAlPerfilListener);
     }
 
     @Override
@@ -139,12 +102,14 @@ public class PerfilUsuarioAdapter
     public static class PerfilUsuarioViewHolder extends RecyclerView.ViewHolder {
         TextView tvUsernameBusqueda, tvNombreBusqueda;
         ShapeableImageView imgAvatarBusqueda;
+        ImageView imgTipoPerfil;
 
         public PerfilUsuarioViewHolder(@NonNull View itemView) {
             super(itemView);
             tvUsernameBusqueda = itemView.findViewById(R.id.tvUsernameBusqueda);
             imgAvatarBusqueda = itemView.findViewById(R.id.imgAvatarBusqueda);
             tvNombreBusqueda = itemView.findViewById(R.id.tvNombreBusqueda);
+            imgTipoPerfil = itemView.findViewById(R.id.imgTipoPerfil);
         }
     }
 }
