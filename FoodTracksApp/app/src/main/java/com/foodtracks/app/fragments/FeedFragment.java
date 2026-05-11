@@ -112,7 +112,7 @@ public class FeedFragment extends Fragment {
                     tvUsername.setText("@" + usuario.getUsername());
 
                     switch (usuario) {
-                        case UsuarioAdmin ignored1 -> {
+                        case UsuarioAdmin ignored -> {
                             esAdmin = true;
                             configTheme();
                         }

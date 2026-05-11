@@ -2,7 +2,9 @@
 
 package com.foodtracks.app.adapters;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.content.Context;
 import android.content.Intent;
@@ -22,6 +24,7 @@ import com.foodtracks.app.activities.cliente.PerfilClienteActivity;
 import com.foodtracks.app.activities.local.PerfilLocalActivity;
 import com.foodtracks.app.models.LikePublicacion;
 import com.foodtracks.app.models.Publicacion;
+import com.foodtracks.app.models.Usuario;
 import com.foodtracks.app.services.ServiceFactory;
 import com.foodtracks.app.services.interfaces.ILikeService;
 import com.foodtracks.app.services.interfaces.IUsuarioService;
@@ -46,6 +49,8 @@ public class PublicacionAdapter
     private final ILikeService likeService;
     private final String currentUid; // Usuario que está usando la publicación
     private FirebaseAuth mAuth;
+    // Memoria caché para no descargar el mismo perfil varias veces
+    private final Map<String, Usuario> cacheUsuarios = new HashMap<>();
 
     public PublicacionAdapter(List<Publicacion> listaPublicaciones, Context context) {
         this.listaPublicaciones = listaPublicaciones;
@@ -175,7 +180,17 @@ public class PublicacionAdapter
      * Consulta Firestore para obtener el username y la foto del autor de una publicación.
      */
     private void cargarDatosAutor(PublicacionViewHolder holder, String uidAutor) {
-        // Ponemos valores por defecto mientras carga
+        // Si tenemos los datos en la memoria caché
+        if (cacheUsuarios.containsKey(uidAutor) && cacheUsuarios.get(uidAutor) != null) {
+            Usuario usuarioGuardado = cacheUsuarios.get(uidAutor);
+            
+            assert usuarioGuardado != null;
+            pintarDatosAutor(holder, usuarioGuardado, uidAutor);
+            return;
+        }
+
+
+        // Si no los tenemos, ponemos los valores por defecto y hacemos la consulta
         holder.tvUsernameAutor.setText(R.string.cargando);
         holder.imgAvatarAutor.setImageResource(R.drawable.avatar_default);
 
@@ -187,37 +202,10 @@ public class PublicacionAdapter
                 .addOnSuccessListener(
                         usuario -> {
                             if (usuario != null) {
-                                holder.tvUsernameAutor.setText("@" + usuario.getUsername());
+                                // Guardamos al usuario en la memoria para la próxima vez
+                                cacheUsuarios.put(uidAutor, usuario);
 
-                                if (usuario.getFotoPerfil() != null
-                                        && !usuario.getFotoPerfil().isEmpty()) {
-                                    Glide.with(context)
-                                            .load(usuario.getFotoPerfil())
-                                            .into(holder.imgAvatarAutor);
-                                }
-
-                                // IMPORTANTE -> Abrirá las activities para diferenciarse de la interfaz principal
-                                // (No barra de navegación)
-                                View.OnClickListener irAlPerfilListener =
-                                        v -> {
-                                            Intent intent;
-                                            if ("local".equals(usuario.getRol())) {
-                                                intent =
-                                                        new Intent(
-                                                                context, PerfilLocalActivity.class);
-                                            } else {
-                                                intent =
-                                                        new Intent(
-                                                                context,
-                                                                PerfilClienteActivity.class);
-                                            }
-
-                                            intent.putExtra("UID_USUARIO", uidAutor);
-                                            context.startActivity(intent);
-                                        };
-
-                                // Asignamos el listener ya configurado
-                                holder.imgAvatarAutor.setOnClickListener(irAlPerfilListener);
+                                pintarDatosAutor(holder, usuario, uidAutor);
                             }
                         })
                 .addOnFailureListener(
@@ -225,6 +213,33 @@ public class PublicacionAdapter
                             holder.tvUsernameAutor.setText(R.string.usuario_desconocido);
                             Log.e("PublicacionAdapter", "Error cargando autor: " + e.getMessage());
                         });
+    }
+
+    /**
+     * Método auxiliar para pintar el nombre y la foto del usuario
+     */
+    private void pintarDatosAutor(PublicacionViewHolder holder, Usuario usuario, String uidAutor) {
+        holder.tvUsernameAutor.setText("@" + usuario.getUsername());
+
+        if (usuario.getFotoPerfil() != null && !usuario.getFotoPerfil().isEmpty()) {
+            Glide.with(context)
+                    .load(usuario.getFotoPerfil())
+                    .into(holder.imgAvatarAutor);
+        }
+
+        View.OnClickListener irAlPerfilListener = v -> {
+            Intent intent;
+            if ("local".equals(usuario.getRol())) {
+                intent = new Intent(context, PerfilLocalActivity.class);
+            } else {
+                intent = new Intent(context, PerfilClienteActivity.class);
+            }
+            intent.putExtra("UID_USUARIO", uidAutor);
+            context.startActivity(intent);
+        };
+
+        holder.imgAvatarAutor.setOnClickListener(irAlPerfilListener);
+        holder.tvUsernameAutor.setOnClickListener(irAlPerfilListener);
     }
 
     /**
