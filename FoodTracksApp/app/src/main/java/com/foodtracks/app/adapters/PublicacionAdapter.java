@@ -181,7 +181,6 @@ public class PublicacionAdapter
 
         // Desactivamos los clicks temporalmente para que el usuario no pulse antes de cargar
         holder.imgAvatarAutor.setOnClickListener(null);
-        holder.tvUsernameAutor.setOnClickListener(null);
 
         usuarioService
                 .getPerfil(uidAutor)
