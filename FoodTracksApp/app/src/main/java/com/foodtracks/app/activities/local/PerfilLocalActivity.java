@@ -79,6 +79,8 @@ public class PerfilLocalActivity extends AppCompatActivity {
     private double longitudLocal = 0.0;
     private String nombreLocal = "";
 
+    private boolean esInvitado;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,7 +90,7 @@ public class PerfilLocalActivity extends AppCompatActivity {
         inicializar();
         mostrarDatosLocal();
         cargarPublicaciones();
-        verificarRolYMostrarValoracion();
+        accionesUsuarioVisitante();
     }
 
     private void inicializar() {
@@ -102,6 +104,7 @@ public class PerfilLocalActivity extends AppCompatActivity {
             uidUsuarioActual = mAuth.getCurrentUser().getUid();
         } else {
             uidUsuarioActual = null;
+            esInvitado = true;
         }
 
         uidLocalVisitado = getUidPerfil(mAuth);
@@ -230,7 +233,7 @@ public class PerfilLocalActivity extends AppCompatActivity {
                                                 intent.setData(
                                                         android.net.Uri.parse(
                                                                 url)); // Abre el navegador con la
-                                                // página del local
+                                                                        // página del local
                                                 startActivity(intent);
                                             });
                                 } else {
@@ -308,12 +311,16 @@ public class PerfilLocalActivity extends AppCompatActivity {
         }
     }
 
-    // TODO -> Probarlo cuando se acceda desde un cliente
     // TODO -> Añadir sonido al valorar cuando se pruebe desde un cliente
-    /** Muestra el bloque de estrellas y gestiona el envío/borrado de la valoración */
-    private void verificarRolYMostrarValoracion() {
-        // Si no hay usuario logueado (invitado), salimos discretamente
-        if (uidUsuarioActual == null) {
+    /** Muestra el bloque de estrellas, gestiona el envío/borrado de la valoración si es cliente
+     * e incrementa las visitas del local
+     */
+    private void accionesUsuarioVisitante() {
+        // Incrementa las visitas del perfil del local
+        usuarioService.registrarVisitaPerfil(uidUsuarioActual, uidLocalVisitado);
+
+        // Si no hay usuario logueado (invitado) no hacemos nada más
+        if (esInvitado) {
             return;
         }
 
@@ -326,7 +333,6 @@ public class PerfilLocalActivity extends AppCompatActivity {
                             if ("cliente".equals(usuarioActual.getRol())
                                     && !uidUsuarioActual.equals(uidLocalVisitado)) {
                                 layoutValoracion.setVisibility(View.VISIBLE);
-
                                 // Recuperamos si ya había votado antes
                                 valoracionLocalService
                                         .getValoracionUsuario(uidUsuarioActual, uidLocalVisitado)
