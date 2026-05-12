@@ -263,30 +263,35 @@ public class PublicacionAdapter
         }
 
         // Si no está en la memoria caché, hacemos la consulta
-        usuarioService.getPerfil(uidLocal)
-                .addOnSuccessListener(usuario -> {
-                    if (usuario != null) {
-                        cacheUsuarios.put(uidLocal, usuario); // Guardamos en la memoria
-                        pintarDatosLocalMencionado(holder, usuario, uidLocal);
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    holder.tvLocalMencionado.setVisibility(View.GONE);
-                });
+        usuarioService
+                .getPerfil(uidLocal)
+                .addOnSuccessListener(
+                        usuario -> {
+                            if (usuario != null) {
+                                cacheUsuarios.put(uidLocal, usuario); // Guardamos en la memoria
+                                pintarDatosLocalMencionado(holder, usuario, uidLocal);
+                            }
+                        })
+                .addOnFailureListener(
+                        e -> {
+                            holder.tvLocalMencionado.setVisibility(View.GONE);
+                        });
     }
 
     /**
      * Método auxiliar para pintar el username del local y configurar su click
      */
-    private void pintarDatosLocalMencionado(PublicacionViewHolder holder, Usuario local, String uidLocal) {
+    private void pintarDatosLocalMencionado(
+            PublicacionViewHolder holder, Usuario local, String uidLocal) {
         holder.tvLocalMencionado.setText("@" + local.getUsername());
 
         // Username clickable que te lleva al perfil del local
-        holder.tvLocalMencionado.setOnClickListener(v -> {
-            Intent intent = new Intent(context, PerfilLocalActivity.class);
-            intent.putExtra("UID_USUARIO", uidLocal);
-            context.startActivity(intent);
-        });
+        holder.tvLocalMencionado.setOnClickListener(
+                v -> {
+                    Intent intent = new Intent(context, PerfilLocalActivity.class);
+                    intent.putExtra("UID_USUARIO", uidLocal);
+                    context.startActivity(intent);
+                });
     }
 
     /**

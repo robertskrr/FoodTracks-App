@@ -353,29 +353,36 @@ public class UsuarioService implements IUsuarioService {
         String cleanUsername = (username != null) ? username.toLowerCase().trim() : "";
 
         if (cleanUsername.isEmpty()) {
-            return Tasks.forException(new FoodTracksValidationException(R.string.username_empty_error_message));
+            return Tasks.forException(
+                    new FoodTracksValidationException(R.string.username_empty_error_message));
         }
 
-        return usuarioRepository.getUsuarioByUsername(cleanUsername)
-                .continueWithTask(task -> {
-                    if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
-                        DocumentSnapshot doc = task.getResult().getDocuments().get(0);
-                        String rol = doc.getString("rol");
+        return usuarioRepository
+                .getUsuarioByUsername(cleanUsername)
+                .continueWithTask(
+                        task -> {
+                            if (task.isSuccessful()
+                                    && task.getResult() != null
+                                    && !task.getResult().isEmpty()) {
+                                DocumentSnapshot doc = task.getResult().getDocuments().get(0);
+                                String rol = doc.getString("rol");
 
-                        Usuario usuario;
-                        if ("local".equals(rol)) {
-                            usuario = doc.toObject(UsuarioLocal.class);
-                        } else if ("admin".equals(rol)) {
-                            usuario = doc.toObject(UsuarioAdmin.class);
-                        } else {
-                            usuario = doc.toObject(UsuarioCliente.class);
-                        }
+                                Usuario usuario;
+                                if ("local".equals(rol)) {
+                                    usuario = doc.toObject(UsuarioLocal.class);
+                                } else if ("admin".equals(rol)) {
+                                    usuario = doc.toObject(UsuarioAdmin.class);
+                                } else {
+                                    usuario = doc.toObject(UsuarioCliente.class);
+                                }
 
-                        return Tasks.forResult(usuario);
-                    } else {
-                        return Tasks.forException(new FoodTracksNotFoundException(R.string.usuario_not_found_error_message));
-                    }
-                });
+                                return Tasks.forResult(usuario);
+                            } else {
+                                return Tasks.forException(
+                                        new FoodTracksNotFoundException(
+                                                R.string.usuario_not_found_error_message));
+                            }
+                        });
     }
 
     @Override
