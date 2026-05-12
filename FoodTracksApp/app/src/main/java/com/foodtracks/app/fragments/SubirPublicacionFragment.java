@@ -160,63 +160,71 @@ public class SubirPublicacionFragment extends DialogFragment {
      * Configura los botones de la interfaz
      */
     private void configurarBotones() {
-        // Mostramos el menú de opciones
         btnAdjuntarFoto.setOnClickListener(v -> mostrarOpcionesImagen());
 
-        btnPublicar.setOnClickListener(
-                v -> {
-                    String texto =
-                            txtTextoPublicacion.getText() != null
-                                    ? txtTextoPublicacion.getText().toString().trim()
-                                    : "";
-                    // String localMencionado = txtMencionarLocal.getText().toString().trim(); //
-                    // TODO: Guardar en variable cuando se haga la búsqueda
+        btnPublicar.setOnClickListener(v -> {
+            String texto = txtTextoPublicacion.getText() != null ? txtTextoPublicacion.getText().toString().trim() : "";
+            String localMencionado = txtMencionarLocal.getText() != null ? txtMencionarLocal.getText().toString().trim() : "";
 
-                    btnPublicar.setEnabled(false);
-                    btnPublicar.setText(R.string.subiendo);
+            btnPublicar.setEnabled(false);
+            btnPublicar.setText(R.string.subiendo);
 
-                    Publicacion nuevaPub =
-                            Publicacion.builder()
-                                    .uidUsuario(uidUsuarioActual)
-                                    .uidLocal(null) // TODO -> Recuperarlo de la búsqueda
-                                    .texto(texto)
-                                    .build();
+            // Si ha intentado mencionar a un local
+            if (!localMencionado.isEmpty()) {
+                // Quitamos el @ por si el usuario lo ha puesto
+                String cleanMention = localMencionado.replace("@", "");
 
-                    publicacionService
-                            .subirPublicacion(nuevaPub, uriFotoSeleccionada)
-                            .addOnSuccessListener(
-                                    unused -> {
-                                        Toast.makeText(
-                                                        getContext(),
-                                                        R.string.publicacion_subida,
-                                                        Toast.LENGTH_SHORT)
-                                                .show();
-                                        dismiss();
-                                        // TODO: Avisar a la Activity para que recargue el
-                                        // RecyclerView
-                                    })
-                            .addOnFailureListener(
-                                    e -> {
-                                        if (e instanceof FoodTracksValidationException ex) {
-                                            Toast.makeText(
-                                                            getContext(),
-                                                            ex.getErrorResId(),
-                                                            Toast.LENGTH_SHORT)
-                                                    .show();
-                                        } else {
-                                            Toast.makeText(
-                                                            getContext(),
-                                                            getString(
-                                                                            R.string
-                                                                                    .subir_publicacion_error_message)
-                                                                    + e.getMessage(),
-                                                            Toast.LENGTH_SHORT)
-                                                    .show();
-                                        }
-                                        btnPublicar.setEnabled(true);
-                                        btnPublicar.setText(R.string.publicar);
-                                    });
+                usuarioService.getUsuarioByUsernameExacto(cleanMention).addOnSuccessListener(usuario -> {
+                    // Comprobamos que el mencionado sea un local
+                    if ("local".equals(usuario.getRol())) {
+                        subirPublicacion(texto, usuario.getUid());
+                    } else {
+                        Toast.makeText(getContext(), R.string.user_is_not_a_local, Toast.LENGTH_SHORT).show();
+                        restaurarBotonPublicar();
+                    }
+                }).addOnFailureListener(e -> {
+                    Toast.makeText(getContext(), R.string.local_not_found_with_exact_username, Toast.LENGTH_SHORT).show();
+                    restaurarBotonPublicar();
                 });
+
+            } else {
+                // No hay mención, publicamos directamente con uidLocal = null
+                subirPublicacion(texto, null);
+            }
+        });
+    }
+
+    /**
+     *  Sube la publicación y la foto a la base de datos.
+     */
+    private void subirPublicacion(String texto, String uidLocal) {
+        Publicacion nuevaPub = Publicacion.builder()
+                .uidUsuario(uidUsuarioActual)
+                .uidLocal(uidLocal)
+                .texto(texto)
+                .build();
+
+        publicacionService.subirPublicacion(nuevaPub, uriFotoSeleccionada)
+                .addOnSuccessListener(unused -> {
+                    Toast.makeText(getContext(), R.string.publicacion_subida, Toast.LENGTH_SHORT).show();
+                    dismiss();
+                })
+                .addOnFailureListener(e -> {
+                    if (e instanceof FoodTracksValidationException ex) {
+                        Toast.makeText(getContext(), ex.getErrorResId(), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getContext(), getString(R.string.subir_publicacion_error_message) + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                    restaurarBotonPublicar();
+                });
+    }
+
+    /**
+     * Devuelve el botón a su estado normal
+     */
+    private void restaurarBotonPublicar() {
+        btnPublicar.setEnabled(true);
+        btnPublicar.setText(R.string.publicar);
     }
 
     /**

@@ -89,6 +89,13 @@ public interface IUsuarioService {
     Task<List<Usuario>> buscarUsuarios(String query);
 
     /**
+     * Realia una búsqueda basada en el username exacto del usuario.
+     * @param username Nombre de usuario.
+     * @return {@link Task} que contiene el {@link Usuario} resultante.
+     */
+    public Task<Usuario> getUsuarioByUsernameExacto(String username);
+
+    /**
      * Realiza una búsqueda de usuarios basada en los filtros añadidos.
      *
      * @return {@link Task} que contiene una lista de {@link UsuarioLocal} que coinciden con la búsqueda.
