@@ -1,6 +1,4 @@
-/**
- * © FoodTracks Project ===robertskrr===
- */
+/** © FoodTracks Project ===robertskrr=== */
 
 package com.foodtracks.app.activities.cliente;
 
@@ -8,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -16,8 +13,8 @@ import com.foodtracks.app.R;
 import com.foodtracks.app.activities.MainActivity;
 import com.foodtracks.app.fragments.BusquedaFragment;
 import com.foodtracks.app.fragments.FeedFragment;
-import com.foodtracks.app.fragments.cliente.PerfilClienteFragment;
 import com.foodtracks.app.fragments.SubirPublicacionFragment;
+import com.foodtracks.app.fragments.cliente.PerfilClienteFragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -77,51 +74,60 @@ public class MainClienteActivity extends AppCompatActivity {
      * Cambia el FrameLayout central por el fragment concreto.
      */
     private void configurarNavegacion() {
-        bottomNavigationView.setOnItemSelectedListener(item -> {
-            int itemId = item.getItemId();
+        bottomNavigationView.setOnItemSelectedListener(
+                item -> {
+                    int itemId = item.getItemId();
 
-            if (itemId == R.id.nav_home) {
-                cargarFragmento(new FeedFragment());
-                return true;
+                    if (itemId == R.id.nav_home) {
+                        cargarFragmento(new FeedFragment());
+                        return true;
 
-            } else if (itemId == R.id.nav_busqueda) {
-                cargarFragmento(new BusquedaFragment());
-                return true;
+                    } else if (itemId == R.id.nav_busqueda) {
+                        cargarFragmento(new BusquedaFragment());
+                        return true;
 
-            } else if (itemId == R.id.nav_publicar) {
-                if (esInvitado()) {
-                    Toast.makeText(this, R.string.inicia_sesion_para_usar_esto, Toast.LENGTH_SHORT).show();
-                    return false; // Bloquea la navegación
-                }
+                    } else if (itemId == R.id.nav_publicar) {
+                        if (esInvitado()) {
+                            Toast.makeText(
+                                            this,
+                                            R.string.inicia_sesion_para_usar_esto,
+                                            Toast.LENGTH_SHORT)
+                                    .show();
+                            return false; // Bloquea la navegación
+                        }
 
-                SubirPublicacionFragment fm = new SubirPublicacionFragment();
-                fm.show(getSupportFragmentManager(), "Fragment publicacion");
-                return false;
+                        SubirPublicacionFragment fm = new SubirPublicacionFragment();
+                        fm.show(getSupportFragmentManager(), "Fragment publicacion");
+                        return false;
 
-            } else if (itemId == R.id.nav_perfil) {
-                if (esInvitado()) {
-                    Toast.makeText(this, R.string.inicia_sesion_para_usar_esto, Toast.LENGTH_SHORT).show();
+                    } else if (itemId == R.id.nav_perfil) {
+                        if (esInvitado()) {
+                            Toast.makeText(
+                                            this,
+                                            R.string.inicia_sesion_para_usar_esto,
+                                            Toast.LENGTH_SHORT)
+                                    .show();
+                            return false;
+                        }
+
+                        // Cambia el centro de la pantalla al fragmento de perfil
+                        cargarFragmento(new PerfilClienteFragment());
+                        return true;
+
+                    } else if (itemId == R.id.nav_ajustes) {
+                        logOut();
+                        return false;
+                    }
+
                     return false;
-                }
-
-                // Cambia el centro de la pantalla al fragmento de perfil
-                cargarFragmento(new PerfilClienteFragment());
-                return true;
-
-            } else if (itemId == R.id.nav_ajustes) {
-                logOut();
-                return false;
-            }
-
-            return false;
-        });
+                });
     }
 
     /**
      * Revisa si el usuario que accede es invitado o no.
      * @return true si es invitado.
      */
-    private boolean esInvitado(){
+    private boolean esInvitado() {
         return mAuth.getCurrentUser() == null;
     }
 

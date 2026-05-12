@@ -279,7 +279,8 @@ public class UsuarioService implements IUsuarioService {
                                             usuarioModificado.setFotoId(usuarioActual.getFotoId());
                                         }
 
-                                        // Comprueba si se ha cambiado el username // TODO: Cambiar de sitio. Primero comprueba esto antes de subir nada
+                                        // Comprueba si se ha cambiado el username // TODO: Cambiar
+                                        // de sitio. Primero comprueba esto antes de subir nada
                                         if (!usuarioActual
                                                 .getUsername()
                                                 .equals(usuarioModificado.getUsername())) {
@@ -336,7 +337,8 @@ public class UsuarioService implements IUsuarioService {
                                                 break;
                                             case "cliente":
                                             default:
-                                                listaUsuarios.add(doc.toObject(UsuarioCliente.class));
+                                                listaUsuarios.add(
+                                                        doc.toObject(UsuarioCliente.class));
                                                 break;
                                         }
                                     }
@@ -347,47 +349,67 @@ public class UsuarioService implements IUsuarioService {
     }
 
     @Override
-    public Task<List<Usuario>> buscarLocalesPorFiltros(String ciudad, boolean vegano, boolean vegetariano,
-                                                       boolean sinLactosa, boolean celiaco, String otraPreferencia) {
+    public Task<List<Usuario>> buscarLocalesPorFiltros(
+            String ciudad,
+            boolean vegano,
+            boolean vegetariano,
+            boolean sinLactosa,
+            boolean celiaco,
+            String otraPreferencia) {
 
-        String cleanCiudad = (ciudad != null && !ciudad.trim().isEmpty()) ? StringUtils.capitalize(ciudad) : null;
-        String cleanOtraPreferencia = (otraPreferencia != null && !otraPreferencia.trim().isEmpty()) ? StringUtils.capitalize(otraPreferencia) : null;
+        String cleanCiudad =
+                (ciudad != null && !ciudad.trim().isEmpty())
+                        ? StringUtils.capitalize(ciudad)
+                        : null;
+        String cleanOtraPreferencia =
+                (otraPreferencia != null && !otraPreferencia.trim().isEmpty())
+                        ? StringUtils.capitalize(otraPreferencia)
+                        : null;
 
-        return usuarioRepository.searchLocalesByFiltros(cleanCiudad, vegano, vegetariano, sinLactosa, celiaco, cleanOtraPreferencia)
-                .continueWith(task -> {
-                    List<Usuario> listaLocales = new ArrayList<>();
-                    if (task.isSuccessful() && task.getResult() != null) {
-                        for (DocumentSnapshot doc : task.getResult()) {
-                            listaLocales.add(doc.toObject(UsuarioLocal.class));
-                        }
-                    }
-                    return listaLocales;
-                });
+        return usuarioRepository
+                .searchLocalesByFiltros(
+                        cleanCiudad, vegano, vegetariano, sinLactosa, celiaco, cleanOtraPreferencia)
+                .continueWith(
+                        task -> {
+                            List<Usuario> listaLocales = new ArrayList<>();
+                            if (task.isSuccessful() && task.getResult() != null) {
+                                for (DocumentSnapshot doc : task.getResult()) {
+                                    listaLocales.add(doc.toObject(UsuarioLocal.class));
+                                }
+                            }
+                            return listaLocales;
+                        });
     }
 
     @Override
-    public Task<List<Usuario>> buscarLocalesPorMisPreferencias(String uidUsuario, String ciudadOpcional) {
+    public Task<List<Usuario>> buscarLocalesPorMisPreferencias(
+            String uidUsuario, String ciudadOpcional) {
         // Recuperamos el perfil del usuario protagonista
-        return getPerfil(uidUsuario).continueWithTask(task -> {
+        return getPerfil(uidUsuario)
+                .continueWithTask(
+                        task -> {
+                            if (!task.isSuccessful() || task.getResult() == null) {
+                                return Tasks.forException(
+                                        new FoodTracksNotFoundException(
+                                                R.string.profile_not_available_to_filter));
+                            }
 
-            if (!task.isSuccessful() || task.getResult() == null) {
-                return Tasks.forException(new FoodTracksNotFoundException(R.string.profile_not_available_to_filter));
-            }
+                            Usuario usuario = task.getResult();
 
-            Usuario usuario = task.getResult();
+                            // Recuperamos la otra preferencia si es String
+                            String otraPreferencia =
+                                    (usuario.getOtraPreferencia() instanceof String)
+                                            ? (String) usuario.getOtraPreferencia()
+                                            : null;
 
-            // Recuperamos la otra preferencia si es String
-            String otraPreferencia = (usuario.getOtraPreferencia() instanceof String) ? (String) usuario.getOtraPreferencia() : null;
-            
-            return buscarLocalesPorFiltros(
-                    ciudadOpcional,
-                    usuario.isEsVegano(),
-                    usuario.isEsVegetariano(),
-                    usuario.isSinLactosa(),
-                    usuario.isEsCeliaco(),
-                    otraPreferencia
-            );
-        });
+                            return buscarLocalesPorFiltros(
+                                    ciudadOpcional,
+                                    usuario.isEsVegano(),
+                                    usuario.isEsVegetariano(),
+                                    usuario.isSinLactosa(),
+                                    usuario.isEsCeliaco(),
+                                    otraPreferencia);
+                        });
     }
 
     @Override

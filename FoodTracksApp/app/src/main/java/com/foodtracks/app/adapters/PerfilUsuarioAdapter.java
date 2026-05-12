@@ -2,32 +2,25 @@
 
 package com.foodtracks.app.adapters;
 
+import java.util.List;
+
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.foodtracks.app.R;
 import com.foodtracks.app.activities.cliente.PerfilClienteActivity;
 import com.foodtracks.app.activities.local.PerfilLocalActivity;
-import com.foodtracks.app.models.LikePublicacion;
 import com.foodtracks.app.models.Usuario;
-import com.foodtracks.app.services.ServiceFactory;
-import com.foodtracks.app.services.interfaces.IUsuarioService;
-import com.foodtracks.app.utils.DateUtils;
-import com.google.android.material.imageview.ShapeableImageView;
-import com.google.firebase.auth.FirebaseAuth;
 
-import java.util.List;
+import com.bumptech.glide.Glide;
+import com.google.android.material.imageview.ShapeableImageView;
 
 /**
  * Adapter para gestionar y renderizar la lista de perfiles
@@ -78,16 +71,17 @@ public class PerfilUsuarioAdapter
         }
 
         // Listener para ir al perfil
-        View.OnClickListener irAlPerfilListener = v -> {
-            Intent intent;
-            if ("local".equals(usuario.getRol())) {
-                intent = new Intent(context, PerfilLocalActivity.class);
-            } else {
-                intent = new Intent(context, PerfilClienteActivity.class);
-            }
-            intent.putExtra("UID_USUARIO", usuario.getUid());
-            context.startActivity(intent);
-        };
+        View.OnClickListener irAlPerfilListener =
+                v -> {
+                    Intent intent;
+                    if ("local".equals(usuario.getRol())) {
+                        intent = new Intent(context, PerfilLocalActivity.class);
+                    } else {
+                        intent = new Intent(context, PerfilClienteActivity.class);
+                    }
+                    intent.putExtra("UID_USUARIO", usuario.getUid());
+                    context.startActivity(intent);
+                };
 
         holder.imgAvatarBusqueda.setOnClickListener(irAlPerfilListener);
         holder.tvUsernameBusqueda.setOnClickListener(irAlPerfilListener);

@@ -1,6 +1,4 @@
-/**
- * © FoodTracks Project ===robertskrr===
- */
+/** © FoodTracks Project ===robertskrr=== */
 
 package com.foodtracks.app.activities.local;
 
@@ -8,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -16,8 +13,9 @@ import com.foodtracks.app.R;
 import com.foodtracks.app.activities.MainActivity;
 import com.foodtracks.app.fragments.BusquedaFragment;
 import com.foodtracks.app.fragments.FeedFragment;
-import com.foodtracks.app.fragments.local.PerfilLocalFragment;
 import com.foodtracks.app.fragments.SubirPublicacionFragment;
+import com.foodtracks.app.fragments.local.PerfilLocalFragment;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -75,36 +73,37 @@ public class MainLocalActivity extends AppCompatActivity {
      * Cambia el FrameLayout central por el fragment concreto.
      */
     private void configurarNavegacion() {
-        bottomNavigationView.setOnItemSelectedListener(item -> {
-            int itemId = item.getItemId();
+        bottomNavigationView.setOnItemSelectedListener(
+                item -> {
+                    int itemId = item.getItemId();
 
-            if (itemId == R.id.nav_home) {
-                cargarFragmento(new FeedFragment());
-                return true;
+                    if (itemId == R.id.nav_home) {
+                        cargarFragmento(new FeedFragment());
+                        return true;
 
-            } else if (itemId == R.id.nav_dashboard) {
-                // TODO: cargarFragmento(new DashboardFragment());
-                return true;
-            } else if (itemId == R.id.nav_busqueda) {
-                cargarFragmento(new BusquedaFragment());
-                return true;
+                    } else if (itemId == R.id.nav_dashboard) {
+                        // TODO: cargarFragmento(new DashboardFragment());
+                        return true;
+                    } else if (itemId == R.id.nav_busqueda) {
+                        cargarFragmento(new BusquedaFragment());
+                        return true;
 
-            } else if (itemId == R.id.nav_publicar) {
-                SubirPublicacionFragment fm = new SubirPublicacionFragment();
-                fm.show(getSupportFragmentManager(), "Fragment publicacion");
-                return false;
+                    } else if (itemId == R.id.nav_publicar) {
+                        SubirPublicacionFragment fm = new SubirPublicacionFragment();
+                        fm.show(getSupportFragmentManager(), "Fragment publicacion");
+                        return false;
 
-            } else if (itemId == R.id.nav_perfil) {
-                cargarFragmento(new PerfilLocalFragment());
-                return true;
+                    } else if (itemId == R.id.nav_perfil) {
+                        cargarFragmento(new PerfilLocalFragment());
+                        return true;
 
-            } else if (itemId == R.id.nav_ajustes) {
-                logOut();
-                return false;
-            }
+                    } else if (itemId == R.id.nav_ajustes) {
+                        logOut();
+                        return false;
+                    }
 
-            return false;
-        });
+                    return false;
+                });
     }
 
     private void logOut() {

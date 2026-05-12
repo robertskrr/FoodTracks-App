@@ -60,7 +60,13 @@ public interface IUsuarioRepository {
     /**
      * Busca locales aplicando filtros de ciudad y preferencias alimenticias.
      */
-    Task<QuerySnapshot> searchLocalesByFiltros(String ciudad, boolean vegano, boolean vegetariano, boolean sinLactosa, boolean celiaco, String otraPreferencia);
+    Task<QuerySnapshot> searchLocalesByFiltros(
+            String ciudad,
+            boolean vegano,
+            boolean vegetariano,
+            boolean sinLactosa,
+            boolean celiaco,
+            String otraPreferencia);
 
     /**
      * Incrementa atómicamente el contador de visitas del perfil de un local.

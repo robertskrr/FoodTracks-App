@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
@@ -17,7 +16,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.foodtracks.app.R;
 import com.foodtracks.app.activities.cliente.MainClienteActivity;
 import com.foodtracks.app.activities.cliente.PerfilClienteActivity;
@@ -29,6 +27,8 @@ import com.foodtracks.app.services.exceptions.FoodTracksValidationException;
 import com.foodtracks.app.services.interfaces.IPublicacionService;
 import com.foodtracks.app.services.interfaces.IUsuarioService;
 import com.foodtracks.app.utils.DateUtils;
+
+import com.bumptech.glide.Glide;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.imageview.ShapeableImageView;
@@ -61,7 +61,10 @@ public class PerfilClienteFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(
+            @NonNull LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_perfil_cliente, container, false);
 
         configTheme();
@@ -108,32 +111,54 @@ public class PerfilClienteFragment extends Fragment {
     }
 
     private void mostrarDatosCliente() {
-        usuarioService.getPerfil(uidCliente)
-                .addOnSuccessListener(usuario -> {
-                    if (!isAdded()) return; // Si el usuario cambió de pantalla se ignora -- Evita crasheos
-                    tvNombre.setText(usuario.getNombre());
-                    tvUsername.setText("@" + usuario.getUsername());
-                    tvCiudad.setText(usuario.getCiudad());
-                    tvFechaRegistro.setText(DateUtils.getFechaFormateadaLong(usuario.getFechaRegistro()));
+        usuarioService
+                .getPerfil(uidCliente)
+                .addOnSuccessListener(
+                        usuario -> {
+                            if (!isAdded())
+                                return; // Si el usuario cambió de pantalla se ignora -- Evita
+                            // crasheos
+                            tvNombre.setText(usuario.getNombre());
+                            tvUsername.setText("@" + usuario.getUsername());
+                            tvCiudad.setText(usuario.getCiudad());
+                            tvFechaRegistro.setText(
+                                    DateUtils.getFechaFormateadaLong(usuario.getFechaRegistro()));
 
-                    if (usuario.getFotoPerfil() != null) {
-                        Glide.with(requireContext()).load(usuario.getFotoPerfil()).into(imgPerfil);
-                    }
+                            if (usuario.getFotoPerfil() != null) {
+                                Glide.with(requireContext())
+                                        .load(usuario.getFotoPerfil())
+                                        .into(imgPerfil);
+                            }
 
-                    cargarChipsPreferencias(usuario);
-                    comprobarCargaCompleta();
-                })
-                .addOnFailureListener(e -> {
-                    if (!isAdded()) return;
-                    if (e instanceof FoodTracksValidationException ex) {
-                        Toast.makeText(requireContext(), ex.getErrorResId(), Toast.LENGTH_SHORT).show();
-                    } else if (e instanceof FoodTracksNotFoundException ex) {
-                        Toast.makeText(requireContext(), ex.getErrorResId(), Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(requireContext(), getString(R.string.loading_profile_error_message) + ": " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                    comprobarCargaCompleta();
-                });
+                            cargarChipsPreferencias(usuario);
+                            comprobarCargaCompleta();
+                        })
+                .addOnFailureListener(
+                        e -> {
+                            if (!isAdded()) return;
+                            if (e instanceof FoodTracksValidationException ex) {
+                                Toast.makeText(
+                                                requireContext(),
+                                                ex.getErrorResId(),
+                                                Toast.LENGTH_SHORT)
+                                        .show();
+                            } else if (e instanceof FoodTracksNotFoundException ex) {
+                                Toast.makeText(
+                                                requireContext(),
+                                                ex.getErrorResId(),
+                                                Toast.LENGTH_SHORT)
+                                        .show();
+                            } else {
+                                Toast.makeText(
+                                                requireContext(),
+                                                getString(R.string.loading_profile_error_message)
+                                                        + ": "
+                                                        + e.getMessage(),
+                                                Toast.LENGTH_SHORT)
+                                        .show();
+                            }
+                            comprobarCargaCompleta();
+                        });
     }
 
     private void cargarChipsPreferencias(Usuario usuario) {
@@ -142,7 +167,8 @@ public class PerfilClienteFragment extends Fragment {
         if (usuario.isEsVegetariano()) addChip("\uD83C\uDF3F" + getString(R.string.vegetariano));
         if (usuario.isSinLactosa()) addChip("\uD83E\uDD5B" + getString(R.string.sin_lactosa));
         if (usuario.isEsCeliaco()) addChip("\uD83C\uDF3E" + getString(R.string.celiaco));
-        if (usuario.getOtraPreferencia() instanceof String otraPreferencia) addChip("\uD83D\uDCDD" + otraPreferencia);
+        if (usuario.getOtraPreferencia() instanceof String otraPreferencia)
+            addChip("\uD83D\uDCDD" + otraPreferencia);
 
         if (chipGroupPreferencias.getChildCount() == 0) {
             addChip(getString(R.string.sin_preferencias));
@@ -160,25 +186,33 @@ public class PerfilClienteFragment extends Fragment {
     }
 
     private void cargarPublicaciones() {
-        publicacionService.getPublicacionesByUsuario(uidCliente)
-                .addOnSuccessListener(publicaciones -> {
-                    if (!isAdded()) return;
-                    if (publicaciones == null || publicaciones.isEmpty()) {
-                        tvSinPublicaciones.setVisibility(View.VISIBLE);
-                        recyclerPublicaciones.setVisibility(View.GONE);
-                    } else {
-                        tvSinPublicaciones.setVisibility(View.GONE);
-                        recyclerPublicaciones.setVisibility(View.VISIBLE);
-                        adapter = new PublicacionAdapter(publicaciones, requireContext());
-                        recyclerPublicaciones.setAdapter(adapter);
-                    }
-                    comprobarCargaCompleta();
-                })
-                .addOnFailureListener(e -> {
-                    if (!isAdded()) return;
-                    Toast.makeText(requireContext(), R.string.publicaciones_loading_error_message + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    comprobarCargaCompleta();
-                });
+        publicacionService
+                .getPublicacionesByUsuario(uidCliente)
+                .addOnSuccessListener(
+                        publicaciones -> {
+                            if (!isAdded()) return;
+                            if (publicaciones == null || publicaciones.isEmpty()) {
+                                tvSinPublicaciones.setVisibility(View.VISIBLE);
+                                recyclerPublicaciones.setVisibility(View.GONE);
+                            } else {
+                                tvSinPublicaciones.setVisibility(View.GONE);
+                                recyclerPublicaciones.setVisibility(View.VISIBLE);
+                                adapter = new PublicacionAdapter(publicaciones, requireContext());
+                                recyclerPublicaciones.setAdapter(adapter);
+                            }
+                            comprobarCargaCompleta();
+                        })
+                .addOnFailureListener(
+                        e -> {
+                            if (!isAdded()) return;
+                            Toast.makeText(
+                                            requireContext(),
+                                            R.string.publicaciones_loading_error_message
+                                                    + e.getMessage(),
+                                            Toast.LENGTH_SHORT)
+                                    .show();
+                            comprobarCargaCompleta();
+                        });
     }
 
     private synchronized void comprobarCargaCompleta() {
@@ -194,8 +228,11 @@ public class PerfilClienteFragment extends Fragment {
      */
     private void configTheme() {
         if (getActivity() != null) {
-            getActivity().getWindow().setStatusBarColor(
-                    androidx.core.content.ContextCompat.getColor(requireContext(), R.color.fondo));
+            getActivity()
+                    .getWindow()
+                    .setStatusBarColor(
+                            androidx.core.content.ContextCompat.getColor(
+                                    requireContext(), R.color.fondo));
         }
     }
 }

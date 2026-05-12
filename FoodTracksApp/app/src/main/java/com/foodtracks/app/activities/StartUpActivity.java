@@ -77,7 +77,8 @@ public class StartUpActivity extends AppCompatActivity {
                                 if (rol.equals("admin")) {
                                     intent =
                                             new Intent(
-                                                    getApplicationContext(), MainAdminActivity.class);
+                                                    getApplicationContext(),
+                                                    MainAdminActivity.class);
                                 } else if (rol.equals("local")) {
                                     intent =
                                             new Intent(
@@ -85,7 +86,9 @@ public class StartUpActivity extends AppCompatActivity {
                                                     MainLocalActivity.class);
                                 } else {
                                     intent =
-                                            new Intent(getApplicationContext(), MainClienteActivity.class);
+                                            new Intent(
+                                                    getApplicationContext(),
+                                                    MainClienteActivity.class);
                                 }
 
                                 cambiarActivity(intent);

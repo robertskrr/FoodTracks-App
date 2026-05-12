@@ -15,7 +15,6 @@ import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
@@ -23,10 +22,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.foodtracks.app.R;
-import com.foodtracks.app.activities.cliente.MainClienteActivity;
-import com.foodtracks.app.activities.cliente.PerfilClienteActivity;
 import com.foodtracks.app.activities.local.MainLocalActivity;
 import com.foodtracks.app.activities.local.PerfilLocalActivity;
 import com.foodtracks.app.adapters.PublicacionAdapter;
@@ -37,11 +33,12 @@ import com.foodtracks.app.services.exceptions.FoodTracksValidationException;
 import com.foodtracks.app.services.interfaces.IPublicacionService;
 import com.foodtracks.app.services.interfaces.IUsuarioService;
 import com.foodtracks.app.services.interfaces.IValoracionLocalService;
+
+import com.bumptech.glide.Glide;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;
-
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
@@ -61,7 +58,13 @@ public class PerfilLocalFragment extends Fragment {
 
     private View rootView;
 
-    private TextView tvNombre, tvUsername, tvDireccion, tvTelefono, tvPuntuacion, tvSitioWeb, tvSinPublicaciones;
+    private TextView tvNombre,
+            tvUsername,
+            tvDireccion,
+            tvTelefono,
+            tvPuntuacion,
+            tvSitioWeb,
+            tvSinPublicaciones;
     private ShapeableImageView imgPerfil;
     private ChipGroup chipGroupOpciones;
     private ProgressBar progressBar;
@@ -90,7 +93,10 @@ public class PerfilLocalFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(
+            @NonNull LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_perfil_local, container, false);
 
         configTheme();
@@ -117,7 +123,11 @@ public class PerfilLocalFragment extends Fragment {
         uidLocalVisitado = getUidPerfil(mAuth);
 
         if (uidLocalVisitado == null) {
-            Toast.makeText(requireContext(), R.string.loading_profile_error_message, Toast.LENGTH_SHORT).show();
+            Toast.makeText(
+                            requireContext(),
+                            R.string.loading_profile_error_message,
+                            Toast.LENGTH_SHORT)
+                    .show();
             return;
         }
 
@@ -153,10 +163,11 @@ public class PerfilLocalFragment extends Fragment {
         mapOsm.setMultiTouchControls(true);
         mapOsm.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.NEVER);
 
-        mapOsm.setOnTouchListener((v, event) -> {
-            v.getParent().requestDisallowInterceptTouchEvent(true);
-            return false;
-        });
+        mapOsm.setOnTouchListener(
+                (v, event) -> {
+                    v.getParent().requestDisallowInterceptTouchEvent(true);
+                    return false;
+                });
     }
 
     private String getUidPerfil(FirebaseAuth mAuth) {
@@ -175,89 +186,114 @@ public class PerfilLocalFragment extends Fragment {
     private void mostrarDatosLocal() {
         tvPuntuacion.setText("...");
 
-        usuarioService.getPerfil(uidLocalVisitado)
-                .addOnSuccessListener(usuario -> {
-                    if (!isAdded()) return; // Red de seguridad
+        usuarioService
+                .getPerfil(uidLocalVisitado)
+                .addOnSuccessListener(
+                        usuario -> {
+                            if (!isAdded()) return; // Red de seguridad
 
-                    if (usuario instanceof UsuarioLocal local) {
-                        tvNombre.setText(local.getNombre());
-                        tvUsername.setText("@" + local.getUsername());
-                        tvDireccion.setText(local.getDireccion() + ", " + local.getCiudad());
+                            if (usuario instanceof UsuarioLocal local) {
+                                tvNombre.setText(local.getNombre());
+                                tvUsername.setText("@" + local.getUsername());
+                                tvDireccion.setText(
+                                        local.getDireccion() + ", " + local.getCiudad());
 
-                        String telefonoLocal = local.getTelefono();
-                        tvTelefono.setText(telefonoLocal);
+                                String telefonoLocal = local.getTelefono();
+                                tvTelefono.setText(telefonoLocal);
 
-                        if (telefonoLocal != null && !telefonoLocal.trim().isEmpty()) {
-                            tvTelefono.setOnClickListener(v -> {
-                                Intent intent = new Intent(Intent.ACTION_DIAL);
-                                intent.setData(Uri.parse("tel:" + telefonoLocal));
-                                startActivity(intent);
-                            });
-                        }
-
-                        tvPuntuacion.setText(String.format("%.1f", local.getPuntuacionMedia()));
-
-                        String webLocal = local.getSitioWeb();
-                        if (webLocal != null && !webLocal.trim().isEmpty()) {
-                            tvSitioWeb.setText(webLocal);
-                            tvSitioWeb.setTextColor(getResources().getColor(R.color.tertiary, null));
-                            tvSitioWeb.setOnClickListener(v -> {
-                                String url = webLocal;
-                                if (!url.startsWith("http://") && !url.startsWith("https://")) {
-                                    url = "https://" + url;
+                                if (telefonoLocal != null && !telefonoLocal.trim().isEmpty()) {
+                                    tvTelefono.setOnClickListener(
+                                            v -> {
+                                                Intent intent = new Intent(Intent.ACTION_DIAL);
+                                                intent.setData(Uri.parse("tel:" + telefonoLocal));
+                                                startActivity(intent);
+                                            });
                                 }
-                                Intent intent = new Intent(Intent.ACTION_VIEW);
-                                intent.setData(Uri.parse(url));
-                                startActivity(intent);
-                            });
-                        } else {
-                            tvSitioWeb.setText(R.string.no_disponible);
-                            tvSitioWeb.setTextColor(getResources().getColor(R.color.black, null));
-                            tvSitioWeb.setOnClickListener(null);
-                        }
 
-                        if (local.getFotoPerfil() != null) {
-                            Glide.with(requireContext()).load(local.getFotoPerfil()).into(imgPerfil);
-                        }
+                                tvPuntuacion.setText(
+                                        String.format("%.1f", local.getPuntuacionMedia()));
 
-                        cargarChipsOpciones(local);
+                                String webLocal = local.getSitioWeb();
+                                if (webLocal != null && !webLocal.trim().isEmpty()) {
+                                    tvSitioWeb.setText(webLocal);
+                                    tvSitioWeb.setTextColor(
+                                            getResources().getColor(R.color.tertiary, null));
+                                    tvSitioWeb.setOnClickListener(
+                                            v -> {
+                                                String url = webLocal;
+                                                if (!url.startsWith("http://")
+                                                        && !url.startsWith("https://")) {
+                                                    url = "https://" + url;
+                                                }
+                                                Intent intent = new Intent(Intent.ACTION_VIEW);
+                                                intent.setData(Uri.parse(url));
+                                                startActivity(intent);
+                                            });
+                                } else {
+                                    tvSitioWeb.setText(R.string.no_disponible);
+                                    tvSitioWeb.setTextColor(
+                                            getResources().getColor(R.color.black, null));
+                                    tvSitioWeb.setOnClickListener(null);
+                                }
 
-                        latitudLocal = local.getLatitud();
-                        longitudLocal = local.getLongitud();
-                        nombreLocal = local.getNombre();
-                        actualizarChinchetaMapa();
+                                if (local.getFotoPerfil() != null) {
+                                    Glide.with(requireContext())
+                                            .load(local.getFotoPerfil())
+                                            .into(imgPerfil);
+                                }
 
-                        comprobarCargaCompleta();
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    if (!isAdded()) return; // Red de seguridad
-                    Toast.makeText(requireContext(), getString(R.string.loading_profile_error_message) + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    comprobarCargaCompleta();
-                });
+                                cargarChipsOpciones(local);
+
+                                latitudLocal = local.getLatitud();
+                                longitudLocal = local.getLongitud();
+                                nombreLocal = local.getNombre();
+                                actualizarChinchetaMapa();
+
+                                comprobarCargaCompleta();
+                            }
+                        })
+                .addOnFailureListener(
+                        e -> {
+                            if (!isAdded()) return; // Red de seguridad
+                            Toast.makeText(
+                                            requireContext(),
+                                            getString(R.string.loading_profile_error_message)
+                                                    + e.getMessage(),
+                                            Toast.LENGTH_SHORT)
+                                    .show();
+                            comprobarCargaCompleta();
+                        });
     }
 
     private void cargarPublicaciones() {
-        publicacionService.getPublicacionesByUsuario(uidLocalVisitado)
-                .addOnSuccessListener(publicaciones -> {
-                    if (!isAdded()) return;
+        publicacionService
+                .getPublicacionesByUsuario(uidLocalVisitado)
+                .addOnSuccessListener(
+                        publicaciones -> {
+                            if (!isAdded()) return;
 
-                    if (publicaciones == null || publicaciones.isEmpty()) {
-                        tvSinPublicaciones.setVisibility(View.VISIBLE);
-                        recyclerPublicaciones.setVisibility(View.GONE);
-                    } else {
-                        tvSinPublicaciones.setVisibility(View.GONE);
-                        recyclerPublicaciones.setVisibility(View.VISIBLE);
-                        adapter = new PublicacionAdapter(publicaciones, requireContext());
-                        recyclerPublicaciones.setAdapter(adapter);
-                    }
-                    comprobarCargaCompleta();
-                })
-                .addOnFailureListener(e -> {
-                    if (!isAdded()) return;
-                    Toast.makeText(requireContext(), getString(R.string.publicaciones_loading_error_message) + e.getMessage(), Toast.LENGTH_SHORT).show();
-                    comprobarCargaCompleta();
-                });
+                            if (publicaciones == null || publicaciones.isEmpty()) {
+                                tvSinPublicaciones.setVisibility(View.VISIBLE);
+                                recyclerPublicaciones.setVisibility(View.GONE);
+                            } else {
+                                tvSinPublicaciones.setVisibility(View.GONE);
+                                recyclerPublicaciones.setVisibility(View.VISIBLE);
+                                adapter = new PublicacionAdapter(publicaciones, requireContext());
+                                recyclerPublicaciones.setAdapter(adapter);
+                            }
+                            comprobarCargaCompleta();
+                        })
+                .addOnFailureListener(
+                        e -> {
+                            if (!isAdded()) return;
+                            Toast.makeText(
+                                            requireContext(),
+                                            getString(R.string.publicaciones_loading_error_message)
+                                                    + e.getMessage(),
+                                            Toast.LENGTH_SHORT)
+                                    .show();
+                            comprobarCargaCompleta();
+                        });
     }
 
     private synchronized void comprobarCargaCompleta() {
@@ -271,75 +307,137 @@ public class PerfilLocalFragment extends Fragment {
     private void verificarRolYMostrarValoracion() {
         if (uidUsuarioActual == null) return;
 
-        usuarioService.getPerfil(uidUsuarioActual)
-                .addOnSuccessListener(usuarioActual -> {
-                    if (!isAdded()) return;
+        usuarioService
+                .getPerfil(uidUsuarioActual)
+                .addOnSuccessListener(
+                        usuarioActual -> {
+                            if (!isAdded()) return;
 
-                    if ("cliente".equals(usuarioActual.getRol()) && !uidUsuarioActual.equals(uidLocalVisitado)) {
-                        layoutValoracion.setVisibility(View.VISIBLE);
+                            if ("cliente".equals(usuarioActual.getRol())
+                                    && !uidUsuarioActual.equals(uidLocalVisitado)) {
+                                layoutValoracion.setVisibility(View.VISIBLE);
 
-                        valoracionLocalService.getValoracionUsuario(uidUsuarioActual, uidLocalVisitado)
-                                .addOnSuccessListener(valoracion -> {
-                                    if (!isAdded()) return;
-                                    if (valoracion != null) {
-                                        ratingBarLocal.setRating((float) valoracion.getPuntuacion());
-                                        btnBorrarValoracion.setVisibility(View.VISIBLE);
-                                    }
-                                })
-                                .addOnFailureListener(e -> {
-                                    if (!isAdded()) return;
-                                    ratingBarLocal.setRating(0f);
-                                    btnBorrarValoracion.setVisibility(View.GONE);
-                                });
+                                valoracionLocalService
+                                        .getValoracionUsuario(uidUsuarioActual, uidLocalVisitado)
+                                        .addOnSuccessListener(
+                                                valoracion -> {
+                                                    if (!isAdded()) return;
+                                                    if (valoracion != null) {
+                                                        ratingBarLocal.setRating(
+                                                                (float) valoracion.getPuntuacion());
+                                                        btnBorrarValoracion.setVisibility(
+                                                                View.VISIBLE);
+                                                    }
+                                                })
+                                        .addOnFailureListener(
+                                                e -> {
+                                                    if (!isAdded()) return;
+                                                    ratingBarLocal.setRating(0f);
+                                                    btnBorrarValoracion.setVisibility(View.GONE);
+                                                });
 
-                        btnEnviarValoracion.setOnClickListener(v -> {
-                            btnEnviarValoracion.setEnabled(false);
-                            float puntuacionElegida = ratingBarLocal.getRating();
+                                btnEnviarValoracion.setOnClickListener(
+                                        v -> {
+                                            btnEnviarValoracion.setEnabled(false);
+                                            float puntuacionElegida = ratingBarLocal.getRating();
 
-                            ValoracionLocal nuevaValoracion = ValoracionLocal.builder()
-                                    .uidCliente(uidUsuarioActual)
-                                    .uidLocal(uidLocalVisitado)
-                                    .puntuacion(puntuacionElegida)
-                                    .build();
+                                            ValoracionLocal nuevaValoracion =
+                                                    ValoracionLocal.builder()
+                                                            .uidCliente(uidUsuarioActual)
+                                                            .uidLocal(uidLocalVisitado)
+                                                            .puntuacion(puntuacionElegida)
+                                                            .build();
 
-                            valoracionLocalService.valorarLocal(nuevaValoracion)
-                                    .addOnSuccessListener(unused -> {
-                                        if (!isAdded()) return;
-                                        Toast.makeText(requireContext(), R.string.valoracion_enviada, Toast.LENGTH_SHORT).show();
-                                        mostrarDatosLocal();
-                                        btnBorrarValoracion.setVisibility(View.VISIBLE);
-                                        btnEnviarValoracion.setEnabled(true);
-                                    })
-                                    .addOnFailureListener(e -> {
-                                        if (!isAdded()) return;
-                                        if (e instanceof FoodTracksValidationException ex) {
-                                            Toast.makeText(requireContext(), ex.getErrorResId(), Toast.LENGTH_SHORT).show();
-                                        } else {
-                                            Toast.makeText(requireContext(), getString(R.string.send_valoracion_error_mensaje) + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                        }
-                                        btnEnviarValoracion.setEnabled(true);
-                                    });
+                                            valoracionLocalService
+                                                    .valorarLocal(nuevaValoracion)
+                                                    .addOnSuccessListener(
+                                                            unused -> {
+                                                                if (!isAdded()) return;
+                                                                Toast.makeText(
+                                                                                requireContext(),
+                                                                                R.string
+                                                                                        .valoracion_enviada,
+                                                                                Toast.LENGTH_SHORT)
+                                                                        .show();
+                                                                mostrarDatosLocal();
+                                                                btnBorrarValoracion.setVisibility(
+                                                                        View.VISIBLE);
+                                                                btnEnviarValoracion.setEnabled(
+                                                                        true);
+                                                            })
+                                                    .addOnFailureListener(
+                                                            e -> {
+                                                                if (!isAdded()) return;
+                                                                if (e
+                                                                        instanceof
+                                                                        FoodTracksValidationException
+                                                                        ex) {
+                                                                    Toast.makeText(
+                                                                                    requireContext(),
+                                                                                    ex
+                                                                                            .getErrorResId(),
+                                                                                    Toast
+                                                                                            .LENGTH_SHORT)
+                                                                            .show();
+                                                                } else {
+                                                                    Toast.makeText(
+                                                                                    requireContext(),
+                                                                                    getString(
+                                                                                                    R
+                                                                                                            .string
+                                                                                                            .send_valoracion_error_mensaje)
+                                                                                            + e
+                                                                                                    .getMessage(),
+                                                                                    Toast
+                                                                                            .LENGTH_SHORT)
+                                                                            .show();
+                                                                }
+                                                                btnEnviarValoracion.setEnabled(
+                                                                        true);
+                                                            });
+                                        });
+
+                                btnBorrarValoracion.setOnClickListener(
+                                        v -> {
+                                            btnBorrarValoracion.setEnabled(false);
+                                            valoracionLocalService
+                                                    .eliminarValoracion(
+                                                            uidUsuarioActual, uidLocalVisitado)
+                                                    .addOnSuccessListener(
+                                                            unused -> {
+                                                                if (!isAdded()) return;
+                                                                Toast.makeText(
+                                                                                requireContext(),
+                                                                                R.string
+                                                                                        .valoracion_eliminada,
+                                                                                Toast.LENGTH_SHORT)
+                                                                        .show();
+                                                                ratingBarLocal.setRating(0f);
+                                                                btnBorrarValoracion.setVisibility(
+                                                                        View.GONE);
+                                                                mostrarDatosLocal();
+                                                                btnBorrarValoracion.setEnabled(
+                                                                        true);
+                                                            })
+                                                    .addOnFailureListener(
+                                                            e -> {
+                                                                if (!isAdded()) return;
+                                                                Toast.makeText(
+                                                                                requireContext(),
+                                                                                getString(
+                                                                                                R
+                                                                                                        .string
+                                                                                                        .delete_valoracion_error_mensaje)
+                                                                                        + e
+                                                                                                .getMessage(),
+                                                                                Toast.LENGTH_SHORT)
+                                                                        .show();
+                                                                btnBorrarValoracion.setEnabled(
+                                                                        true);
+                                                            });
+                                        });
+                            }
                         });
-
-                        btnBorrarValoracion.setOnClickListener(v -> {
-                            btnBorrarValoracion.setEnabled(false);
-                            valoracionLocalService.eliminarValoracion(uidUsuarioActual, uidLocalVisitado)
-                                    .addOnSuccessListener(unused -> {
-                                        if (!isAdded()) return;
-                                        Toast.makeText(requireContext(), R.string.valoracion_eliminada, Toast.LENGTH_SHORT).show();
-                                        ratingBarLocal.setRating(0f);
-                                        btnBorrarValoracion.setVisibility(View.GONE);
-                                        mostrarDatosLocal();
-                                        btnBorrarValoracion.setEnabled(true);
-                                    })
-                                    .addOnFailureListener(e -> {
-                                        if (!isAdded()) return;
-                                        Toast.makeText(requireContext(), getString(R.string.delete_valoracion_error_mensaje) + e.getMessage(), Toast.LENGTH_SHORT).show();
-                                        btnBorrarValoracion.setEnabled(true);
-                                    });
-                        });
-                    }
-                });
     }
 
     private void actualizarChinchetaMapa() {
@@ -403,8 +501,11 @@ public class PerfilLocalFragment extends Fragment {
      */
     private void configTheme() {
         if (getActivity() != null) {
-            getActivity().getWindow().setStatusBarColor(
-                    androidx.core.content.ContextCompat.getColor(requireContext(), R.color.tertiary));
+            getActivity()
+                    .getWindow()
+                    .setStatusBarColor(
+                            androidx.core.content.ContextCompat.getColor(
+                                    requireContext(), R.color.tertiary));
         }
     }
 }
