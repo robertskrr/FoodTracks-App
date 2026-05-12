@@ -350,8 +350,8 @@ public class UsuarioService implements IUsuarioService {
     public Task<List<Usuario>> buscarLocalesPorFiltros(String ciudad, boolean vegano, boolean vegetariano,
                                                        boolean sinLactosa, boolean celiaco, String otraPreferencia) {
 
-        String cleanCiudad = (ciudad != null && !ciudad.trim().isEmpty()) ? StringUtils.capitalize(ciudad.trim()) : null;
-        String cleanOtraPreferencia = (otraPreferencia != null && !otraPreferencia.trim().isEmpty()) ? StringUtils.capitalize(otraPreferencia.trim()) : null;
+        String cleanCiudad = (ciudad != null && !ciudad.trim().isEmpty()) ? StringUtils.capitalize(ciudad) : null;
+        String cleanOtraPreferencia = (otraPreferencia != null && !otraPreferencia.trim().isEmpty()) ? StringUtils.capitalize(otraPreferencia) : null;
 
         return usuarioRepository.searchLocalesByFiltros(cleanCiudad, vegano, vegetariano, sinLactosa, celiaco, cleanOtraPreferencia)
                 .continueWith(task -> {

@@ -65,7 +65,7 @@ public class UsuarioRepository implements IUsuarioRepository {
         // Solo queremos locales
         Query query = usersCollection.whereEqualTo("rol", "local");
 
-        // Añadimos los filtros condicionalmente
+        // Añadimos los filtros
         if (ciudad != null && !ciudad.isEmpty()) {
             query = query.whereEqualTo("ciudad", ciudad);
         }

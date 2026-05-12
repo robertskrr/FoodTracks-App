@@ -14,6 +14,7 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,12 +29,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.foodtracks.app.R;
 import com.foodtracks.app.adapters.PerfilUsuarioAdapter;
 import com.foodtracks.app.adapters.PublicacionAdapter;
+import com.foodtracks.app.models.Usuario;
 import com.foodtracks.app.models.UsuarioAdmin;
 import com.foodtracks.app.models.UsuarioCliente;
 import com.foodtracks.app.models.UsuarioLocal;
 import com.foodtracks.app.services.ServiceFactory;
+import com.foodtracks.app.services.exceptions.FoodTracksNotFoundException;
 import com.foodtracks.app.services.interfaces.IUsuarioService;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.List;
 
 /**
  * Fragment de búsqueda de perfiles de usuarios.
@@ -49,6 +55,7 @@ public class BusquedaFragment extends Fragment {
     private ProgressBar progressBar;
     private FrameLayout layoutContenido;
     private ConstraintLayout topBarBusqueda;
+    private ImageView btnFiltros;
 
 
     // Perfiles
@@ -93,7 +100,12 @@ public class BusquedaFragment extends Fragment {
         progressBar.setVisibility(View.GONE);
 
         layoutContenido = rootView.findViewById(R.id.layoutContenidoBusqueda);
+        btnFiltros = rootView.findViewById(R.id.btnFiltros);
 
+        setListeners();
+    }
+
+    private void setListeners() {
         // Al pulsar Enter en el teclado
         etBuscador.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
@@ -101,6 +113,44 @@ public class BusquedaFragment extends Fragment {
                 return true;
             }
             return false;
+        });
+
+        // Menú de filtros
+        btnFiltros.setOnClickListener(v -> {
+            FiltrosBusquedaFragment fm = new FiltrosBusquedaFragment();
+            fm.show(getParentFragmentManager(), "Filtros");
+        });
+
+        // Respuesta del menú cuando se cierre
+        getParentFragmentManager().setFragmentResultListener("CLAVE_FILTROS", this, (requestKey, result) -> {
+            String tipoBusqueda = result.getString("TIPO_BUSQUEDA");
+            String ciudad = result.getString("ciudad");
+
+            layoutContenido.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.VISIBLE);
+            recyclerPerfiles.setVisibility(View.GONE);
+            tvSinResultados.setVisibility(View.GONE);
+
+            // Borramos el texto del buscador
+            etBuscador.setText("");
+
+            if ("MANUAL".equalsIgnoreCase(tipoBusqueda)) {
+                boolean vegano = result.getBoolean("vegano");
+                boolean vegetariano = result.getBoolean("vegetariano");
+                boolean lactosa = result.getBoolean("lactosa");
+                boolean celiaco = result.getBoolean("celiaco");
+                String otra = result.getString("otra");
+
+                ejecutarBusquedaFiltros(usuarioService.buscarLocalesPorFiltros(ciudad, vegano, vegetariano, lactosa, celiaco, otra));
+
+            } else if ("MIS_PREFERENCIAS".equalsIgnoreCase(tipoBusqueda)) {
+                if (!esInvitado) {
+                    ejecutarBusquedaFiltros(usuarioService.buscarLocalesPorMisPreferencias(uidUsuarioActual, ciudad));
+                } else {
+                    Toast.makeText(requireContext(), R.string.inicia_sesion_para_usar_esto, Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
         });
     }
 
@@ -175,6 +225,37 @@ public class BusquedaFragment extends Fragment {
                     progressBar.setVisibility(View.GONE);
                     Toast.makeText(requireContext(), R.string.publicaciones_loading_error_message, Toast.LENGTH_SHORT).show();
                     Log.e("BusquedaFragment", "Error cargando perfiles: " + e.getMessage());
+                });
+    }
+
+    /**
+     * Procesa la lista de usuarios devuelta por Firebase
+     */
+    private void ejecutarBusquedaFiltros(Task<List<Usuario>> taskBusqueda) {
+        taskBusqueda
+                .addOnSuccessListener(usuarios -> {
+                    if (!isAdded()) return;
+                    progressBar.setVisibility(View.GONE);
+
+                    if (usuarios == null || usuarios.isEmpty()) {
+                        tvSinResultados.setVisibility(View.VISIBLE);
+                        recyclerPerfiles.setVisibility(View.GONE);
+                    } else {
+                        tvSinResultados.setVisibility(View.GONE);
+                        recyclerPerfiles.setVisibility(View.VISIBLE);
+
+                        adapter = new PerfilUsuarioAdapter(usuarios, requireContext());
+                        recyclerPerfiles.setAdapter(adapter);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    if (!isAdded()) return;
+                    progressBar.setVisibility(View.GONE);
+                    if (e instanceof FoodTracksNotFoundException ex) {
+                        Toast.makeText(requireContext(), ex.getErrorResId(), Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(requireContext(), R.string.loading_stores_error_message, Toast.LENGTH_SHORT).show();
+                    }
                 });
     }
 

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/fondo"
+    android:padding="24dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="40dp"
+            android:layout_height="4dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="16dp"
+            android:background="#CCCCCC" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:text="@string/busqueda_de_locales_por_filtros"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="@string/ciudad"
+            android:textColor="#494949"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etFiltroCiudad"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/bg_search_bar"
+            android:hint="@string/ej_sevilla"
+            android:inputType="text"
+            android:paddingHorizontal="15dp"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            tools:ignore="Autofill" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:text="@string/opciones_alimenticias"
+            android:textColor="#494949"
+            android:textSize="14sp"
+            android:textStyle="bold" />
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="2"
+            android:layout_marginBottom="10dp">
+
+            <CheckBox
+                android:id="@+id/cbFiltroVegano"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:text="@string/vegano"
+                android:textColor="@color/black" />
+
+            <CheckBox
+                android:id="@+id/cbFiltroVegetariano"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:text="@string/vegetariano"
+                android:textColor="@color/black" />
+
+            <CheckBox
+                android:id="@+id/cbFiltroLactosa"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:text="@string/sin_lactosa"
+                android:textColor="@color/black" />
+
+            <CheckBox
+                android:id="@+id/cbFiltroCeliaco"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:text="@string/celiaco"
+                android:textColor="@color/black" />
+        </GridLayout>
+
+        <EditText
+            android:id="@+id/etFiltroOtra"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/bg_search_bar"
+            android:hint="@string/otra_preferencia_especifica"
+            android:inputType="text"
+            android:paddingHorizontal="15dp"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            tools:ignore="Autofill" />
+
+        <Button
+            android:id="@+id/btnAplicarFiltros"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginBottom="12dp"
+            android:backgroundTint="@color/tertiary"
+            android:text="@string/aplicar_filtros_manuales"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:cornerRadius="12dp" />
+
+        <Button
+            android:id="@+id/btnMisPreferencias"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginBottom="20dp"
+            android:text="@string/usar_mis_preferencias"
+            android:textAllCaps="false"
+            android:textColor="@color/tertiary"
+            app:cornerRadius="12dp"
+            app:strokeColor="@color/tertiary" />
+
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>
