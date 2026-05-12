@@ -8,6 +8,7 @@ import android.net.Uri;
 
 import com.foodtracks.app.models.Usuario;
 
+import com.foodtracks.app.models.UsuarioLocal;
 import com.google.android.gms.tasks.Task;
 
 /**
@@ -80,13 +81,28 @@ public interface IUsuarioService {
     Task<Void> actualizarPerfil(Usuario usuario, Uri fotoUri);
 
     /**
-     * Realiza una búsqueda de usuarios basada en el nombre de usuario.
-     * Ideal para buscadores.
+     * Realiza una búsqueda de usuarios basada en un campo concreto.
      *
      * @param query Texto o prefijo a buscar.
      * @return {@link Task} que contiene una lista de {@link Usuario} que coinciden con la búsqueda.
      */
     Task<List<Usuario>> buscarUsuarios(String query);
+
+    /**
+     * Realiza una búsqueda de usuarios basada en los filtros añadidos.
+     *
+     * @return {@link Task} que contiene una lista de {@link UsuarioLocal} que coinciden con la búsqueda.
+     */
+    public Task<List<Usuario>> buscarLocalesPorFiltros(String ciudad, boolean vegano, boolean vegetariano,
+                                                       boolean sinLactosa, boolean celiaco, String otraPreferencia);
+
+    /**
+     * Busca locales por las preferencias del usuario autor de la búsqueda.
+     * @param uidUsuario Identificador del usuario
+     * @param ciudadOpcional Ciudad en la que quiere buscar el usuario
+     * @return
+     */
+    public Task<List<Usuario>> buscarLocalesPorMisPreferencias(String uidUsuario, String ciudadOpcional);
 
     /**
      * Registra una visita en el perfil de un usuario local.

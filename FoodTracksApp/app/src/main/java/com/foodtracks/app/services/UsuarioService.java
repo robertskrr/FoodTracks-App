@@ -2,6 +2,7 @@
 
 package com.foodtracks.app.services;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.net.Uri;
@@ -278,7 +279,7 @@ public class UsuarioService implements IUsuarioService {
                                             usuarioModificado.setFotoId(usuarioActual.getFotoId());
                                         }
 
-                                        // Comprueba si se ha cambiado el username
+                                        // Comprueba si se ha cambiado el username // TODO: Cambiar de sitio. Primero comprueba esto antes de subir nada
                                         if (!usuarioActual
                                                 .getUsername()
                                                 .equals(usuarioModificado.getUsername())) {
@@ -316,15 +317,77 @@ public class UsuarioService implements IUsuarioService {
         String cleanQuery = (query != null) ? query.toLowerCase().trim() : "";
 
         return usuarioRepository
-                .searchUsuariosByUsername(cleanQuery)
+                .searchUsuariosByField("username", cleanQuery)
                 .continueWith(
                         task -> {
+                            List<Usuario> listaUsuarios = new ArrayList<>();
+
                             if (task.isSuccessful() && task.getResult() != null) {
-                                return task.getResult().toObjects(Usuario.class);
-                            } else {
-                                return new java.util.ArrayList<>();
+                                for (DocumentSnapshot doc : task.getResult()) {
+                                    String rol = doc.getString("rol");
+
+                                    if (rol != null) {
+                                        switch (rol) {
+                                            case "local":
+                                                listaUsuarios.add(doc.toObject(UsuarioLocal.class));
+                                                break;
+                                            case "admin":
+                                                listaUsuarios.add(doc.toObject(UsuarioAdmin.class));
+                                                break;
+                                            case "cliente":
+                                            default:
+                                                listaUsuarios.add(doc.toObject(UsuarioCliente.class));
+                                                break;
+                                        }
+                                    }
+                                }
                             }
+                            return listaUsuarios;
                         });
+    }
+
+    @Override
+    public Task<List<Usuario>> buscarLocalesPorFiltros(String ciudad, boolean vegano, boolean vegetariano,
+                                                       boolean sinLactosa, boolean celiaco, String otraPreferencia) {
+
+        String cleanCiudad = (ciudad != null && !ciudad.trim().isEmpty()) ? StringUtils.capitalize(ciudad) : null;
+        String cleanOtraPreferencia = (otraPreferencia != null && !otraPreferencia.trim().isEmpty()) ? StringUtils.capitalize(otraPreferencia) : null;
+
+        return usuarioRepository.searchLocalesByFiltros(cleanCiudad, vegano, vegetariano, sinLactosa, celiaco, cleanOtraPreferencia)
+                .continueWith(task -> {
+                    List<Usuario> listaLocales = new ArrayList<>();
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        for (DocumentSnapshot doc : task.getResult()) {
+                            listaLocales.add(doc.toObject(UsuarioLocal.class));
+                        }
+                    }
+                    return listaLocales;
+                });
+    }
+
+    @Override
+    public Task<List<Usuario>> buscarLocalesPorMisPreferencias(String uidUsuario, String ciudadOpcional) {
+        // Recuperamos el perfil del usuario protagonista
+        return getPerfil(uidUsuario).continueWithTask(task -> {
+
+            if (!task.isSuccessful() || task.getResult() == null) {
+                return Tasks.forException(new FoodTracksNotFoundException(R.string.profile_not_available_to_filter));
+            }
+
+            Usuario usuario = task.getResult();
+
+            // Recuperamos la otra preferencia si es String
+            String otraPreferencia = (usuario.getOtraPreferencia() instanceof String) ? (String) usuario.getOtraPreferencia() : null;
+            
+            return buscarLocalesPorFiltros(
+                    ciudadOpcional,
+                    usuario.isEsVegano(),
+                    usuario.isEsVegetariano(),
+                    usuario.isSinLactosa(),
+                    usuario.isEsCeliaco(),
+                    otraPreferencia
+            );
+        });
     }
 
     @Override

@@ -10,6 +10,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 /**
@@ -50,13 +51,41 @@ public class UsuarioRepository implements IUsuarioRepository {
     }
 
     @Override
-    public Task<QuerySnapshot> searchUsuariosByUsername(String query) {
+    public Task<QuerySnapshot> searchUsuariosByField(String field, String query) {
         return usersCollection
-                .orderBy("username")
+                .orderBy(field)
                 .startAt(query)
                 .endAt(query + "\uf8ff")
                 .limit(20)
                 .get();
+    }
+
+    @Override
+    public Task<QuerySnapshot> searchLocalesByFiltros(String ciudad, boolean vegano, boolean vegetariano, boolean sinLactosa, boolean celiaco, String otraPreferencia) {
+        // Solo queremos locales
+        Query query = usersCollection.whereEqualTo("rol", "local");
+
+        // Añadimos los filtros
+        if (ciudad != null && !ciudad.isEmpty()) {
+            query = query.whereEqualTo("ciudad", ciudad);
+        }
+        if (vegano) {
+            query = query.whereEqualTo("es_vegano", true);
+        }
+        if (vegetariano) {
+            query = query.whereEqualTo("es_vegetariano", true);
+        }
+        if (sinLactosa) {
+            query = query.whereEqualTo("sin_lactosa", true);
+        }
+        if (celiaco) {
+            query = query.whereEqualTo("es_celiaco", true);
+        }
+        if (otraPreferencia != null && !otraPreferencia.trim().isEmpty()) {
+            query = query.whereEqualTo("otra_preferencia", otraPreferencia);
+        }
+
+        return query.limit(50).get();
     }
 
     @Override

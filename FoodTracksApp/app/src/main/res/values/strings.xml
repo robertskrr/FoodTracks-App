@@ -33,6 +33,8 @@
     <string name="camera_permissions_error">Se necesita permiso de cámara para tomar fotos.</string>
     <string name="login_error_message">Error al iniciar sesión</string>
     <string name="inicia_sesion_para_usar_esto">Inicia sesión para usar esto.</string>
+    <string name="profile_not_available_to_filter">No se pudo obtener el perfil para filtrar.</string>
+    <string name="loading_stores_error_message">Error al cargar los locales.</string>
 
 
     <!-- LAYOUTS STRINGS -->
@@ -98,6 +100,13 @@
     <string name="ajustes">Ajustes</string>
     <string name="inicio">Inicio</string>
     <string name="feed">FEED</string>
+    <string name="sin_resultados">Sin resultados</string>
+    <string name="buscar_usuarios_o_locales">Buscar usuarios o locales...</string>
+    <string name="busqueda_de_locales_por_filtros">Búsqueda de locales por filtros</string>
+    <string name="ej_sevilla">Ej: Sevilla</string>
+    <string name="otra_preferencia_especifica">Otra preferencia específica...</string>
+    <string name="aplicar_filtros_manuales">Aplicar filtros manuales</string>
+    <string name="usar_mis_preferencias">Usar mis preferencias</string>
 
 
 </resources>

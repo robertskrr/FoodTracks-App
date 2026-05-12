@@ -51,10 +51,16 @@ public interface IUsuarioRepository {
     /**
      * Busca usuarios cuyo nombre de usuario comience por una cadena específica.
      *
+     * @param field Campo concreto de búsqueda
      * @param query Texto introducido por el usuario.
      * @return Task con la lista de posibles coincidencias.
      */
-    Task<QuerySnapshot> searchUsuariosByUsername(String query);
+    Task<QuerySnapshot> searchUsuariosByField(String field, String query);
+
+    /**
+     * Busca locales aplicando filtros de ciudad y preferencias alimenticias.
+     */
+    Task<QuerySnapshot> searchLocalesByFiltros(String ciudad, boolean vegano, boolean vegetariano, boolean sinLactosa, boolean celiaco, String otraPreferencia);
 
     /**
      * Incrementa atómicamente el contador de visitas del perfil de un local.
