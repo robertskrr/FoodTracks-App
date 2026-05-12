@@ -7,8 +7,8 @@ import java.util.List;
 import android.net.Uri;
 
 import com.foodtracks.app.models.Usuario;
-
 import com.foodtracks.app.models.UsuarioLocal;
+
 import com.google.android.gms.tasks.Task;
 
 /**
@@ -93,8 +93,13 @@ public interface IUsuarioService {
      *
      * @return {@link Task} que contiene una lista de {@link UsuarioLocal} que coinciden con la búsqueda.
      */
-    public Task<List<Usuario>> buscarLocalesPorFiltros(String ciudad, boolean vegano, boolean vegetariano,
-                                                       boolean sinLactosa, boolean celiaco, String otraPreferencia);
+    public Task<List<Usuario>> buscarLocalesPorFiltros(
+            String ciudad,
+            boolean vegano,
+            boolean vegetariano,
+            boolean sinLactosa,
+            boolean celiaco,
+            String otraPreferencia);
 
     /**
      * Busca locales por las preferencias del usuario autor de la búsqueda.
@@ -102,7 +107,8 @@ public interface IUsuarioService {
      * @param ciudadOpcional Ciudad en la que quiere buscar el usuario
      * @return
      */
-    public Task<List<Usuario>> buscarLocalesPorMisPreferencias(String uidUsuario, String ciudadOpcional);
+    public Task<List<Usuario>> buscarLocalesPorMisPreferencias(
+            String uidUsuario, String ciudadOpcional);
 
     /**
      * Registra una visita en el perfil de un usuario local.

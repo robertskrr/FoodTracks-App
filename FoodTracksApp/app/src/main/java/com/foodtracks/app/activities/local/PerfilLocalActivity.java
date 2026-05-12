@@ -233,7 +233,7 @@ public class PerfilLocalActivity extends AppCompatActivity {
                                                 intent.setData(
                                                         android.net.Uri.parse(
                                                                 url)); // Abre el navegador con la
-                                                                        // página del local
+                                                // página del local
                                                 startActivity(intent);
                                             });
                                 } else {

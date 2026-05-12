@@ -183,12 +183,11 @@ public class PublicacionAdapter
         // Si tenemos los datos en la memoria caché
         if (cacheUsuarios.containsKey(uidAutor) && cacheUsuarios.get(uidAutor) != null) {
             Usuario usuarioGuardado = cacheUsuarios.get(uidAutor);
-            
+
             assert usuarioGuardado != null;
             pintarDatosAutor(holder, usuarioGuardado, uidAutor);
             return;
         }
-
 
         // Si no los tenemos, ponemos los valores por defecto y hacemos la consulta
         holder.tvUsernameAutor.setText(R.string.cargando);
@@ -222,21 +221,20 @@ public class PublicacionAdapter
         holder.tvUsernameAutor.setText("@" + usuario.getUsername());
 
         if (usuario.getFotoPerfil() != null && !usuario.getFotoPerfil().isEmpty()) {
-            Glide.with(context)
-                    .load(usuario.getFotoPerfil())
-                    .into(holder.imgAvatarAutor);
+            Glide.with(context).load(usuario.getFotoPerfil()).into(holder.imgAvatarAutor);
         }
 
-        View.OnClickListener irAlPerfilListener = v -> {
-            Intent intent;
-            if ("local".equals(usuario.getRol())) {
-                intent = new Intent(context, PerfilLocalActivity.class);
-            } else {
-                intent = new Intent(context, PerfilClienteActivity.class);
-            }
-            intent.putExtra("UID_USUARIO", uidAutor);
-            context.startActivity(intent);
-        };
+        View.OnClickListener irAlPerfilListener =
+                v -> {
+                    Intent intent;
+                    if ("local".equals(usuario.getRol())) {
+                        intent = new Intent(context, PerfilLocalActivity.class);
+                    } else {
+                        intent = new Intent(context, PerfilClienteActivity.class);
+                    }
+                    intent.putExtra("UID_USUARIO", uidAutor);
+                    context.startActivity(intent);
+                };
 
         holder.imgAvatarAutor.setOnClickListener(irAlPerfilListener);
         holder.tvUsernameAutor.setOnClickListener(irAlPerfilListener);

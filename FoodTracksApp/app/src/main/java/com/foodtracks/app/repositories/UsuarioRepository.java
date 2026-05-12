@@ -61,7 +61,13 @@ public class UsuarioRepository implements IUsuarioRepository {
     }
 
     @Override
-    public Task<QuerySnapshot> searchLocalesByFiltros(String ciudad, boolean vegano, boolean vegetariano, boolean sinLactosa, boolean celiaco, String otraPreferencia) {
+    public Task<QuerySnapshot> searchLocalesByFiltros(
+            String ciudad,
+            boolean vegano,
+            boolean vegetariano,
+            boolean sinLactosa,
+            boolean celiaco,
+            String otraPreferencia) {
         // Solo queremos locales
         Query query = usersCollection.whereEqualTo("rol", "local");
 
