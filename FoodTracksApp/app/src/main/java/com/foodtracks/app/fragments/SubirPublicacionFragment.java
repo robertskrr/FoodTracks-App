@@ -188,7 +188,7 @@ public class SubirPublicacionFragment extends DialogFragment {
                 });
 
             } else {
-                // No hay mención, publicamos directamente con uidLocal = null
+                // Si no se menciona se pasa null
                 subirPublicacion(texto, null);
             }
         });

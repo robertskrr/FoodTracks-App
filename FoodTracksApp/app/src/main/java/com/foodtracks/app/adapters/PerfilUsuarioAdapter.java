@@ -65,7 +65,7 @@ public class PerfilUsuarioAdapter
 
         // Icono del tipo de usuario
         if ("local".equals(usuario.getRol())) {
-            holder.imgTipoPerfil.setImageResource(R.drawable.ic_store);
+            holder.imgTipoPerfil.setImageResource(R.drawable.ic_local);
         } else {
             holder.imgTipoPerfil.setImageResource(R.drawable.ic_person);
         }

@@ -50,8 +50,8 @@
 
         <ImageView
             android:id="@+id/imgTipoPerfil"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:src="@drawable/ic_person"
             app:tint="#888888"
             app:layout_constraintBottom_toBottomOf="parent"

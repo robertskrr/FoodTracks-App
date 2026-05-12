@@ -96,6 +96,7 @@ public class PublicacionAdapter
 
         // Cargamos los datos del autor de la publicación
         cargarDatosAutor(holder, publicacion.getUidUsuario());
+        cargarDatosLocalMencionado(holder, publicacion.getUidLocal());
         comprobarLikeInicial(holder, publicacion.getUid());
 
         // Configuramos el evento de Poner / Quitar like
@@ -183,7 +184,6 @@ public class PublicacionAdapter
         // Si tenemos los datos en la memoria caché
         if (cacheUsuarios.containsKey(uidAutor) && cacheUsuarios.get(uidAutor) != null) {
             Usuario usuarioGuardado = cacheUsuarios.get(uidAutor);
-
             assert usuarioGuardado != null;
             pintarDatosAutor(holder, usuarioGuardado, uidAutor);
             return;
@@ -241,6 +241,55 @@ public class PublicacionAdapter
     }
 
     /**
+     * Carga el username del local mencionado.
+     */
+    private void cargarDatosLocalMencionado(PublicacionViewHolder holder, String uidLocal) {
+        // Si no hay local mencionado
+        if (uidLocal == null || uidLocal.trim().isEmpty()) {
+            holder.tvLocalMencionado.setVisibility(View.GONE);
+            holder.tvLocalMencionado.setOnClickListener(null);
+            return;
+        }
+
+        holder.tvLocalMencionado.setVisibility(View.VISIBLE);
+        holder.tvLocalMencionado.setText(R.string.cargando);
+
+        // Comprobamos la memoria caché
+        if (cacheUsuarios.containsKey(uidLocal) && cacheUsuarios.get(uidLocal) != null) {
+            Usuario localGuardado = cacheUsuarios.get(uidLocal);
+            assert localGuardado != null;
+            pintarDatosLocalMencionado(holder, localGuardado, uidLocal);
+            return;
+        }
+
+        // Si no está en la memoria caché, hacemos la consulta
+        usuarioService.getPerfil(uidLocal)
+                .addOnSuccessListener(usuario -> {
+                    if (usuario != null) {
+                        cacheUsuarios.put(uidLocal, usuario); // Guardamos en la memoria
+                        pintarDatosLocalMencionado(holder, usuario, uidLocal);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    holder.tvLocalMencionado.setVisibility(View.GONE);
+                });
+    }
+
+    /**
+     * Método auxiliar para pintar el username del local y configurar su click
+     */
+    private void pintarDatosLocalMencionado(PublicacionViewHolder holder, Usuario local, String uidLocal) {
+        holder.tvLocalMencionado.setText("@" + local.getUsername());
+
+        // Username clickable que te lleva al perfil del local
+        holder.tvLocalMencionado.setOnClickListener(v -> {
+            Intent intent = new Intent(context, PerfilLocalActivity.class);
+            intent.putExtra("UID_USUARIO", uidLocal);
+            context.startActivity(intent);
+        });
+    }
+
+    /**
      * Consulta si el usuario actual ya le había dado like a esta publicación
      * para pintar el corazón del color correcto al abrir la pantalla.
      * @param holder ViewHolder de la publicación
@@ -276,7 +325,7 @@ public class PublicacionAdapter
     }
 
     public static class PublicacionViewHolder extends RecyclerView.ViewHolder {
-        TextView tvUsernameAutor, tvFecha, tvTexto, tvContadorLikes;
+        TextView tvUsernameAutor, tvFecha, tvTexto, tvContadorLikes, tvLocalMencionado;
         ShapeableImageView imgAvatarAutor, imgPublicacion;
         ImageView imgLike;
 
@@ -289,6 +338,7 @@ public class PublicacionAdapter
             imgPublicacion = itemView.findViewById(R.id.imgPublicacion);
             imgLike = itemView.findViewById(R.id.imgLike);
             tvContadorLikes = itemView.findViewById(R.id.tvContadorLikes);
+            tvLocalMencionado = itemView.findViewById(R.id.tvLocalMencionado);
         }
     }
 }

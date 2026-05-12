@@ -51,6 +51,20 @@
             app:layout_constraintStart_toEndOf="@+id/imgAvatarAutor"
             app:layout_constraintTop_toBottomOf="@+id/tvUsernameAutor" />
 
+        <TextView
+            android:id="@+id/tvLocalMencionado"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="4dp"
+            android:textColor="@color/fondo"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            app:drawableStartCompat="@drawable/ic_local"
+            app:drawableTint="@color/fondo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <!-- CONTENIDO: Texto de la publicación -->
         <TextView
             android:id="@+id/tvTextoPublicacion"
