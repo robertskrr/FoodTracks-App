@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.foodtracks.app.R;
@@ -349,10 +350,10 @@ public class PublicacionAdapter
      * Muestra una alerta de confirmación de eliminación.
      */
     private void mostrarDialogoEliminar(Publicacion publicacion, int position) {
-        new MaterialAlertDialogBuilder(context)
+        AlertDialog dialog = new MaterialAlertDialogBuilder(context)
                 .setTitle(R.string.delete_publicacion)
                 .setMessage(R.string.confirm_delete_publicacion)
-                .setPositiveButton(R.string.eliminar, (dialog, which) -> {
+                .setPositiveButton(R.string.eliminar, (dialogInterface, which) -> {
 
                     publicacionService.eliminarPublicacion(publicacion.getUid())
                             .addOnSuccessListener(unused -> {
@@ -373,10 +374,14 @@ public class PublicacionAdapter
                                 Toast.makeText(context, R.string.error_al_eliminar, Toast.LENGTH_SHORT).show();
                             });
                 })
-                .setNegativeButton(R.string.cancelar, (dialog, which) -> {
-                    dialog.dismiss();
+                .setNegativeButton(R.string.cancelar, (dialogInterface, which) -> {
+                    dialogInterface.dismiss();
                 })
                 .show();
+
+        // Colores de texto de los botones
+        dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE).setTextColor(Color.RED);
+        dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(android.graphics.Color.BLACK);
     }
 
     @Override
