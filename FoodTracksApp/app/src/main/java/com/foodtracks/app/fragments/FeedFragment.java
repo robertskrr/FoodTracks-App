@@ -180,8 +180,7 @@ public class FeedFragment extends Fragment {
                 getActivity()
                         .getWindow()
                         .setStatusBarColor(
-                                ContextCompat.getColor(
-                                        requireContext(), R.color.admin_bottom_nav));
+                                ContextCompat.getColor(requireContext(), R.color.admin_bottom_nav));
                 layoutContenido.setBackgroundColor(getResources().getColor(R.color.black, null));
                 topBarFeed.setBackgroundColor(
                         getResources().getColor(R.color.admin_bottom_nav, null));

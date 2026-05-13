@@ -1,4 +1,8 @@
+/** © FoodTracks Project ===robertskrr=== */
+
 package com.foodtracks.app.fragments.local;
+
+import java.util.Locale;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -6,22 +10,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 
-import com.bumptech.glide.Glide;
 import com.foodtracks.app.R;
 import com.foodtracks.app.models.UsuarioLocal;
 import com.foodtracks.app.services.ServiceFactory;
 import com.foodtracks.app.services.interfaces.IPublicacionService;
 import com.foodtracks.app.services.interfaces.IUsuarioService;
+
+import com.bumptech.glide.Glide;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;
-
-import java.util.Locale;
 
 /**
  * Fragment de dashboard con estadísticas del local.
@@ -38,7 +40,11 @@ public class DashboardFragment extends Fragment {
     private TextView tvUsername;
 
     // Tarjetas de estadísticas
-    private View cardVisitas, cardPuntuacion, cardTotalValoraciones, cardPostsPropios, cardMenciones;
+    private View cardVisitas,
+            cardPuntuacion,
+            cardTotalValoraciones,
+            cardPostsPropios,
+            cardMenciones;
 
     private String uidUsuario;
     private IUsuarioService usuarioService;
@@ -50,7 +56,10 @@ public class DashboardFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(
+            @NonNull LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_dashboard_local, container, false);
 
         configTheme();
@@ -90,40 +99,57 @@ public class DashboardFragment extends Fragment {
     }
 
     private void cargarEstadisticas() {
-        if (uidUsuario == null){
+        if (uidUsuario == null) {
             return;
         }
 
-        usuarioService.getPerfil(uidUsuario).addOnSuccessListener(usuario -> {
-            if (!isAdded()) return;
-            if (usuario instanceof UsuarioLocal local) {
-                tvUsername.setText("@" + local.getUsername());
-                if (local.getFotoPerfil() != null) {
-                    Glide.with(this).load(local.getFotoPerfil()).into(imgPerfil);
-                } else {
-                    imgPerfil.setImageResource(R.drawable.avatar_default);
-                }
+        usuarioService
+                .getPerfil(uidUsuario)
+                .addOnSuccessListener(
+                        usuario -> {
+                            if (!isAdded()) return;
+                            if (usuario instanceof UsuarioLocal local) {
+                                tvUsername.setText("@" + local.getUsername());
+                                if (local.getFotoPerfil() != null) {
+                                    Glide.with(this).load(local.getFotoPerfil()).into(imgPerfil);
+                                } else {
+                                    imgPerfil.setImageResource(R.drawable.avatar_default);
+                                }
 
-                setStatValue(cardVisitas, String.valueOf(local.getVisitasPerfil()));
-                setStatValue(cardPuntuacion, String.format(Locale.getDefault(), "%.2f", local.getPuntuacionMedia()));
-                setStatValue(cardTotalValoraciones, String.valueOf(local.getTotalValoraciones()));
-            }
-            comprobarCarga();
-        });
+                                setStatValue(cardVisitas, String.valueOf(local.getVisitasPerfil()));
+                                setStatValue(
+                                        cardPuntuacion,
+                                        String.format(
+                                                Locale.getDefault(),
+                                                "%.2f",
+                                                local.getPuntuacionMedia()));
+                                setStatValue(
+                                        cardTotalValoraciones,
+                                        String.valueOf(local.getTotalValoraciones()));
+                            }
+                            comprobarCarga();
+                        });
 
         // Contador de publicaciones propias
-        publicacionService.getPublicacionesByUsuario(uidUsuario).addOnSuccessListener(publicaciones -> {
-            if (!isAdded()) return;
-            setStatValue(cardPostsPropios, String.valueOf(publicaciones.size()));
-            comprobarCarga();
-        });
+        publicacionService
+                .getPublicacionesByUsuario(uidUsuario)
+                .addOnSuccessListener(
+                        publicaciones -> {
+                            if (!isAdded()) return;
+                            setStatValue(cardPostsPropios, String.valueOf(publicaciones.size()));
+                            comprobarCarga();
+                        });
 
         // Contador de menciones en publicaciones
-        publicacionService.getPublicacionesByLocalMencionado(uidUsuario).addOnSuccessListener(menciones -> {
-            if (!isAdded()) return;
-            setStatValue(cardMenciones, String.valueOf(menciones.size()));
-            comprobarCarga();
-        }).addOnFailureListener(e -> comprobarCarga());
+        publicacionService
+                .getPublicacionesByLocalMencionado(uidUsuario)
+                .addOnSuccessListener(
+                        menciones -> {
+                            if (!isAdded()) return;
+                            setStatValue(cardMenciones, String.valueOf(menciones.size()));
+                            comprobarCarga();
+                        })
+                .addOnFailureListener(e -> comprobarCarga());
     }
 
     /**
