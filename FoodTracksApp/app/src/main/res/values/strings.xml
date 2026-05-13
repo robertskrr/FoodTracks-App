@@ -25,6 +25,7 @@
     <string name="like_duplicated_error_message">El "Me gusta" no existe.</string>
     <string name="address_not_found_error_message">No hemos podido localizar la dirección.</string>
     <string name="publicaciones_loading_error_message">Error al cargar las publicaciones.</string>
+    <string name="menciones_loading_error_message">Error al cargar las menciones.</string>
     <string name="send_valoracion_error_mensaje">Error al enviar valoración.</string>
     <string name="delete_valoracion_error_mensaje">Error al borrar valoración.</string>
     <string name="inicia_sesion_para_dar_like">Inicia sesión para dar Like</string>
@@ -78,8 +79,9 @@
     <string name="comes_o_cocinas">¿COMES O COCINAS?</string>
     <string name="miembro_desde">Miembro desde</string>
     <string name="sin_preferencias">Sin preferencias específicas</string>
-    <string name="publicaciones">PUBLICACIONES</string>
+    <string name="publicaciones">Publicaciones</string>
     <string name="no_hay_publicaciones_aun">No hay publicaciones aún.</string>
+    <string name="no_hay_menciones_aun">No hay menciones aún.</string>
     <string name="cargando">Cargando...</string>
     <string name="zero_likes">0</string>
     <string name="usuario_desconocido">\@usuario_desconocido</string>
@@ -110,6 +112,7 @@
     <string name="otra_preferencia_especifica">Otra preferencia específica...</string>
     <string name="aplicar_filtros_manuales">Aplicar filtros manuales</string>
     <string name="usar_mis_preferencias">Usar mis preferencias</string>
+    <string name="menciones">Menciones</string>
 
 
 </resources>

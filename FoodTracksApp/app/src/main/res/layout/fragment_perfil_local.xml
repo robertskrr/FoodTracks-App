@@ -234,7 +234,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="25dp"
-                    app:singleSelection="false"/>
+                    app:singleSelection="false" />
 
             </LinearLayout>
 
@@ -244,15 +244,35 @@
                 android:layout_marginBottom="20dp"
                 android:background="@color/black" />
 
-            <TextView
+            <com.google.android.material.button.MaterialButtonToggleGroup
+                android:id="@+id/toggleGroupPublicaciones"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="15dp"
-                android:text="@string/publicaciones"
-                android:textColor="#FFFFFF"
-                android:textSize="18sp"
-                android:textStyle="bold" />
+                app:checkedButton="@+id/btnVerPublicaciones"
+                app:selectionRequired="true"
+                app:singleSelection="true">
+
+                <Button
+                    android:id="@+id/btnVerPublicaciones"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/publicaciones"
+                    android:textColor="@color/white"
+                    app:strokeColor="@color/tertiary" />
+
+                <Button
+                    android:id="@+id/btnVerMenciones"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/menciones"
+                    android:textColor="@color/white"
+                    app:strokeColor="@color/tertiary" />
+
+            </com.google.android.material.button.MaterialButtonToggleGroup>
 
             <TextView
                 android:id="@+id/tvSinPublicacionesLocal"
