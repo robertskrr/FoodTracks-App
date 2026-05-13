@@ -150,20 +150,21 @@ public class PerfilLocalActivity extends AppCompatActivity {
     /**
      * Configuración de los botones de visualización de tipo de publicaciones.
      */
-    private void configBotonTipoPublicaciones(){
-        toggleGroupPublicaciones.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
-            if (isChecked) {
-                recyclerPublicaciones.setVisibility(View.GONE);
-                tvSinPublicaciones.setVisibility(View.GONE);
-                progressBar.setVisibility(View.VISIBLE);
+    private void configBotonTipoPublicaciones() {
+        toggleGroupPublicaciones.addOnButtonCheckedListener(
+                (group, checkedId, isChecked) -> {
+                    if (isChecked) {
+                        recyclerPublicaciones.setVisibility(View.GONE);
+                        tvSinPublicaciones.setVisibility(View.GONE);
+                        progressBar.setVisibility(View.VISIBLE);
 
-                if (checkedId == R.id.btnVerPublicaciones) {
-                    cargarPublicaciones();
-                } else if (checkedId == R.id.btnVerMenciones) {
-                    cargarMenciones();
-                }
-            }
-        });
+                        if (checkedId == R.id.btnVerPublicaciones) {
+                            cargarPublicaciones();
+                        } else if (checkedId == R.id.btnVerMenciones) {
+                            cargarMenciones();
+                        }
+                    }
+                });
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -331,27 +332,34 @@ public class PerfilLocalActivity extends AppCompatActivity {
      * Carga las publicaciones que mencionan al local visitado.
      */
     private void cargarMenciones() {
-        publicacionService.getPublicacionesByLocalMencionado(uidLocalVisitado)
-                .addOnSuccessListener(publicaciones -> {
-                    if (tareasCompletadas >= 2) progressBar.setVisibility(View.GONE);
+        publicacionService
+                .getPublicacionesByLocalMencionado(uidLocalVisitado)
+                .addOnSuccessListener(
+                        publicaciones -> {
+                            if (tareasCompletadas >= 2) progressBar.setVisibility(View.GONE);
 
-                    if (publicaciones == null || publicaciones.isEmpty()) {
-                        tvSinPublicaciones.setText(R.string.no_hay_menciones_aun);
-                        tvSinPublicaciones.setVisibility(View.VISIBLE);
-                        recyclerPublicaciones.setVisibility(View.GONE);
-                    } else {
-                        tvSinPublicaciones.setVisibility(View.GONE);
-                        recyclerPublicaciones.setVisibility(View.VISIBLE);
-                        adapter = new PublicacionAdapter(publicaciones, this);
-                        recyclerPublicaciones.setAdapter(adapter);
-                    }
-                    comprobarCargaCompleta();
-                })
-                .addOnFailureListener(e -> {
-                    if (tareasCompletadas >= 2) progressBar.setVisibility(View.GONE);
-                    Toast.makeText(this, R.string.menciones_loading_error_message, Toast.LENGTH_SHORT).show();
-                    comprobarCargaCompleta();
-                });
+                            if (publicaciones == null || publicaciones.isEmpty()) {
+                                tvSinPublicaciones.setText(R.string.no_hay_menciones_aun);
+                                tvSinPublicaciones.setVisibility(View.VISIBLE);
+                                recyclerPublicaciones.setVisibility(View.GONE);
+                            } else {
+                                tvSinPublicaciones.setVisibility(View.GONE);
+                                recyclerPublicaciones.setVisibility(View.VISIBLE);
+                                adapter = new PublicacionAdapter(publicaciones, this);
+                                recyclerPublicaciones.setAdapter(adapter);
+                            }
+                            comprobarCargaCompleta();
+                        })
+                .addOnFailureListener(
+                        e -> {
+                            if (tareasCompletadas >= 2) progressBar.setVisibility(View.GONE);
+                            Toast.makeText(
+                                            this,
+                                            R.string.menciones_loading_error_message,
+                                            Toast.LENGTH_SHORT)
+                                    .show();
+                            comprobarCargaCompleta();
+                        });
     }
 
     /** Sincroniza las tareas de red para mostrar la pantalla solo cuando todo esté listo */

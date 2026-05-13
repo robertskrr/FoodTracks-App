@@ -83,7 +83,6 @@ public class PerfilLocalFragment extends Fragment {
     private IPublicacionService publicacionService;
     private int tareasCompletadas = 0;
 
-
     private String uidLocalVisitado, uidUsuarioActual;
     private IUsuarioService usuarioService;
     private IValoracionLocalService valoracionLocalService;
@@ -160,20 +159,21 @@ public class PerfilLocalFragment extends Fragment {
         configMapa();
     }
 
-    private void configBotonTipoPublicaciones(){
-        toggleGroupPublicaciones.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
-            if (isChecked) {
-                recyclerPublicaciones.setVisibility(View.GONE);
-                tvSinPublicaciones.setVisibility(View.GONE);
-                progressBar.setVisibility(View.VISIBLE);
+    private void configBotonTipoPublicaciones() {
+        toggleGroupPublicaciones.addOnButtonCheckedListener(
+                (group, checkedId, isChecked) -> {
+                    if (isChecked) {
+                        recyclerPublicaciones.setVisibility(View.GONE);
+                        tvSinPublicaciones.setVisibility(View.GONE);
+                        progressBar.setVisibility(View.VISIBLE);
 
-                if (checkedId == R.id.btnVerPublicaciones) {
-                    cargarPublicaciones();
-                } else if (checkedId == R.id.btnVerMenciones) {
-                    cargarMenciones();
-                }
-            }
-        });
+                        if (checkedId == R.id.btnVerPublicaciones) {
+                            cargarPublicaciones();
+                        } else if (checkedId == R.id.btnVerMenciones) {
+                            cargarMenciones();
+                        }
+                    }
+                });
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -319,30 +319,37 @@ public class PerfilLocalFragment extends Fragment {
     }
 
     private void cargarMenciones() {
-        publicacionService.getPublicacionesByLocalMencionado(uidLocalVisitado)
-                .addOnSuccessListener(publicaciones -> {
-                    if (!isAdded()) return;
+        publicacionService
+                .getPublicacionesByLocalMencionado(uidLocalVisitado)
+                .addOnSuccessListener(
+                        publicaciones -> {
+                            if (!isAdded()) return;
 
-                    if (tareasCompletadas >= 2) progressBar.setVisibility(View.GONE);
+                            if (tareasCompletadas >= 2) progressBar.setVisibility(View.GONE);
 
-                    if (publicaciones == null || publicaciones.isEmpty()) {
-                        tvSinPublicaciones.setText(R.string.no_hay_menciones_aun);
-                        tvSinPublicaciones.setVisibility(View.VISIBLE);
-                        recyclerPublicaciones.setVisibility(View.GONE);
-                    } else {
-                        tvSinPublicaciones.setVisibility(View.GONE);
-                        recyclerPublicaciones.setVisibility(View.VISIBLE);
-                        adapter = new PublicacionAdapter(publicaciones, requireContext());
-                        recyclerPublicaciones.setAdapter(adapter);
-                    }
-                    comprobarCargaCompleta();
-                })
-                .addOnFailureListener(e -> {
-                    if (!isAdded()) return;
-                    if (tareasCompletadas >= 2) progressBar.setVisibility(View.GONE);
-                    Toast.makeText(requireContext(), R.string.menciones_loading_error_message, Toast.LENGTH_SHORT).show();
-                    comprobarCargaCompleta();
-                });
+                            if (publicaciones == null || publicaciones.isEmpty()) {
+                                tvSinPublicaciones.setText(R.string.no_hay_menciones_aun);
+                                tvSinPublicaciones.setVisibility(View.VISIBLE);
+                                recyclerPublicaciones.setVisibility(View.GONE);
+                            } else {
+                                tvSinPublicaciones.setVisibility(View.GONE);
+                                recyclerPublicaciones.setVisibility(View.VISIBLE);
+                                adapter = new PublicacionAdapter(publicaciones, requireContext());
+                                recyclerPublicaciones.setAdapter(adapter);
+                            }
+                            comprobarCargaCompleta();
+                        })
+                .addOnFailureListener(
+                        e -> {
+                            if (!isAdded()) return;
+                            if (tareasCompletadas >= 2) progressBar.setVisibility(View.GONE);
+                            Toast.makeText(
+                                            requireContext(),
+                                            R.string.menciones_loading_error_message,
+                                            Toast.LENGTH_SHORT)
+                                    .show();
+                            comprobarCargaCompleta();
+                        });
     }
 
     private synchronized void comprobarCargaCompleta() {
