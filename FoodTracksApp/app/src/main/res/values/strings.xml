@@ -39,6 +39,7 @@
     <string name="username_empty_error_message">Username introducido vacío.</string>
     <string name="user_is_not_a_local">El usuario mencionado existe, pero no es un local.</string>
     <string name="local_not_found_with_exact_username">No se encontró ningún local con ese @username exacto.</string>
+    <string name="error_al_eliminar">Error al eliminar.</string>
 
 
     <!-- LAYOUTS STRINGS -->
@@ -113,6 +114,10 @@
     <string name="aplicar_filtros_manuales">Aplicar filtros manuales</string>
     <string name="usar_mis_preferencias">Usar mis preferencias</string>
     <string name="menciones">Menciones</string>
-
+    <string name="delete_publicacion">Eliminar publicación</string>
+    <string name="confirm_delete_publicacion">¿Estás seguro de que quieres eliminar esta publicación?</string>
+    <string name="eliminar">Eliminar</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="publicacion_eliminada">Publicación eliminada.</string>
 
 </resources>

@@ -2,6 +2,8 @@
 
 package com.foodtracks.app.adapters;
 
+import static android.provider.Settings.Global.getString;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,10 +29,12 @@ import com.foodtracks.app.models.Publicacion;
 import com.foodtracks.app.models.Usuario;
 import com.foodtracks.app.services.ServiceFactory;
 import com.foodtracks.app.services.interfaces.ILikeService;
+import com.foodtracks.app.services.interfaces.IPublicacionService;
 import com.foodtracks.app.services.interfaces.IUsuarioService;
 import com.foodtracks.app.utils.DateUtils;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -46,6 +50,7 @@ public class PublicacionAdapter
     private final List<Publicacion> listaPublicaciones;
     private final Context context;
     private final IUsuarioService usuarioService;
+    private final IPublicacionService publicacionService;
     private final ILikeService likeService;
     private final String currentUid; // Usuario que está usando la publicación
     private FirebaseAuth mAuth;
@@ -57,6 +62,7 @@ public class PublicacionAdapter
         this.context = context;
         this.usuarioService = ServiceFactory.provideUsuarioService(context);
         this.likeService = ServiceFactory.provideLikeService();
+        this.publicacionService = ServiceFactory.providePublicacionService(context);
         mAuth = FirebaseAuth.getInstance();
 
         // Obtenemos el usuario logueado para comprobar sus propios likes
@@ -98,6 +104,21 @@ public class PublicacionAdapter
         cargarDatosAutor(holder, publicacion.getUidUsuario());
         cargarDatosLocalMencionado(holder, publicacion.getUidLocal());
         comprobarLikeInicial(holder, publicacion.getUid());
+
+        // La papelera solo es visible si el usuario actual es el autor
+        if (currentUid != null && currentUid.equals(publicacion.getUidUsuario())) {
+            holder.imgEliminarPublicacion.setVisibility(View.VISIBLE);
+
+            holder.imgEliminarPublicacion.setOnClickListener(v -> {
+                // Obtenemos la posición exacta de la publicación en la lista
+                int adapterPosition = holder.getBindingAdapterPosition();
+                if (adapterPosition != RecyclerView.NO_POSITION) {
+                    mostrarDialogoEliminar(publicacion, adapterPosition);
+                }
+            });
+        } else {
+            holder.imgEliminarPublicacion.setVisibility(View.GONE);
+        }
 
         // Configuramos el evento de Poner / Quitar like
         holder.imgLike.setOnClickListener(
@@ -324,6 +345,40 @@ public class PublicacionAdapter
                         });
     }
 
+    /**
+     * Muestra una alerta de confirmación de eliminación.
+     */
+    private void mostrarDialogoEliminar(Publicacion publicacion, int position) {
+        new MaterialAlertDialogBuilder(context)
+                .setTitle(R.string.delete_publicacion)
+                .setMessage(R.string.confirm_delete_publicacion)
+                .setPositiveButton(R.string.eliminar, (dialog, which) -> {
+
+                    publicacionService.eliminarPublicacion(publicacion.getUid())
+                            .addOnSuccessListener(unused -> {
+                                Toast.makeText(context, R.string.publicacion_eliminada, Toast.LENGTH_SHORT).show();
+
+                                // Eliminamos el elemento de la lista de publicaciones
+                                listaPublicaciones.remove(position);
+                                // Animación de borrado del recycler View
+                                notifyItemRemoved(position);
+                                // Actualizamos los nuevos índices de la lista
+                                notifyItemRangeChanged(position, listaPublicaciones.size());
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e(
+                                        "PublicacionAdapter",
+                                        "Error al eliminar: " + e.getMessage(),
+                                        e);
+                                Toast.makeText(context, R.string.error_al_eliminar, Toast.LENGTH_SHORT).show();
+                            });
+                })
+                .setNegativeButton(R.string.cancelar, (dialog, which) -> {
+                    dialog.dismiss();
+                })
+                .show();
+    }
+
     @Override
     public int getItemCount() {
         return listaPublicaciones.size();
@@ -332,7 +387,7 @@ public class PublicacionAdapter
     public static class PublicacionViewHolder extends RecyclerView.ViewHolder {
         TextView tvUsernameAutor, tvFecha, tvTexto, tvContadorLikes, tvLocalMencionado;
         ShapeableImageView imgAvatarAutor, imgPublicacion;
-        ImageView imgLike;
+        ImageView imgLike, imgEliminarPublicacion;
 
         public PublicacionViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -344,6 +399,7 @@ public class PublicacionAdapter
             imgLike = itemView.findViewById(R.id.imgLike);
             tvContadorLikes = itemView.findViewById(R.id.tvContadorLikes);
             tvLocalMencionado = itemView.findViewById(R.id.tvLocalMencionado);
+            imgEliminarPublicacion = itemView.findViewById(R.id.imgEliminarPublicacion);
         }
     }
 }
