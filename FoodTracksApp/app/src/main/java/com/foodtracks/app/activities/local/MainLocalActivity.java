@@ -14,6 +14,7 @@ import com.foodtracks.app.activities.MainActivity;
 import com.foodtracks.app.fragments.BusquedaFragment;
 import com.foodtracks.app.fragments.FeedFragment;
 import com.foodtracks.app.fragments.SubirPublicacionFragment;
+import com.foodtracks.app.fragments.local.DashboardFragment;
 import com.foodtracks.app.fragments.local.PerfilLocalFragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -82,7 +83,7 @@ public class MainLocalActivity extends AppCompatActivity {
                         return true;
 
                     } else if (itemId == R.id.nav_dashboard) {
-                        // TODO: cargarFragmento(new DashboardFragment());
+                        cargarFragmento(new DashboardFragment());
                         return true;
                     } else if (itemId == R.id.nav_busqueda) {
                         cargarFragmento(new BusquedaFragment());
@@ -98,6 +99,7 @@ public class MainLocalActivity extends AppCompatActivity {
                         return true;
 
                     } else if (itemId == R.id.nav_ajustes) {
+                        // TODO: cargarFragmento(new AjustesFragment());
                         logOut();
                         return false;
                     }

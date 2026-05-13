@@ -84,7 +84,7 @@
     <string name="no_hay_publicaciones_aun">No hay publicaciones aún.</string>
     <string name="no_hay_menciones_aun">No hay menciones aún.</string>
     <string name="cargando">Cargando...</string>
-    <string name="zero_likes">0</string>
+    <string name="zero">0</string>
     <string name="usuario_desconocido">\@usuario_desconocido</string>
     <string name="ubicacion">Ubicación</string>
     <string name="que_te_ha_parecido_este_local">¿Qué te ha parecido este local?</string>
@@ -119,5 +119,10 @@
     <string name="eliminar">Eliminar</string>
     <string name="cancelar">Cancelar</string>
     <string name="publicacion_eliminada">Publicación eliminada.</string>
+    <string name="visitas_al_perfil">Visitas al perfil</string>
+    <string name="puntuacion_media">Puntuación media</string>
+    <string name="total_valoraciones">Número de valoraciones</string>
+    <string name="tus_publicaciones">Tus publicaciones</string>
+    <string name="menciones_de_usuarios">Menciones de usuarios</string>
 
 </resources>
