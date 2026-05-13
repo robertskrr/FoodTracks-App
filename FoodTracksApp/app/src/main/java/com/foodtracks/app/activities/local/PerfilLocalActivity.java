@@ -29,6 +29,7 @@ import com.foodtracks.app.services.interfaces.IUsuarioService;
 import com.foodtracks.app.services.interfaces.IValoracionLocalService;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.imageview.ShapeableImageView;
@@ -66,6 +67,8 @@ public class PerfilLocalActivity extends AppCompatActivity {
     // Publicaciones
     private RecyclerView recyclerPublicaciones;
     private PublicacionAdapter adapter;
+    private MaterialButtonToggleGroup toggleGroupPublicaciones;
+
     private IPublicacionService publicacionService;
     private int tareasCompletadas = 0; // Contador de tareas para la carga
 
@@ -93,6 +96,9 @@ public class PerfilLocalActivity extends AppCompatActivity {
         accionesUsuarioVisitante();
     }
 
+    /**
+     * Asigna los compnentes a la interfaz.
+     */
     private void inicializar() {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         usuarioService = ServiceFactory.provideUsuarioService(this);
@@ -135,9 +141,29 @@ public class PerfilLocalActivity extends AppCompatActivity {
         tvSinPublicaciones = findViewById(R.id.tvSinPublicacionesLocal);
         recyclerPublicaciones = findViewById(R.id.recyclerPublicacionesLocal);
         recyclerPublicaciones.setLayoutManager(new LinearLayoutManager(this));
+        toggleGroupPublicaciones = findViewById(R.id.toggleGroupPublicaciones);
 
-        // Mapa
+        configBotonTipoPublicaciones();
         configMapa();
+    }
+
+    /**
+     * Configuración de los botones de visualización de tipo de publicaciones.
+     */
+    private void configBotonTipoPublicaciones(){
+        toggleGroupPublicaciones.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
+            if (isChecked) {
+                recyclerPublicaciones.setVisibility(View.GONE);
+                tvSinPublicaciones.setVisibility(View.GONE);
+                progressBar.setVisibility(View.VISIBLE);
+
+                if (checkedId == R.id.btnVerPublicaciones) {
+                    cargarPublicaciones();
+                } else if (checkedId == R.id.btnVerMenciones) {
+                    cargarMenciones();
+                }
+            }
+        });
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -301,10 +327,38 @@ public class PerfilLocalActivity extends AppCompatActivity {
                         });
     }
 
+    /**
+     * Carga las publicaciones que mencionan al local visitado.
+     */
+    private void cargarMenciones() {
+        publicacionService.getPublicacionesByLocalMencionado(uidLocalVisitado)
+                .addOnSuccessListener(publicaciones -> {
+                    if (tareasCompletadas >= 2) progressBar.setVisibility(View.GONE);
+
+                    if (publicaciones == null || publicaciones.isEmpty()) {
+                        tvSinPublicaciones.setText(R.string.no_hay_menciones_aun);
+                        tvSinPublicaciones.setVisibility(View.VISIBLE);
+                        recyclerPublicaciones.setVisibility(View.GONE);
+                    } else {
+                        tvSinPublicaciones.setVisibility(View.GONE);
+                        recyclerPublicaciones.setVisibility(View.VISIBLE);
+                        adapter = new PublicacionAdapter(publicaciones, this);
+                        recyclerPublicaciones.setAdapter(adapter);
+                    }
+                    comprobarCargaCompleta();
+                })
+                .addOnFailureListener(e -> {
+                    if (tareasCompletadas >= 2) progressBar.setVisibility(View.GONE);
+                    Toast.makeText(this, R.string.menciones_loading_error_message, Toast.LENGTH_SHORT).show();
+                    comprobarCargaCompleta();
+                });
+    }
+
     /** Sincroniza las tareas de red para mostrar la pantalla solo cuando todo esté listo */
     private synchronized void comprobarCargaCompleta() {
-        tareasCompletadas++;
-
+        if (tareasCompletadas < 2) {
+            tareasCompletadas++;
+        }
         if (tareasCompletadas >= 2) {
             progressBar.setVisibility(View.GONE);
             layoutContenido.setVisibility(View.VISIBLE);
