@@ -2,8 +2,6 @@
 
 package com.foodtracks.app.adapters;
 
-import static android.provider.Settings.Global.getString;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -110,13 +108,14 @@ public class PublicacionAdapter
         if (currentUid != null && currentUid.equals(publicacion.getUidUsuario())) {
             holder.imgEliminarPublicacion.setVisibility(View.VISIBLE);
 
-            holder.imgEliminarPublicacion.setOnClickListener(v -> {
-                // Obtenemos la posición exacta de la publicación en la lista
-                int adapterPosition = holder.getBindingAdapterPosition();
-                if (adapterPosition != RecyclerView.NO_POSITION) {
-                    mostrarDialogoEliminar(publicacion, adapterPosition);
-                }
-            });
+            holder.imgEliminarPublicacion.setOnClickListener(
+                    v -> {
+                        // Obtenemos la posición exacta de la publicación en la lista
+                        int adapterPosition = holder.getBindingAdapterPosition();
+                        if (adapterPosition != RecyclerView.NO_POSITION) {
+                            mostrarDialogoEliminar(publicacion, adapterPosition);
+                        }
+                    });
         } else {
             holder.imgEliminarPublicacion.setVisibility(View.GONE);
         }
@@ -350,38 +349,61 @@ public class PublicacionAdapter
      * Muestra una alerta de confirmación de eliminación.
      */
     private void mostrarDialogoEliminar(Publicacion publicacion, int position) {
-        AlertDialog dialog = new MaterialAlertDialogBuilder(context)
-                .setTitle(R.string.delete_publicacion)
-                .setMessage(R.string.confirm_delete_publicacion)
-                .setPositiveButton(R.string.eliminar, (dialogInterface, which) -> {
+        AlertDialog dialog =
+                new MaterialAlertDialogBuilder(context)
+                        .setTitle(R.string.delete_publicacion)
+                        .setMessage(R.string.confirm_delete_publicacion)
+                        .setPositiveButton(
+                                R.string.eliminar,
+                                (dialogInterface, which) -> {
+                                    publicacionService
+                                            .eliminarPublicacion(publicacion.getUid())
+                                            .addOnSuccessListener(
+                                                    unused -> {
+                                                        Toast.makeText(
+                                                                        context,
+                                                                        R.string
+                                                                                .publicacion_eliminada,
+                                                                        Toast.LENGTH_SHORT)
+                                                                .show();
 
-                    publicacionService.eliminarPublicacion(publicacion.getUid())
-                            .addOnSuccessListener(unused -> {
-                                Toast.makeText(context, R.string.publicacion_eliminada, Toast.LENGTH_SHORT).show();
-
-                                // Eliminamos el elemento de la lista de publicaciones
-                                listaPublicaciones.remove(position);
-                                // Animación de borrado del recycler View
-                                notifyItemRemoved(position);
-                                // Actualizamos los nuevos índices de la lista
-                                notifyItemRangeChanged(position, listaPublicaciones.size());
-                            })
-                            .addOnFailureListener(e -> {
-                                Log.e(
-                                        "PublicacionAdapter",
-                                        "Error al eliminar: " + e.getMessage(),
-                                        e);
-                                Toast.makeText(context, R.string.error_al_eliminar, Toast.LENGTH_SHORT).show();
-                            });
-                })
-                .setNegativeButton(R.string.cancelar, (dialogInterface, which) -> {
-                    dialogInterface.dismiss();
-                })
-                .show();
+                                                        // Eliminamos el elemento de la lista de
+                                                        // publicaciones
+                                                        listaPublicaciones.remove(position);
+                                                        // Animación de borrado del recycler View
+                                                        notifyItemRemoved(position);
+                                                        // Actualizamos los nuevos índices de la
+                                                        // lista
+                                                        notifyItemRangeChanged(
+                                                                position,
+                                                                listaPublicaciones.size());
+                                                    })
+                                            .addOnFailureListener(
+                                                    e -> {
+                                                        Log.e(
+                                                                "PublicacionAdapter",
+                                                                "Error al eliminar: "
+                                                                        + e.getMessage(),
+                                                                e);
+                                                        Toast.makeText(
+                                                                        context,
+                                                                        R.string.error_al_eliminar,
+                                                                        Toast.LENGTH_SHORT)
+                                                                .show();
+                                                    });
+                                })
+                        .setNegativeButton(
+                                R.string.cancelar,
+                                (dialogInterface, which) -> {
+                                    dialogInterface.dismiss();
+                                })
+                        .show();
 
         // Colores de texto de los botones
-        dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE).setTextColor(Color.RED);
-        dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(android.graphics.Color.BLACK);
+        dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE)
+                .setTextColor(Color.RED);
+        dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_NEGATIVE)
+                .setTextColor(android.graphics.Color.BLACK);
     }
 
     @Override
