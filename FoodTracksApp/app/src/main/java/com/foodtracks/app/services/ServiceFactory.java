@@ -45,7 +45,8 @@ public class ServiceFactory {
         IPublicacionRepository repoPublicacion = new PublicacionRepository();
         ILikeRepository repoLike = new LikeRepository();
         IValoracionLocalRepository repoValoracion = new ValoracionLocalRepository();
-        return new UsuarioService(repo, repoLog, storageRepo, repoPublicacion, repoLike, repoValoracion);
+        return new UsuarioService(
+                repo, repoLog, storageRepo, repoPublicacion, repoLike, repoValoracion);
     }
 
     /**

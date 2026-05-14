@@ -205,17 +205,22 @@ public class SettingsFragment extends Fragment {
                                                             logOut();
                                                             Toast.makeText(
                                                                             requireContext(),
-                                                                            R.string.cuenta_eliminada,
+                                                                            R.string
+                                                                                    .cuenta_eliminada,
                                                                             Toast.LENGTH_LONG)
                                                                     .show();
                                                         })
                                                 .addOnFailureListener(
                                                         e -> {
                                                             overlayCarga.setVisibility(View.GONE);
-                                                            Log.e("Error al eliminar cuenta", e.getMessage(), e);
+                                                            Log.e(
+                                                                    "Error al eliminar cuenta",
+                                                                    e.getMessage(),
+                                                                    e);
                                                             Toast.makeText(
                                                                             requireContext(),
-                                                                            R.string.error_al_eliminar,
+                                                                            R.string
+                                                                                    .error_al_eliminar,
                                                                             Toast.LENGTH_SHORT)
                                                                     .show();
                                                         });

@@ -57,8 +57,7 @@ public class UsuarioService implements IUsuarioService {
             IStorageRepository storageRepository,
             IPublicacionRepository publicacionRepository,
             ILikeRepository likeRepository,
-            IValoracionLocalRepository valoracionLocalRepository
-            ) {
+            IValoracionLocalRepository valoracionLocalRepository) {
         this.usuarioRepository = usuarioRepository;
         this.registroBorradoRepository = registroBorradoRepository;
         this.storageRepository = storageRepository;
@@ -198,9 +197,11 @@ public class UsuarioService implements IUsuarioService {
                                             .build();
 
                             // Log de auditoría -> Borramos rastro del usuario -> Borramos usuario
-                            return registroBorradoRepository.saveRegistroBorradoUsuario(registro)
+                            return registroBorradoRepository
+                                    .saveRegistroBorradoUsuario(registro)
                                     .continueWithTask(unused -> borrarRastroUsuario(usuarioABorrar))
-                                    .continueWithTask(unused -> usuarioRepository.deleteUsuario(uidUsuario));
+                                    .continueWithTask(
+                                            unused -> usuarioRepository.deleteUsuario(uidUsuario));
                         });
     }
 
@@ -232,7 +233,8 @@ public class UsuarioService implements IUsuarioService {
                             assert usuarioABorrar != null;
                             // Borramos el rastro del usuario -> Borramos el documento de usuario
                             return borrarRastroUsuario(usuarioABorrar)
-                                    .continueWithTask(unused -> usuarioRepository.deleteUsuario(uid));
+                                    .continueWithTask(
+                                            unused -> usuarioRepository.deleteUsuario(uid));
                         });
     }
 
@@ -603,103 +605,172 @@ public class UsuarioService implements IUsuarioService {
         }
 
         // Borrar sus publicaciones (fotos, likes asociados y la propia publicación)
-        Task<Void> tareaPublicaciones = publicacionRepository.getPublicacionesByUsuario(uid).continueWithTask(task -> {
-            if (!task.isSuccessful() || task.getResult() == null) return Tasks.forResult(null);
+        Task<Void> tareaPublicaciones =
+                publicacionRepository
+                        .getPublicacionesByUsuario(uid)
+                        .continueWithTask(
+                                task -> {
+                                    if (!task.isSuccessful() || task.getResult() == null)
+                                        return Tasks.forResult(null);
 
-            List<Task<?>> tareasPosts = new ArrayList<>();
-            WriteBatch batch = FirebaseFirestore.getInstance().batch();
+                                    List<Task<?>> tareasPosts = new ArrayList<>();
+                                    WriteBatch batch = FirebaseFirestore.getInstance().batch();
 
-            for (DocumentSnapshot doc : task.getResult()) {
-                Publicacion publicacion = doc.toObject(Publicacion.class);
-                if (publicacion != null) {
-                    if (publicacion.getImagenId() != null) {
-                        // Borramos las fotos
-                        tareasPosts.add(storageRepository.deleteImage(publicacion.getImagenId()));
-                    }
-                    // Borramos los likes
-                    tareasPosts.add(likeRepository.deleteAllLikesByPublicacion(publicacion.getUid()));
+                                    for (DocumentSnapshot doc : task.getResult()) {
+                                        Publicacion publicacion = doc.toObject(Publicacion.class);
+                                        if (publicacion != null) {
+                                            if (publicacion.getImagenId() != null) {
+                                                // Borramos las fotos
+                                                tareasPosts.add(
+                                                        storageRepository.deleteImage(
+                                                                publicacion.getImagenId()));
+                                            }
+                                            // Borramos los likes
+                                            tareasPosts.add(
+                                                    likeRepository.deleteAllLikesByPublicacion(
+                                                            publicacion.getUid()));
 
-                    // Borramos la publicación
-                    batch.delete(doc.getReference());
-                }
-            }
-            tareasPosts.add(batch.commit());
-            Log.d("Borrado usuario: PUBLICACIONES", "Likes asociados, fotos y publicacion borradas");
-            return Tasks.whenAll(tareasPosts);
-        });
+                                            // Borramos la publicación
+                                            batch.delete(doc.getReference());
+                                        }
+                                    }
+                                    tareasPosts.add(batch.commit());
+                                    Log.d(
+                                            "Borrado usuario: PUBLICACIONES",
+                                            "Likes asociados, fotos y publicacion borradas");
+                                    return Tasks.whenAll(tareasPosts);
+                                });
         tareasCascada.add(tareaPublicaciones);
 
-        // Borrar likes emitidos por este usuario a otras publicaciones (y restar contadores de likes)
-        Task<Void> tareaLikes = likeRepository.getLikesByUsuario(uid).continueWithTask(task -> {
-            if (!task.isSuccessful() || task.getResult() == null) return Tasks.forResult(null);
+        // Borrar likes emitidos por este usuario a otras publicaciones (y restar contadores de
+        // likes)
+        Task<Void> tareaLikes =
+                likeRepository
+                        .getLikesByUsuario(uid)
+                        .continueWithTask(
+                                task -> {
+                                    if (!task.isSuccessful() || task.getResult() == null)
+                                        return Tasks.forResult(null);
 
-            List<Task<?>> decrementos = new ArrayList<>();
-            WriteBatch batch = FirebaseFirestore.getInstance().batch();
+                                    List<Task<?>> decrementos = new ArrayList<>();
+                                    WriteBatch batch = FirebaseFirestore.getInstance().batch();
 
-            for (DocumentSnapshot doc : task.getResult()) {
-                LikePublicacion like = doc.toObject(LikePublicacion.class);
-                if (like != null) {
-                    decrementos.add(publicacionRepository.actualizarContadorLikes(like.getUidPublicacion(), -1));
-                    batch.delete(doc.getReference());
-                }
-            }
-            decrementos.add(batch.commit());
-            Log.d("Borrado usuario: LIKES EMITIDOS", "Likes emitidos borrados y contadores de likes actualizados");
-            return Tasks.whenAll(decrementos);
-        });
+                                    for (DocumentSnapshot doc : task.getResult()) {
+                                        LikePublicacion like = doc.toObject(LikePublicacion.class);
+                                        if (like != null) {
+                                            decrementos.add(
+                                                    publicacionRepository.actualizarContadorLikes(
+                                                            like.getUidPublicacion(), -1));
+                                            batch.delete(doc.getReference());
+                                        }
+                                    }
+                                    decrementos.add(batch.commit());
+                                    Log.d(
+                                            "Borrado usuario: LIKES EMITIDOS",
+                                            "Likes emitidos borrados y contadores de likes actualizados");
+                                    return Tasks.whenAll(decrementos);
+                                });
         tareasCascada.add(tareaLikes);
 
         // Borrar valoraciones emitidas (como cliente) y recalcular la media del local
-        Task<Void> tareaValoracionesCliente = valoracionLocalRepository.getValoracionesByCliente(uid).continueWithTask(task -> {
-            if (!task.isSuccessful() || task.getResult() == null) return Tasks.forResult(null);
+        Task<Void> tareaValoracionesCliente =
+                valoracionLocalRepository
+                        .getValoracionesByCliente(uid)
+                        .continueWithTask(
+                                task -> {
+                                    if (!task.isSuccessful() || task.getResult() == null)
+                                        return Tasks.forResult(null);
 
-            List<Task<?>> recalculos = new ArrayList<>();
-            WriteBatch batch = FirebaseFirestore.getInstance().batch();
+                                    List<Task<?>> recalculos = new ArrayList<>();
+                                    WriteBatch batch = FirebaseFirestore.getInstance().batch();
 
-            for (DocumentSnapshot doc : task.getResult()) {
-                ValoracionLocal val = doc.toObject(ValoracionLocal.class);
-                if (val != null) {
-                    recalculos.add(usuarioRepository.getUsuarioById(val.getUidLocal()).continueWithTask(localTask -> {
-                        DocumentSnapshot localDoc = localTask.getResult();
-                        if (localDoc != null && localDoc.exists()) {
-                            UsuarioLocal local = localDoc.toObject(UsuarioLocal.class);
-                            if (local != null) {
-                                // Recalcula la media
-                                double media = local.getPuntuacionMedia();
-                                long total = local.getTotalValoraciones();
-                                double nota = val.getPuntuacion();
+                                    for (DocumentSnapshot doc : task.getResult()) {
+                                        ValoracionLocal val = doc.toObject(ValoracionLocal.class);
+                                        if (val != null) {
+                                            recalculos.add(
+                                                    usuarioRepository
+                                                            .getUsuarioById(val.getUidLocal())
+                                                            .continueWithTask(
+                                                                    localTask -> {
+                                                                        DocumentSnapshot localDoc =
+                                                                                localTask
+                                                                                        .getResult();
+                                                                        if (localDoc != null
+                                                                                && localDoc
+                                                                                        .exists()) {
+                                                                            UsuarioLocal local =
+                                                                                    localDoc
+                                                                                            .toObject(
+                                                                                                    UsuarioLocal
+                                                                                                            .class);
+                                                                            if (local != null) {
+                                                                                // Recalcula la
+                                                                                // media
+                                                                                double media =
+                                                                                        local
+                                                                                                .getPuntuacionMedia();
+                                                                                long total =
+                                                                                        local
+                                                                                                .getTotalValoraciones();
+                                                                                double nota =
+                                                                                        val
+                                                                                                .getPuntuacion();
 
-                                long nuevoTotal = total - 1;
-                                double nuevaMedia = (nuevoTotal <= 0) ? 0 : ((media * total) - nota) / nuevoTotal;
+                                                                                long nuevoTotal =
+                                                                                        total - 1;
+                                                                                double nuevaMedia =
+                                                                                        (nuevoTotal
+                                                                                                        <= 0)
+                                                                                                ? 0
+                                                                                                : ((media
+                                                                                                                        * total)
+                                                                                                                - nota)
+                                                                                                        / nuevoTotal;
 
-                                local.setTotalValoraciones(nuevoTotal);
-                                local.setPuntuacionMedia(nuevaMedia);
-                                // Actualiza los nuevos datos del local
-                                return usuarioRepository.saveUsuario(local);
-                            }
-                        }
-                        return Tasks.forResult(null);
-                    }));
-                    batch.delete(doc.getReference());
-                }
-            }
-            recalculos.add(batch.commit());
-            Log.d("Borrado usuario: VALORACIONES EMITIDAS", "Valoraciones eliminadas y medias recalculadas");
-            return Tasks.whenAll(recalculos);
-        });
+                                                                                local
+                                                                                        .setTotalValoraciones(
+                                                                                                nuevoTotal);
+                                                                                local
+                                                                                        .setPuntuacionMedia(
+                                                                                                nuevaMedia);
+                                                                                // Actualiza los
+                                                                                // nuevos datos del
+                                                                                // local
+                                                                                return usuarioRepository
+                                                                                        .saveUsuario(
+                                                                                                local);
+                                                                            }
+                                                                        }
+                                                                        return Tasks.forResult(
+                                                                                null);
+                                                                    }));
+                                            batch.delete(doc.getReference());
+                                        }
+                                    }
+                                    recalculos.add(batch.commit());
+                                    Log.d(
+                                            "Borrado usuario: VALORACIONES EMITIDAS",
+                                            "Valoraciones eliminadas y medias recalculadas");
+                                    return Tasks.whenAll(recalculos);
+                                });
         tareasCascada.add(tareaValoracionesCliente);
 
         // Si el usuario que se borra es local, borrar todas las valoraciones que haya recibido
         if ("local".equals(usuario.getRol())) {
-            Task<Void> tareaValoracionesLocal = valoracionLocalRepository.getValoracionesByLocal(uid).continueWithTask(task -> {
-                if (!task.isSuccessful() || task.getResult() == null) return Tasks.forResult(null);
-                WriteBatch batch = FirebaseFirestore.getInstance().batch();
-                for (DocumentSnapshot doc : task.getResult()) {
-                    // Borra las valoraciones
-                    batch.delete(doc.getReference());
-                }
-                return batch.commit();
-            });
+            Task<Void> tareaValoracionesLocal =
+                    valoracionLocalRepository
+                            .getValoracionesByLocal(uid)
+                            .continueWithTask(
+                                    task -> {
+                                        if (!task.isSuccessful() || task.getResult() == null)
+                                            return Tasks.forResult(null);
+                                        WriteBatch batch = FirebaseFirestore.getInstance().batch();
+                                        for (DocumentSnapshot doc : task.getResult()) {
+                                            // Borra las valoraciones
+                                            batch.delete(doc.getReference());
+                                        }
+                                        return batch.commit();
+                                    });
             Log.d("Borrado usuario: VALORACIONES RECIBIDAS", "Valoraciones eliminadas");
             tareasCascada.add(tareaValoracionesLocal);
         }

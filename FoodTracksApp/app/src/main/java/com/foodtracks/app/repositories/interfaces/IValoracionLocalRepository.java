@@ -39,7 +39,6 @@ public interface IValoracionLocalRepository {
      */
     public Task<QuerySnapshot> getValoracionesByCliente(String uidCliente);
 
-
     /**
      * Obtiene todas las valoraciones al usuario local.
      * @param uidLocal Identificador del usuario local.
