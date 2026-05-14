@@ -186,10 +186,9 @@ public class PublicacionService implements IPublicacionService {
                                                 String username = "Usuario desconocido";
 
                                                 if (usuarioDoc.exists()) {
-                                                    Usuario usuario =
-                                                            usuarioDoc.toObject(Usuario.class);
-                                                    if (usuario != null) {
-                                                        username = usuario.getUsername();
+                                                    String usernameObtenido = usuarioDoc.getString("username");
+                                                    if (usernameObtenido != null) {
+                                                        username = usernameObtenido;
                                                     }
                                                 }
 

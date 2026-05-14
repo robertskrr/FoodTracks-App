@@ -118,11 +118,15 @@
     <string name="confirm_delete_publicacion">¿Estás seguro de que quieres eliminar esta publicación?</string>
     <string name="eliminar">Eliminar</string>
     <string name="cancelar">Cancelar</string>
-    <string name="publicacion_eliminada">Publicación eliminada.</string>
+    <string name="publicacion_eliminada">Publicación eliminada</string>
     <string name="visitas_al_perfil">Visitas al perfil</string>
     <string name="puntuacion_media">Puntuación media</string>
     <string name="total_valoraciones">Número de valoraciones</string>
     <string name="tus_publicaciones">Tus publicaciones</string>
     <string name="menciones_de_usuarios">Menciones de usuarios</string>
+    <string name="motivo_eliminacion">Motivo de la eliminación...</string>
+    <string name="eliminar_como_administrador">Eliminar como administrador</string>
+    <string name="indica_el_motivo_eliminacion">Por favor, indica el motivo:</string>
+    <string name="publicacion_eliminada_by_admin">Publicación eliminada por el administrador</string>
 
 </resources>
