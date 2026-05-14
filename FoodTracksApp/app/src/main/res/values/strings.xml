@@ -141,5 +141,6 @@
     <string name="confirm_cerrar_sesion">¿Estás seguro de que deseas cerrar sesión?</string>
     <string name="salir">Salir</string>
     <string name="cuenta_eliminada">Tu cuenta ha sido eliminada</string>
+    <string name="eliminando_datos">Eliminando datos...</string>
 
 </resources>
