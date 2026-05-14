@@ -2,7 +2,9 @@
 
 package com.foodtracks.app.fragments;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -99,6 +101,13 @@ public class LoginFragment extends DialogFragment {
                         authResult -> {
                             if (authResult.getUser() != null) {
                                 String uid = authResult.getUser().getUid();
+
+                                // Reseteamos preferencias
+                                SharedPreferences prefs =
+                                        requireContext()
+                                                .getSharedPreferences(
+                                                        "FoodTracksSettings", Context.MODE_PRIVATE);
+                                prefs.edit().clear().apply();
 
                                 usuarioService
                                         .getPerfil(uid)

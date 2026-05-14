@@ -13,6 +13,7 @@ import com.foodtracks.app.R;
 import com.foodtracks.app.activities.MainActivity;
 import com.foodtracks.app.fragments.BusquedaFragment;
 import com.foodtracks.app.fragments.FeedFragment;
+import com.foodtracks.app.fragments.SettingsFragment;
 import com.foodtracks.app.fragments.SubirPublicacionFragment;
 import com.foodtracks.app.fragments.local.DashboardFragment;
 import com.foodtracks.app.fragments.local.PerfilLocalFragment;
@@ -99,9 +100,8 @@ public class MainLocalActivity extends AppCompatActivity {
                         return true;
 
                     } else if (itemId == R.id.nav_ajustes) {
-                        // TODO: cargarFragmento(new AjustesFragment());
-                        logOut();
-                        return false;
+                        cargarFragmento(new SettingsFragment());
+                        return true;
                     }
 
                     return false;
