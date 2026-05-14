@@ -13,6 +13,7 @@ import com.foodtracks.app.R;
 import com.foodtracks.app.activities.MainActivity;
 import com.foodtracks.app.fragments.BusquedaFragment;
 import com.foodtracks.app.fragments.FeedFragment;
+import com.foodtracks.app.fragments.SettingsFragment;
 import com.foodtracks.app.fragments.SubirPublicacionFragment;
 import com.foodtracks.app.fragments.cliente.PerfilClienteFragment;
 
@@ -98,8 +99,8 @@ public class MainAdminActivity extends AppCompatActivity {
                         return true;
 
                     } else if (itemId == R.id.nav_ajustes) {
-                        logOut();
-                        return false;
+                        cargarFragmento(new SettingsFragment());
+                        return true;
                     }
 
                     return false;

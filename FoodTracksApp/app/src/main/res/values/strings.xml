@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">FoodTracks</string>
+    <string name="app_version">FoodTracks v1.0</string>
 
     <!-- ERROR MESSAGES -->
     <string name="create_account_error_message">Error al crear la cuenta.</string>
@@ -128,5 +129,17 @@
     <string name="eliminar_como_administrador">Eliminar como administrador</string>
     <string name="indica_el_motivo_eliminacion">Por favor, indica el motivo:</string>
     <string name="publicacion_eliminada_by_admin">Publicación eliminada por el administrador</string>
+    <string name="preferencias">Preferencias</string>
+    <string name="notificaciones">Notificaciones</string>
+    <string name="silenciar_sonidos">Silenciar sonidos</string>
+    <string name="cuenta">Cuenta</string>
+    <string name="editar_perfil">Editar Perfil</string>
+    <string name="eliminar_cuenta">Eliminar Cuenta</string>
+    <string name="eliminar_cuenta_warning">⚠️ Eliminar Cuenta</string>
+    <string name="confirm_eliminar_cuenta">¿Estás completamente seguro? Esta acción borrará permanentemente todos tus datos, publicaciones y configuraciones. No se puede deshacer.</string>
+   <string name="eliminar_para_siempre">Eliminar para siempre</string>
+    <string name="confirm_cerrar_sesion">¿Estás seguro de que deseas cerrar sesión?</string>
+    <string name="salir">Salir</string>
+    <string name="cuenta_eliminada">Tu cuenta ha sido eliminada</string>
 
 </resources>
