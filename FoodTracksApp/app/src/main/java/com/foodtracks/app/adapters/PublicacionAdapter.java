@@ -58,7 +58,8 @@ public class PublicacionAdapter
     private final IPublicacionService publicacionService;
     private final ILikeService likeService;
     private final String currentUid; // Usuario que está usando la publicación
-    private boolean esAdmin, esLogueado;
+    private boolean esAdmin;
+    private final boolean esLogueado;
     private final String MOTIVO_DEFAULT = "Incumplimiento de las normas de la comunidad.";
     private FirebaseAuth mAuth;
     // Memoria caché para no descargar el mismo perfil varias veces
