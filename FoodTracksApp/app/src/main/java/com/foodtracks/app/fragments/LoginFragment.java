@@ -103,7 +103,10 @@ public class LoginFragment extends DialogFragment {
                                 String uid = authResult.getUser().getUid();
 
                                 // Reseteamos preferencias
-                                SharedPreferences prefs = requireContext().getSharedPreferences("FoodTracksSettings", Context.MODE_PRIVATE);
+                                SharedPreferences prefs =
+                                        requireContext()
+                                                .getSharedPreferences(
+                                                        "FoodTracksSettings", Context.MODE_PRIVATE);
                                 prefs.edit().clear().apply();
 
                                 usuarioService
