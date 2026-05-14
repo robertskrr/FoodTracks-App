@@ -7,17 +7,24 @@ import java.util.List;
 
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.foodtracks.app.R;
 import com.foodtracks.app.api.imagekit.ImageKitResponse;
+import com.foodtracks.app.models.LikePublicacion;
+import com.foodtracks.app.models.Publicacion;
 import com.foodtracks.app.models.RegistroBorradoUsuario;
 import com.foodtracks.app.models.Usuario;
 import com.foodtracks.app.models.UsuarioAdmin;
 import com.foodtracks.app.models.UsuarioCliente;
 import com.foodtracks.app.models.UsuarioLocal;
+import com.foodtracks.app.models.ValoracionLocal;
+import com.foodtracks.app.repositories.interfaces.ILikeRepository;
+import com.foodtracks.app.repositories.interfaces.IPublicacionRepository;
 import com.foodtracks.app.repositories.interfaces.IRegistroBorradoRepository;
 import com.foodtracks.app.repositories.interfaces.IStorageRepository;
 import com.foodtracks.app.repositories.interfaces.IUsuarioRepository;
+import com.foodtracks.app.repositories.interfaces.IValoracionLocalRepository;
 import com.foodtracks.app.services.exceptions.FoodTracksNotFoundException;
 import com.foodtracks.app.services.exceptions.FoodTracksValidationException;
 import com.foodtracks.app.services.interfaces.IUsuarioService;
@@ -27,6 +34,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.WriteBatch;
 
 /**
  * Lógica de negocio para la gestión de usuarios.
@@ -38,14 +47,24 @@ public class UsuarioService implements IUsuarioService {
     private final IUsuarioRepository usuarioRepository;
     private final IRegistroBorradoRepository registroBorradoRepository;
     private final IStorageRepository storageRepository;
+    private final IPublicacionRepository publicacionRepository;
+    private final ILikeRepository likeRepository;
+    private final IValoracionLocalRepository valoracionLocalRepository;
 
     public UsuarioService(
             IUsuarioRepository usuarioRepository,
             IRegistroBorradoRepository registroBorradoRepository,
-            IStorageRepository storageRepository) {
+            IStorageRepository storageRepository,
+            IPublicacionRepository publicacionRepository,
+            ILikeRepository likeRepository,
+            IValoracionLocalRepository valoracionLocalRepository
+            ) {
         this.usuarioRepository = usuarioRepository;
         this.registroBorradoRepository = registroBorradoRepository;
         this.storageRepository = storageRepository;
+        this.publicacionRepository = publicacionRepository;
+        this.likeRepository = likeRepository;
+        this.valoracionLocalRepository = valoracionLocalRepository;
     }
 
     @Override
@@ -155,16 +174,18 @@ public class UsuarioService implements IUsuarioService {
                                                 R.string.usuario_not_found_error_message));
                             }
 
-                            Usuario usuarioABorrar = doc.toObject(Usuario.class);
-                            assert usuarioABorrar != null;
+                            String rol = doc.getString("rol");
+                            Usuario usuarioABorrar;
 
-                            // Borra la foto de ImageKit
-                            if (usuarioABorrar.getFotoId() != null) {
-                                storageRepository.deleteImage(usuarioABorrar.getFotoId());
+                            if ("local".equals(rol)) {
+                                usuarioABorrar = doc.toObject(UsuarioLocal.class);
+                            } else if ("admin".equals(rol)) {
+                                usuarioABorrar = doc.toObject(UsuarioAdmin.class);
+                            } else {
+                                usuarioABorrar = doc.toObject(UsuarioCliente.class);
                             }
 
-                            // TODO --> Borrar sus publicaciones + fotos de publicaciones + todo en
-                            // lo que ha interactuado (valoraciones, likes, etc)
+                            assert usuarioABorrar != null;
 
                             // Creamos el registro de borrado
                             RegistroBorradoUsuario registro =
@@ -173,15 +194,13 @@ public class UsuarioService implements IUsuarioService {
                                             .uidAdmin(uidAdmin)
                                             .usernameUsuario(usuarioABorrar.getUsername())
                                             .motivo(motivo)
-                                            .fechaHora(com.google.firebase.Timestamp.now())
+                                            .fechaHora(Timestamp.now())
                                             .build();
 
-                            // Guardamos el log y, solo si tiene éxito, procedemos al borrado real
-                            return registroBorradoRepository
-                                    .saveRegistroBorradoUsuario(registro)
-                                    .continueWithTask(
-                                            deleteTask ->
-                                                    usuarioRepository.deleteUsuario(uidUsuario));
+                            // Log de auditoría -> Borramos rastro del usuario -> Borramos usuario
+                            return registroBorradoRepository.saveRegistroBorradoUsuario(registro)
+                                    .continueWithTask(unused -> borrarRastroUsuario(usuarioABorrar))
+                                    .continueWithTask(unused -> usuarioRepository.deleteUsuario(uidUsuario));
                         });
     }
 
@@ -199,20 +218,21 @@ public class UsuarioService implements IUsuarioService {
                                                 R.string.usuario_not_found_error_message));
                             }
 
-                            Usuario usuarioABorrar = doc.toObject(Usuario.class);
-                            assert usuarioABorrar != null;
+                            String rol = doc.getString("rol");
+                            Usuario usuarioABorrar;
 
-                            // Borra la foto de ImageKit
-                            if (usuarioABorrar.getFotoId() != null) {
-                                storageRepository.deleteImage(usuarioABorrar.getFotoId());
+                            if ("local".equals(rol)) {
+                                usuarioABorrar = doc.toObject(UsuarioLocal.class);
+                            } else if ("admin".equals(rol)) {
+                                usuarioABorrar = doc.toObject(UsuarioAdmin.class);
+                            } else {
+                                usuarioABorrar = doc.toObject(UsuarioCliente.class);
                             }
 
-                            // TODO --> Borrar sus publicaciones + fotos de publicaciones + todo en
-                            // lo que ha interactuado (valoraciones, likes, etc)
-                            // TODO --> Chequear si en activity podemos eliminar su Auth después de
-                            // este proceso exitoso
-                            // Procedemos al borrado real
-                            return usuarioRepository.deleteUsuario(uid);
+                            assert usuarioABorrar != null;
+                            // Borramos el rastro del usuario -> Borramos el documento de usuario
+                            return borrarRastroUsuario(usuarioABorrar)
+                                    .continueWithTask(unused -> usuarioRepository.deleteUsuario(uid));
                         });
     }
 
@@ -565,5 +585,127 @@ public class UsuarioService implements IUsuarioService {
         }
 
         return 0;
+    }
+
+    /**
+     * Elimina en cascada y en paralelo todos los datos relacionados con un usuario:
+     * Fotos, publicaciones, likes emitidos, valoraciones emitidas y recibidas.
+     */
+    private Task<Void> borrarRastroUsuario(Usuario usuario) {
+        // Lista de tareas de borrado que hay que realizar
+        List<Task<?>> tareasCascada = new ArrayList<>();
+        String uid = usuario.getUid();
+
+        // Borrar foto de perfil
+        if (usuario.getFotoId() != null) {
+            tareasCascada.add(storageRepository.deleteImage(usuario.getFotoId()));
+            Log.d("Borrado usuario: FOTO PERFIL", "Borrar foto de perfil");
+        }
+
+        // Borrar sus publicaciones (fotos, likes asociados y la propia publicación)
+        Task<Void> tareaPublicaciones = publicacionRepository.getPublicacionesByUsuario(uid).continueWithTask(task -> {
+            if (!task.isSuccessful() || task.getResult() == null) return Tasks.forResult(null);
+
+            List<Task<?>> tareasPosts = new ArrayList<>();
+            WriteBatch batch = FirebaseFirestore.getInstance().batch();
+
+            for (DocumentSnapshot doc : task.getResult()) {
+                Publicacion publicacion = doc.toObject(Publicacion.class);
+                if (publicacion != null) {
+                    if (publicacion.getImagenId() != null) {
+                        // Borramos las fotos
+                        tareasPosts.add(storageRepository.deleteImage(publicacion.getImagenId()));
+                    }
+                    // Borramos los likes
+                    tareasPosts.add(likeRepository.deleteAllLikesByPublicacion(publicacion.getUid()));
+
+                    // Borramos la publicación
+                    batch.delete(doc.getReference());
+                }
+            }
+            tareasPosts.add(batch.commit());
+            Log.d("Borrado usuario: PUBLICACIONES", "Likes asociados, fotos y publicacion borradas");
+            return Tasks.whenAll(tareasPosts);
+        });
+        tareasCascada.add(tareaPublicaciones);
+
+        // Borrar likes emitidos por este usuario a otras publicaciones (y restar contadores de likes)
+        Task<Void> tareaLikes = likeRepository.getLikesByUsuario(uid).continueWithTask(task -> {
+            if (!task.isSuccessful() || task.getResult() == null) return Tasks.forResult(null);
+
+            List<Task<?>> decrementos = new ArrayList<>();
+            WriteBatch batch = FirebaseFirestore.getInstance().batch();
+
+            for (DocumentSnapshot doc : task.getResult()) {
+                LikePublicacion like = doc.toObject(LikePublicacion.class);
+                if (like != null) {
+                    decrementos.add(publicacionRepository.actualizarContadorLikes(like.getUidPublicacion(), -1));
+                    batch.delete(doc.getReference());
+                }
+            }
+            decrementos.add(batch.commit());
+            Log.d("Borrado usuario: LIKES EMITIDOS", "Likes emitidos borrados y contadores de likes actualizados");
+            return Tasks.whenAll(decrementos);
+        });
+        tareasCascada.add(tareaLikes);
+
+        // Borrar valoraciones emitidas (como cliente) y recalcular la media del local
+        Task<Void> tareaValoracionesCliente = valoracionLocalRepository.getValoracionesByCliente(uid).continueWithTask(task -> {
+            if (!task.isSuccessful() || task.getResult() == null) return Tasks.forResult(null);
+
+            List<Task<?>> recalculos = new ArrayList<>();
+            WriteBatch batch = FirebaseFirestore.getInstance().batch();
+
+            for (DocumentSnapshot doc : task.getResult()) {
+                ValoracionLocal val = doc.toObject(ValoracionLocal.class);
+                if (val != null) {
+                    recalculos.add(usuarioRepository.getUsuarioById(val.getUidLocal()).continueWithTask(localTask -> {
+                        DocumentSnapshot localDoc = localTask.getResult();
+                        if (localDoc != null && localDoc.exists()) {
+                            UsuarioLocal local = localDoc.toObject(UsuarioLocal.class);
+                            if (local != null) {
+                                // Recalcula la media
+                                double media = local.getPuntuacionMedia();
+                                long total = local.getTotalValoraciones();
+                                double nota = val.getPuntuacion();
+
+                                long nuevoTotal = total - 1;
+                                double nuevaMedia = (nuevoTotal <= 0) ? 0 : ((media * total) - nota) / nuevoTotal;
+
+                                local.setTotalValoraciones(nuevoTotal);
+                                local.setPuntuacionMedia(nuevaMedia);
+                                // Actualiza los nuevos datos del local
+                                return usuarioRepository.saveUsuario(local);
+                            }
+                        }
+                        return Tasks.forResult(null);
+                    }));
+                    batch.delete(doc.getReference());
+                }
+            }
+            recalculos.add(batch.commit());
+            Log.d("Borrado usuario: VALORACIONES EMITIDAS", "Valoraciones eliminadas y medias recalculadas");
+            return Tasks.whenAll(recalculos);
+        });
+        tareasCascada.add(tareaValoracionesCliente);
+
+        // Si el usuario que se borra es local, borrar todas las valoraciones que haya recibido
+        if ("local".equals(usuario.getRol())) {
+            Task<Void> tareaValoracionesLocal = valoracionLocalRepository.getValoracionesByLocal(uid).continueWithTask(task -> {
+                if (!task.isSuccessful() || task.getResult() == null) return Tasks.forResult(null);
+                WriteBatch batch = FirebaseFirestore.getInstance().batch();
+                for (DocumentSnapshot doc : task.getResult()) {
+                    // Borra las valoraciones
+                    batch.delete(doc.getReference());
+                }
+                return batch.commit();
+            });
+            Log.d("Borrado usuario: VALORACIONES RECIBIDAS", "Valoraciones eliminadas");
+            tareasCascada.add(tareaValoracionesLocal);
+        }
+
+        // Ejecutar todas las tareas simultáneamente
+        Log.d("Borrado usuario", "RASTRO DE USUARIO BORRADO CON ÉXITO");
+        return Tasks.whenAll(tareasCascada);
     }
 }

@@ -9,6 +9,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 /**
  * Repositorio encargado de gestionar la persistencia y consultas de la colección "valoraciones_locales" en Firestore.
@@ -35,6 +36,16 @@ public class ValoracionLocalRepository implements IValoracionLocalRepository {
     @Override
     public Task<DocumentSnapshot> getValoracion(String uid) {
         return ratingsCollection.document(uid).get();
+    }
+
+    @Override
+    public Task<QuerySnapshot> getValoracionesByCliente(String uidCliente) {
+        return ratingsCollection.whereEqualTo("uid_cliente", uidCliente).get();
+    }
+
+    @Override
+    public Task<QuerySnapshot> getValoracionesByLocal(String uidLocal) {
+        return ratingsCollection.whereEqualTo("uid_local", uidLocal).get();
     }
 
     @Override

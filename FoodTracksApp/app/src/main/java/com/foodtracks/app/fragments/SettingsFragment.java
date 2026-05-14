@@ -191,9 +191,6 @@ public class SettingsFragment extends Fragment {
                                 R.string.eliminar_para_siempre,
                                 (dialogInterface, which) -> {
                                     if (!esInvitado) {
-                                        // TODO: Arreglar eliminarCuenta para que borre todos los
-                                        // datos del usuario (likes, publicaciones, valoraciones,
-                                        // etc)
                                         usuarioService
                                                 .eliminarCuenta(uidUsuario)
                                                 .addOnSuccessListener(

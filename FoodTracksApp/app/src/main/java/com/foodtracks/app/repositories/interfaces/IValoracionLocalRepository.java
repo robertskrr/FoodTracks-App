@@ -6,6 +6,7 @@ import com.foodtracks.app.models.ValoracionLocal;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 /**
  * Definición de las operaciones permitidas sobre la colección de valoración de locales.
@@ -30,6 +31,21 @@ public interface IValoracionLocalRepository {
      * @return {@link Task} con el {@link DocumentSnapshot} de la valoración encontrada.
      */
     public Task<DocumentSnapshot> getValoracion(String uid);
+
+    /**
+     * Obtiene todas las valoraciones del usuario cliente.
+     * @param uidCliente Identificador del usuario cliente.
+     * @return {@link Task} con el {@link QuerySnapshot} que contiene los resultados (lista) de la búsqueda.
+     */
+    public Task<QuerySnapshot> getValoracionesByCliente(String uidCliente);
+
+
+    /**
+     * Obtiene todas las valoraciones al usuario local.
+     * @param uidLocal Identificador del usuario local.
+     * @return {@link Task} con el {@link QuerySnapshot} que contiene los resultados (lista) de la búsqueda.
+     */
+    public Task<QuerySnapshot> getValoracionesByLocal(String uidLocal);
 
     /**
      * Elimina el documento de una valoración de la colección.

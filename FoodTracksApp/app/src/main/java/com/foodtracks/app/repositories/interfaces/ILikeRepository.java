@@ -6,6 +6,7 @@ import com.foodtracks.app.models.LikePublicacion;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 /**
  * Definición de las operaciones permitidas sobre los likes a publicaciones.
@@ -35,6 +36,13 @@ public interface ILikeRepository {
      * @return {@link Task} con el {@link DocumentSnapshot} del like encontrado.
      */
     Task<DocumentSnapshot> getLike(String uidLike);
+
+    /**
+     * Obtiene todos los likes del usuario.
+     * @param uidUsuario Identificador del usuario.
+     * @return {@link Task} con el {@link QuerySnapshot} que contiene los resultados (lista) de la búsqueda.
+     */
+    public Task<QuerySnapshot> getLikesByUsuario(String uidUsuario);
 
     /**
      * Elimina todos los likes asociados a una publicación específica.
