@@ -95,6 +95,19 @@
                 app:iconTint="@color/black" />
 
             <Button
+                android:id="@+id/btnCambiarPassword"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="start|center_vertical"
+                android:text="@string/cambiar_contrasenia"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                app:icon="@android:drawable/ic_lock_idle_lock"
+                app:iconTint="@color/black" />
+
+            <Button
                 android:id="@+id/btnCerrarSesion"
                 style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="match_parent"
@@ -153,7 +166,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="40dp"
-            android:text="@string/eliminando_datos"
+            android:text="@string/cargando"
             android:textColor="@color/white"
             android:textStyle="bold" />
     </FrameLayout>
