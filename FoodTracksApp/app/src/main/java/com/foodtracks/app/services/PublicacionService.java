@@ -12,6 +12,7 @@ import com.foodtracks.app.api.imagekit.ImageKitResponse;
 import com.foodtracks.app.models.Publicacion;
 import com.foodtracks.app.models.RegistroBorradoPublicacion;
 import com.foodtracks.app.models.Usuario;
+import com.foodtracks.app.repositories.interfaces.ILikeRepository;
 import com.foodtracks.app.repositories.interfaces.IPublicacionRepository;
 import com.foodtracks.app.repositories.interfaces.IRegistroBorradoRepository;
 import com.foodtracks.app.repositories.interfaces.IStorageRepository;
@@ -37,16 +38,19 @@ public class PublicacionService implements IPublicacionService {
     private final IUsuarioRepository usuarioRepository;
     private final IRegistroBorradoRepository registroBorradoRepository;
     private final IStorageRepository storageRepository;
+    private final ILikeRepository likeRepository;
 
     public PublicacionService(
             IPublicacionRepository publicacionRepository,
             IUsuarioRepository usuarioRepository,
             IRegistroBorradoRepository registroBorradoRepository,
-            IStorageRepository storageRepository) {
+            IStorageRepository storageRepository,
+            ILikeRepository likeRepository) {
         this.publicacionRepository = publicacionRepository;
         this.usuarioRepository = usuarioRepository;
         this.registroBorradoRepository = registroBorradoRepository;
         this.storageRepository = storageRepository;
+        this.likeRepository = likeRepository;
     }
 
     @Override
@@ -152,12 +156,15 @@ public class PublicacionService implements IPublicacionService {
 
                             Publicacion publicacion = doc.toObject(Publicacion.class);
 
-                            // Si tenía una foto adjunta, la borrramos de la nube
+                            // Borramos foto si la hay
                             if (publicacion != null && publicacion.getImagenId() != null) {
                                 storageRepository.deleteImage(publicacion.getImagenId());
                             }
 
-                            return publicacionRepository.deletePublicacion(uid);
+                            // Borramos los likes asociados a la publicación
+                            return likeRepository.deleteAllLikesByPublicacion(uid)
+                                    // Borramos la publicación
+                                    .continueWithTask(unused -> publicacionRepository.deletePublicacion(uid));
                         });
     }
 
@@ -186,10 +193,9 @@ public class PublicacionService implements IPublicacionService {
                                                 String username = "Usuario desconocido";
 
                                                 if (usuarioDoc.exists()) {
-                                                    Usuario usuario =
-                                                            usuarioDoc.toObject(Usuario.class);
-                                                    if (usuario != null) {
-                                                        username = usuario.getUsername();
+                                                    String usernameObtenido = usuarioDoc.getString("username");
+                                                    if (usernameObtenido != null) {
+                                                        username = usernameObtenido;
                                                     }
                                                 }
 
@@ -210,13 +216,11 @@ public class PublicacionService implements IPublicacionService {
                                                                 .fechaHora(Timestamp.now())
                                                                 .build();
 
+                                                // Guardado del registro -> Borrado de likes -> Borrado de publicación
                                                 return registroBorradoRepository
                                                         .saveRegistroBorradoPublicacion(registro)
-                                                        .continueWithTask(
-                                                                unused ->
-                                                                        publicacionRepository
-                                                                                .deletePublicacion(
-                                                                                        uid));
+                                                        .continueWithTask(unused -> likeRepository.deleteAllLikesByPublicacion(uid))
+                                                        .continueWithTask(unused -> publicacionRepository.deletePublicacion(uid));
                                             });
                         });
     }

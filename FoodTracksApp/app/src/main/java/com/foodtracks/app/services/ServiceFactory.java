@@ -58,7 +58,8 @@ public class ServiceFactory {
         IUsuarioRepository repoUser = new UsuarioRepository();
         IRegistroBorradoRepository repoLog = new RegistroBorradoRepository();
         ImageKitRepository storageRepo = new ImageKitRepository(context);
-        return new PublicacionService(repo, repoUser, repoLog, storageRepo);
+        ILikeRepository repoLike = new LikeRepository();
+        return new PublicacionService(repo, repoUser, repoLog, storageRepo, repoLike);
     }
 
     /**

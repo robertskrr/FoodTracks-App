@@ -35,4 +35,11 @@ public interface ILikeRepository {
      * @return {@link Task} con el {@link DocumentSnapshot} del like encontrado.
      */
     Task<DocumentSnapshot> getLike(String uidLike);
+
+    /**
+     * Elimina todos los likes asociados a una publicación específica.
+     * @param uidPublicacion Identificador de la publicación.
+     * @return {@link Task} que representa el estado de la operación.
+     */
+    Task<Void> deleteAllLikesByPublicacion(String uidPublicacion);
 }

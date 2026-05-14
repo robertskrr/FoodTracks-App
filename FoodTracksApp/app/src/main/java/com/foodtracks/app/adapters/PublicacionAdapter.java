@@ -9,10 +9,13 @@ import java.util.Map;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +30,8 @@ import com.foodtracks.app.models.LikePublicacion;
 import com.foodtracks.app.models.Publicacion;
 import com.foodtracks.app.models.Usuario;
 import com.foodtracks.app.services.ServiceFactory;
+import com.foodtracks.app.services.exceptions.FoodTracksNotFoundException;
+import com.foodtracks.app.services.exceptions.FoodTracksValidationException;
 import com.foodtracks.app.services.interfaces.ILikeService;
 import com.foodtracks.app.services.interfaces.IPublicacionService;
 import com.foodtracks.app.services.interfaces.IUsuarioService;
@@ -35,6 +40,7 @@ import com.foodtracks.app.utils.DateUtils;
 import com.bumptech.glide.Glide;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.imageview.ShapeableImageView;
+import com.google.firebase.annotations.PublicApi;
 import com.google.firebase.auth.FirebaseAuth;
 
 /**
@@ -52,6 +58,9 @@ public class PublicacionAdapter
     private final IPublicacionService publicacionService;
     private final ILikeService likeService;
     private final String currentUid; // Usuario que está usando la publicación
+    private boolean esAdmin;
+    private final boolean esLogueado;
+    private final String MOTIVO_DEFAULT = "Incumplimiento de las normas de la comunidad.";
     private FirebaseAuth mAuth;
     // Memoria caché para no descargar el mismo perfil varias veces
     private final Map<String, Usuario> cacheUsuarios = new HashMap<>();
@@ -67,8 +76,11 @@ public class PublicacionAdapter
         // Obtenemos el usuario logueado para comprobar sus propios likes
         if (mAuth.getCurrentUser() != null) {
             this.currentUid = mAuth.getCurrentUser().getUid();
+            esLogueado = true;
+            comprobarAdmin();
         } else {
             this.currentUid = "";
+            esLogueado = false;
         }
     }
 
@@ -105,7 +117,7 @@ public class PublicacionAdapter
         comprobarLikeInicial(holder, publicacion.getUid());
 
         // La papelera solo es visible si el usuario actual es el autor
-        if (currentUid != null && currentUid.equals(publicacion.getUidUsuario())) {
+        if ((esLogueado && currentUid.equals(publicacion.getUidUsuario())) || esAdmin) {
             holder.imgEliminarPublicacion.setVisibility(View.VISIBLE);
 
             holder.imgEliminarPublicacion.setOnClickListener(
@@ -113,7 +125,11 @@ public class PublicacionAdapter
                         // Obtenemos la posición exacta de la publicación en la lista
                         int adapterPosition = holder.getBindingAdapterPosition();
                         if (adapterPosition != RecyclerView.NO_POSITION) {
-                            mostrarDialogoEliminar(publicacion, adapterPosition);
+                            if (esAdmin && !currentUid.equals(publicacion.getUidUsuario())){
+                                mostrarDialogoEliminarByAdmin(publicacion, adapterPosition);
+                            } else{
+                                mostrarDialogoEliminar(publicacion, adapterPosition);
+                            }
                         }
                     });
         } else {
@@ -196,6 +212,20 @@ public class PublicacionAdapter
         } else {
             holder.imgLike.setColorFilter(Color.parseColor("#FFFFFF")); // Blanco
         }
+    }
+
+    private void comprobarAdmin(){
+        usuarioService.getPerfil(currentUid).addOnSuccessListener(usuario -> {
+            String rol = usuario.getRol();
+            if ("admin".equals(rol)){
+                esAdmin = true;
+                // Notifica al sistema que los datos se han actualizado
+                // Evitando que no carguen los iconos y lecturas innecesarias
+                notifyDataSetChanged();
+            }
+        }).addOnFailureListener(e -> {
+            Log.e("Comprobar admin en publicación", e.getMessage(), e);
+        });
     }
 
     /**
@@ -400,10 +430,69 @@ public class PublicacionAdapter
                         .show();
 
         // Colores de texto de los botones
-        dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE)
-                .setTextColor(Color.RED);
-        dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_NEGATIVE)
-                .setTextColor(android.graphics.Color.BLACK);
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.RED);
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
+    }
+
+
+    /**
+     * Muestra un diálogo de eliminación exclusivo para administradores,
+     * requiriendo un motivo para el registro de auditoría.
+     */
+    private void mostrarDialogoEliminarByAdmin(Publicacion publicacion, int position) {
+        // Creamos el editText
+        EditText inputMotivo = new EditText(context);
+        inputMotivo.setHint(R.string.motivo_eliminacion);
+        inputMotivo.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+
+        // Lo envolvemos en un container para poder dar márgenes (margin)
+        FrameLayout container = new FrameLayout(context);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+        );
+        params.leftMargin = 50;
+        params.rightMargin = 50;
+        inputMotivo.setLayoutParams(params);
+        container.addView(inputMotivo);
+
+        // Diálogo de confirmación de la eliminación
+        AlertDialog dialog = new MaterialAlertDialogBuilder(context)
+                .setTitle(R.string.eliminar_como_administrador)
+                .setMessage(R.string.indica_el_motivo_eliminacion)
+                .setView(container)
+                .setPositiveButton(R.string.eliminar, (dialogInterface, which) -> {
+
+                    String motivo = inputMotivo.getText().toString().trim();
+
+                    // Motivo por defecto, por si no escribe nada
+                    if (motivo.isEmpty()) {
+                        motivo = MOTIVO_DEFAULT;
+                    }
+
+                    publicacionService.eliminarPublicacionByAdmin(
+                                    publicacion.getUid(),
+                                    publicacion.getUidUsuario(),
+                                    motivo,
+                                    currentUid)
+                            .addOnSuccessListener(unused -> {
+                                Toast.makeText(context, R.string.publicacion_eliminada_by_admin, Toast.LENGTH_SHORT).show();
+                                listaPublicaciones.remove(position);
+                                notifyItemRemoved(position);
+                                notifyItemRangeChanged(position, listaPublicaciones.size());
+                            })
+                            .addOnFailureListener(e -> {
+                                Log.e("PublicacionAdapter", "Error de admin al eliminar: " + e.getMessage(), e);
+                                Toast.makeText(context, R.string.error_al_eliminar, Toast.LENGTH_SHORT).show();
+                            });
+                })
+                .setNegativeButton(R.string.cancelar, (dialogInterface, which) -> {
+                    dialogInterface.dismiss();
+                })
+                .show();
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.RED);
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
     }
 
     @Override
