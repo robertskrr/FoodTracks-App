@@ -100,12 +100,10 @@ public class SettingsFragment extends Fragment {
         // Guardar cambios en switches
         switchNotificaciones.setOnCheckedChangeListener((buttonView, isChecked) -> {
             sharedPreferences.edit().putBoolean(KEY_NOTIF, isChecked).apply();
-            // TODO: Lógica real para activar/desactivar notificaciones FCM
         });
 
         switchSonidos.setOnCheckedChangeListener((buttonView, isChecked) -> {
             sharedPreferences.edit().putBoolean(KEY_SOUNDS, isChecked).apply();
-            // TODO: Lógica real para mutear MediaPlayer/SoundPool
         });
 
         // Editar perfil (dependiendo del rol)
@@ -170,6 +168,7 @@ public class SettingsFragment extends Fragment {
                 .setPositiveButton(R.string.eliminar_para_siempre, (dialogInterface, which) -> {
 
                     if(!esInvitado) {
+                        // TODO: Arreglar eliminarCuenta para que borre todos los datos del usuario (likes, publicaciones, valoraciones, etc)
                         usuarioService.eliminarCuenta(uidUsuario).addOnSuccessListener(unused -> {
                             logOut();
                             Toast.makeText(requireContext(), R.string.cuenta_eliminada, Toast.LENGTH_LONG).show();
