@@ -11,7 +11,6 @@ import com.foodtracks.app.R;
 import com.foodtracks.app.api.imagekit.ImageKitResponse;
 import com.foodtracks.app.models.Publicacion;
 import com.foodtracks.app.models.RegistroBorradoPublicacion;
-import com.foodtracks.app.models.Usuario;
 import com.foodtracks.app.repositories.interfaces.ILikeRepository;
 import com.foodtracks.app.repositories.interfaces.IPublicacionRepository;
 import com.foodtracks.app.repositories.interfaces.IRegistroBorradoRepository;
@@ -162,9 +161,11 @@ public class PublicacionService implements IPublicacionService {
                             }
 
                             // Borramos los likes asociados a la publicación
-                            return likeRepository.deleteAllLikesByPublicacion(uid)
+                            return likeRepository
+                                    .deleteAllLikesByPublicacion(uid)
                                     // Borramos la publicación
-                                    .continueWithTask(unused -> publicacionRepository.deletePublicacion(uid));
+                                    .continueWithTask(
+                                            unused -> publicacionRepository.deletePublicacion(uid));
                         });
     }
 
@@ -193,7 +194,8 @@ public class PublicacionService implements IPublicacionService {
                                                 String username = "Usuario desconocido";
 
                                                 if (usuarioDoc.exists()) {
-                                                    String usernameObtenido = usuarioDoc.getString("username");
+                                                    String usernameObtenido =
+                                                            usuarioDoc.getString("username");
                                                     if (usernameObtenido != null) {
                                                         username = usernameObtenido;
                                                     }
@@ -216,11 +218,20 @@ public class PublicacionService implements IPublicacionService {
                                                                 .fechaHora(Timestamp.now())
                                                                 .build();
 
-                                                // Guardado del registro -> Borrado de likes -> Borrado de publicación
+                                                // Guardado del registro -> Borrado de likes ->
+                                                // Borrado de publicación
                                                 return registroBorradoRepository
                                                         .saveRegistroBorradoPublicacion(registro)
-                                                        .continueWithTask(unused -> likeRepository.deleteAllLikesByPublicacion(uid))
-                                                        .continueWithTask(unused -> publicacionRepository.deletePublicacion(uid));
+                                                        .continueWithTask(
+                                                                unused ->
+                                                                        likeRepository
+                                                                                .deleteAllLikesByPublicacion(
+                                                                                        uid))
+                                                        .continueWithTask(
+                                                                unused ->
+                                                                        publicacionRepository
+                                                                                .deletePublicacion(
+                                                                                        uid));
                                             });
                         });
     }

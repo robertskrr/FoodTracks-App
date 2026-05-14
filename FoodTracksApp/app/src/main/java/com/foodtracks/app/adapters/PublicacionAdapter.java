@@ -30,8 +30,6 @@ import com.foodtracks.app.models.LikePublicacion;
 import com.foodtracks.app.models.Publicacion;
 import com.foodtracks.app.models.Usuario;
 import com.foodtracks.app.services.ServiceFactory;
-import com.foodtracks.app.services.exceptions.FoodTracksNotFoundException;
-import com.foodtracks.app.services.exceptions.FoodTracksValidationException;
 import com.foodtracks.app.services.interfaces.ILikeService;
 import com.foodtracks.app.services.interfaces.IPublicacionService;
 import com.foodtracks.app.services.interfaces.IUsuarioService;
@@ -40,7 +38,6 @@ import com.foodtracks.app.utils.DateUtils;
 import com.bumptech.glide.Glide;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.imageview.ShapeableImageView;
-import com.google.firebase.annotations.PublicApi;
 import com.google.firebase.auth.FirebaseAuth;
 
 /**
@@ -125,9 +122,9 @@ public class PublicacionAdapter
                         // Obtenemos la posición exacta de la publicación en la lista
                         int adapterPosition = holder.getBindingAdapterPosition();
                         if (adapterPosition != RecyclerView.NO_POSITION) {
-                            if (esAdmin && !currentUid.equals(publicacion.getUidUsuario())){
+                            if (esAdmin && !currentUid.equals(publicacion.getUidUsuario())) {
                                 mostrarDialogoEliminarByAdmin(publicacion, adapterPosition);
-                            } else{
+                            } else {
                                 mostrarDialogoEliminar(publicacion, adapterPosition);
                             }
                         }
@@ -214,18 +211,23 @@ public class PublicacionAdapter
         }
     }
 
-    private void comprobarAdmin(){
-        usuarioService.getPerfil(currentUid).addOnSuccessListener(usuario -> {
-            String rol = usuario.getRol();
-            if ("admin".equals(rol)){
-                esAdmin = true;
-                // Notifica al sistema que los datos se han actualizado
-                // Evitando que no carguen los iconos y lecturas innecesarias
-                notifyDataSetChanged();
-            }
-        }).addOnFailureListener(e -> {
-            Log.e("Comprobar admin en publicación", e.getMessage(), e);
-        });
+    private void comprobarAdmin() {
+        usuarioService
+                .getPerfil(currentUid)
+                .addOnSuccessListener(
+                        usuario -> {
+                            String rol = usuario.getRol();
+                            if ("admin".equals(rol)) {
+                                esAdmin = true;
+                                // Notifica al sistema que los datos se han actualizado
+                                // Evitando que no carguen los iconos y lecturas innecesarias
+                                notifyDataSetChanged();
+                            }
+                        })
+                .addOnFailureListener(
+                        e -> {
+                            Log.e("Comprobar admin en publicación", e.getMessage(), e);
+                        });
     }
 
     /**
@@ -434,7 +436,6 @@ public class PublicacionAdapter
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
     }
 
-
     /**
      * Muestra un diálogo de eliminación exclusivo para administradores,
      * requiriendo un motivo para el registro de auditoría.
@@ -443,53 +444,75 @@ public class PublicacionAdapter
         // Creamos el editText
         EditText inputMotivo = new EditText(context);
         inputMotivo.setHint(R.string.motivo_eliminacion);
-        inputMotivo.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+        inputMotivo.setInputType(
+                InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
 
         // Lo envolvemos en un container para poder dar márgenes (margin)
         FrameLayout container = new FrameLayout(context);
-        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-        );
+        FrameLayout.LayoutParams params =
+                new FrameLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.leftMargin = 50;
         params.rightMargin = 50;
         inputMotivo.setLayoutParams(params);
         container.addView(inputMotivo);
 
         // Diálogo de confirmación de la eliminación
-        AlertDialog dialog = new MaterialAlertDialogBuilder(context)
-                .setTitle(R.string.eliminar_como_administrador)
-                .setMessage(R.string.indica_el_motivo_eliminacion)
-                .setView(container)
-                .setPositiveButton(R.string.eliminar, (dialogInterface, which) -> {
+        AlertDialog dialog =
+                new MaterialAlertDialogBuilder(context)
+                        .setTitle(R.string.eliminar_como_administrador)
+                        .setMessage(R.string.indica_el_motivo_eliminacion)
+                        .setView(container)
+                        .setPositiveButton(
+                                R.string.eliminar,
+                                (dialogInterface, which) -> {
+                                    String motivo = inputMotivo.getText().toString().trim();
 
-                    String motivo = inputMotivo.getText().toString().trim();
+                                    // Motivo por defecto, por si no escribe nada
+                                    if (motivo.isEmpty()) {
+                                        motivo = MOTIVO_DEFAULT;
+                                    }
 
-                    // Motivo por defecto, por si no escribe nada
-                    if (motivo.isEmpty()) {
-                        motivo = MOTIVO_DEFAULT;
-                    }
-
-                    publicacionService.eliminarPublicacionByAdmin(
-                                    publicacion.getUid(),
-                                    publicacion.getUidUsuario(),
-                                    motivo,
-                                    currentUid)
-                            .addOnSuccessListener(unused -> {
-                                Toast.makeText(context, R.string.publicacion_eliminada_by_admin, Toast.LENGTH_SHORT).show();
-                                listaPublicaciones.remove(position);
-                                notifyItemRemoved(position);
-                                notifyItemRangeChanged(position, listaPublicaciones.size());
-                            })
-                            .addOnFailureListener(e -> {
-                                Log.e("PublicacionAdapter", "Error de admin al eliminar: " + e.getMessage(), e);
-                                Toast.makeText(context, R.string.error_al_eliminar, Toast.LENGTH_SHORT).show();
-                            });
-                })
-                .setNegativeButton(R.string.cancelar, (dialogInterface, which) -> {
-                    dialogInterface.dismiss();
-                })
-                .show();
+                                    publicacionService
+                                            .eliminarPublicacionByAdmin(
+                                                    publicacion.getUid(),
+                                                    publicacion.getUidUsuario(),
+                                                    motivo,
+                                                    currentUid)
+                                            .addOnSuccessListener(
+                                                    unused -> {
+                                                        Toast.makeText(
+                                                                        context,
+                                                                        R.string
+                                                                                .publicacion_eliminada_by_admin,
+                                                                        Toast.LENGTH_SHORT)
+                                                                .show();
+                                                        listaPublicaciones.remove(position);
+                                                        notifyItemRemoved(position);
+                                                        notifyItemRangeChanged(
+                                                                position,
+                                                                listaPublicaciones.size());
+                                                    })
+                                            .addOnFailureListener(
+                                                    e -> {
+                                                        Log.e(
+                                                                "PublicacionAdapter",
+                                                                "Error de admin al eliminar: "
+                                                                        + e.getMessage(),
+                                                                e);
+                                                        Toast.makeText(
+                                                                        context,
+                                                                        R.string.error_al_eliminar,
+                                                                        Toast.LENGTH_SHORT)
+                                                                .show();
+                                                    });
+                                })
+                        .setNegativeButton(
+                                R.string.cancelar,
+                                (dialogInterface, which) -> {
+                                    dialogInterface.dismiss();
+                                })
+                        .show();
 
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.RED);
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);

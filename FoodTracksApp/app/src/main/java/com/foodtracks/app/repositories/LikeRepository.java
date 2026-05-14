@@ -1,6 +1,4 @@
-/**
- * © FoodTracks Project ===robertskrr===
- */
+/** © FoodTracks Project ===robertskrr=== */
 
 package com.foodtracks.app.repositories;
 
@@ -51,23 +49,27 @@ public class LikeRepository implements ILikeRepository {
     @Override
     public Task<Void> deleteAllLikesByPublicacion(String uidPublicacion) {
         // Buscamos todos los likes asociados
-        return likesCollection.whereEqualTo("uid_publicacion", uidPublicacion).get()
-                .continueWithTask(task -> {
-                    if (!task.isSuccessful() || task.getResult() == null) {
-                        return Tasks.forException(
-                                task.getException() != null ? task.getException() : new Exception("Error al obtener likes")
-                        );
-                    }
+        return likesCollection
+                .whereEqualTo("uid_publicacion", uidPublicacion)
+                .get()
+                .continueWithTask(
+                        task -> {
+                            if (!task.isSuccessful() || task.getResult() == null) {
+                                return Tasks.forException(
+                                        task.getException() != null
+                                                ? task.getException()
+                                                : new Exception("Error al obtener likes"));
+                            }
 
-                    // Creamos un Batch para ejecutar múltiples borrados a la vez
-                    WriteBatch batch = FirebaseFirestore.getInstance().batch();
+                            // Creamos un Batch para ejecutar múltiples borrados a la vez
+                            WriteBatch batch = FirebaseFirestore.getInstance().batch();
 
-                    for (DocumentSnapshot doc : task.getResult()) {
-                        batch.delete(doc.getReference());
-                    }
+                            for (DocumentSnapshot doc : task.getResult()) {
+                                batch.delete(doc.getReference());
+                            }
 
-                    // Ejecutamos el borrado completo
-                    return batch.commit();
-                });
+                            // Ejecutamos el borrado completo
+                            return batch.commit();
+                        });
     }
 }
