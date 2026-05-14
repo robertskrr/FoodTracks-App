@@ -76,6 +76,7 @@ public class PublicacionAdapter
         if (mAuth.getCurrentUser() != null) {
             this.currentUid = mAuth.getCurrentUser().getUid();
             esLogueado = true;
+            comprobarAdmin();
         } else {
             this.currentUid = "";
             esLogueado = false;
@@ -113,9 +114,6 @@ public class PublicacionAdapter
         cargarDatosAutor(holder, publicacion.getUidUsuario());
         cargarDatosLocalMencionado(holder, publicacion.getUidLocal());
         comprobarLikeInicial(holder, publicacion.getUid());
-        if (esLogueado){
-            comprobarAdmin();
-        }
 
         // La papelera solo es visible si el usuario actual es el autor
         if ((esLogueado && currentUid.equals(publicacion.getUidUsuario())) || esAdmin) {
@@ -218,8 +216,11 @@ public class PublicacionAdapter
     private void comprobarAdmin(){
         usuarioService.getPerfil(currentUid).addOnSuccessListener(usuario -> {
             String rol = usuario.getRol();
-            if (rol.equals("admin")){
+            if ("admin".equals(rol)){
                 esAdmin = true;
+                // Notifica al sistema que los datos se han actualizado
+                // Evitando que no carguen los iconos y lecturas innecesarias
+                notifyDataSetChanged();
             }
         }).addOnFailureListener(e -> {
             Log.e("Comprobar admin en publicación", e.getMessage(), e);
