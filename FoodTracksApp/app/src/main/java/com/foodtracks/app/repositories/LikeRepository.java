@@ -10,6 +10,7 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
 
 /**
@@ -44,6 +45,11 @@ public class LikeRepository implements ILikeRepository {
     @Override
     public Task<DocumentSnapshot> getLike(String uidLike) {
         return likesCollection.document(uidLike).get();
+    }
+
+    @Override
+    public Task<QuerySnapshot> getLikesByUsuario(String uidUsuario) {
+        return likesCollection.whereEqualTo("uid_usuario", uidUsuario).get();
     }
 
     @Override

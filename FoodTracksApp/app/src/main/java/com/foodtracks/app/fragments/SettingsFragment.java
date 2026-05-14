@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -39,6 +40,7 @@ public class SettingsFragment extends Fragment {
     private View rootView;
     private SwitchMaterial switchNotificaciones, switchSonidos;
     private Button btnEditarPerfil, btnCerrarSesion, btnEliminarCuenta;
+    private FrameLayout overlayCarga;
 
     private String uidUsuario;
     private IUsuarioService usuarioService;
@@ -83,6 +85,7 @@ public class SettingsFragment extends Fragment {
         btnEditarPerfil = rootView.findViewById(R.id.btnEditarPerfil);
         btnCerrarSesion = rootView.findViewById(R.id.btnCerrarSesion);
         btnEliminarCuenta = rootView.findViewById(R.id.btnEliminarCuenta);
+        overlayCarga = rootView.findViewById(R.id.overlayCargaSettings);
 
         if (esInvitado) {
             btnEditarPerfil.setVisibility(View.GONE);
@@ -191,9 +194,10 @@ public class SettingsFragment extends Fragment {
                                 R.string.eliminar_para_siempre,
                                 (dialogInterface, which) -> {
                                     if (!esInvitado) {
-                                        // TODO: Arreglar eliminarCuenta para que borre todos los
-                                        // datos del usuario (likes, publicaciones, valoraciones,
-                                        // etc)
+
+                                        // Bloqueamos la pantalla y aparece la animación de borrado
+                                        overlayCarga.setVisibility(View.VISIBLE);
+
                                         usuarioService
                                                 .eliminarCuenta(uidUsuario)
                                                 .addOnSuccessListener(
@@ -208,6 +212,7 @@ public class SettingsFragment extends Fragment {
                                                         })
                                                 .addOnFailureListener(
                                                         e -> {
+                                                            overlayCarga.setVisibility(View.GONE);
                                                             Log.e(
                                                                     "Error al eliminar cuenta",
                                                                     e.getMessage(),

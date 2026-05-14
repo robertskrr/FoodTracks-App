@@ -42,7 +42,11 @@ public class ServiceFactory {
         IUsuarioRepository repo = new UsuarioRepository();
         IRegistroBorradoRepository repoLog = new RegistroBorradoRepository();
         ImageKitRepository storageRepo = new ImageKitRepository(context);
-        return new UsuarioService(repo, repoLog, storageRepo);
+        IPublicacionRepository repoPublicacion = new PublicacionRepository();
+        ILikeRepository repoLike = new LikeRepository();
+        IValoracionLocalRepository repoValoracion = new ValoracionLocalRepository();
+        return new UsuarioService(
+                repo, repoLog, storageRepo, repoPublicacion, repoLike, repoValoracion);
     }
 
     /**
