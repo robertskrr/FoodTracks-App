@@ -10,6 +10,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -39,15 +40,13 @@ public class RegisterClienteActivity extends AppCompatActivity {
     private Uri uriFotoSeleccionada;
 
     // Launcher para abrir la galería y recuperar la imagen
-    private final ActivityResultLauncher<String> galleryLauncher =
-            registerForActivityResult(
-                    new ActivityResultContracts.GetContent(),
-                    uri -> {
-                        if (uri != null) {
-                            uriFotoSeleccionada = uri;
-                            fotoPerfil.setImageURI(uri); // Muestra la foto elegida en el círculo
-                        }
-                    });
+    private final ActivityResultLauncher<PickVisualMediaRequest> galleryLauncher =
+            registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
+                if (uri != null) {
+                    uriFotoSeleccionada = uri;
+                    fotoPerfil.setImageURI(uri); // Muestra la foto elegida en el círculo
+                }
+            });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,7 +114,9 @@ public class RegisterClienteActivity extends AppCompatActivity {
      * @param view Vista de la interfaz.
      */
     public void setGalleryLauncher(View view) {
-        galleryLauncher.launch("image/*");
+        galleryLauncher.launch(new PickVisualMediaRequest.Builder()
+                .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                .build());
     }
 
     /**
