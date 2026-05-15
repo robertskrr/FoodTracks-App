@@ -3,9 +3,16 @@
 package com.foodtracks.app.activities.cliente;
 
 import android.os.Bundle;
+import android.util.Log;
+import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -24,6 +31,7 @@ import com.foodtracks.app.utils.DateUtils;
 import com.bumptech.glide.Glide;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -39,12 +47,17 @@ public class PerfilClienteActivity extends AppCompatActivity {
     private RecyclerView recyclerPublicaciones;
     private String uidCliente;
     private FirebaseAuth mAuth;
+    private ImageView imgEliminarPerfilAdmin;
+    private String uidUsuarioActual;
+    private boolean esInvitado;
     private IUsuarioService usuarioService;
     private IPublicacionService publicacionService;
     private PublicacionAdapter adapter;
     private ProgressBar progressBar;
     private NestedScrollView layoutContenido;
     private int tareasCompletadas = 0; // Contador de tareas de Firebase para la pantalla de carga
+    private final String MOTIVO_DEFAULT = "Incumplimiento de las normas de la comunidad.";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,8 +68,7 @@ public class PerfilClienteActivity extends AppCompatActivity {
         inicializar();
         mostrarDatosCliente();
         cargarPublicaciones();
-        // TODO: Si hay tiempo, opciones de editar perfil / cerrar sesión si eres el usuario
-        // principal
+
     }
 
     /**
@@ -90,6 +102,18 @@ public class PerfilClienteActivity extends AppCompatActivity {
         // Pantalla de carga
         progressBar = findViewById(R.id.progressBarFeed);
         layoutContenido = findViewById(R.id.layoutContenidoPerfil);
+
+        imgEliminarPerfilAdmin = findViewById(R.id.imgEliminarPerfilAdminCliente);
+
+        if (mAuth.getCurrentUser() != null) {
+            uidUsuarioActual = mAuth.getCurrentUser().getUid();
+            esInvitado = false;
+        } else {
+            uidUsuarioActual = null;
+            esInvitado = true;
+        }
+
+        comprobarSiEsAdmin();
     }
 
     private String getUidPerfil(FirebaseAuth mAuth) {
@@ -240,6 +264,59 @@ public class PerfilClienteActivity extends AppCompatActivity {
             progressBar.setVisibility(android.view.View.GONE);
             layoutContenido.setVisibility(android.view.View.VISIBLE);
         }
+    }
+
+    private void comprobarSiEsAdmin() {
+        if (esInvitado || uidUsuarioActual == null) return;
+
+        usuarioService.getPerfil(uidUsuarioActual).addOnSuccessListener(usuario -> {
+            if ("admin".equals(usuario.getRol()) && !uidUsuarioActual.equals(uidCliente)) {
+                imgEliminarPerfilAdmin.setVisibility(android.view.View.VISIBLE);
+                imgEliminarPerfilAdmin.setOnClickListener(v -> mostrarDialogoEliminarPerfilAdmin());
+            }
+        });
+    }
+
+    private void mostrarDialogoEliminarPerfilAdmin() {
+        EditText inputMotivo = new EditText(this);
+        inputMotivo.setHint(R.string.motivo_eliminacion);
+        inputMotivo.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+
+        FrameLayout container = new FrameLayout(this);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.leftMargin = 50; params.rightMargin = 50;
+        inputMotivo.setLayoutParams(params);
+        container.addView(inputMotivo);
+
+        AlertDialog dialog = new MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.eliminar_perfil_como_admin)
+                .setMessage(R.string.motivo_eliminacion_usuario_como_admin)
+                .setView(container)
+                .setPositiveButton(R.string.eliminar, (dialogInterface, which) -> {
+                    String motivo = inputMotivo.getText().toString().trim();
+                    if (motivo.isEmpty()) motivo = MOTIVO_DEFAULT;
+
+                    layoutContenido.setVisibility(android.view.View.GONE);
+                    progressBar.setVisibility(android.view.View.VISIBLE);
+
+                    usuarioService.eliminarCuentaByAdmin(uidCliente, motivo, uidUsuarioActual)
+                            .addOnSuccessListener(unused -> {
+                                Toast.makeText(this, R.string.perfil_eliminado_por_admin, Toast.LENGTH_LONG).show();
+                                finish();
+                            })
+                            .addOnFailureListener(e -> {
+                                layoutContenido.setVisibility(android.view.View.VISIBLE);
+                                progressBar.setVisibility(android.view.View.GONE);
+                                Log.e("Eliminado usuario cliente como admin", e.getMessage(), e);
+                                Toast.makeText(this, R.string.error_al_eliminar, Toast.LENGTH_SHORT).show();
+                            });
+                })
+                .setNegativeButton(R.string.cancelar, (dialogInterface, which) -> dialogInterface.dismiss())
+                .show();
+
+        dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE).setTextColor(android.graphics.Color.RED);
+        dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(android.graphics.Color.BLACK);
     }
 
     /**

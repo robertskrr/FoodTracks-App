@@ -61,9 +61,6 @@ public class BusquedaFragment extends Fragment {
     private IUsuarioService usuarioService;
     private boolean esAdmin, esCliente, esLocal, esInvitado;
 
-    // TODO --> Añadir filtros por preferencias (propias del usuario, filtros personalizados y
-    // ciudad)
-
     @Nullable
     @Override
     public View onCreateView(

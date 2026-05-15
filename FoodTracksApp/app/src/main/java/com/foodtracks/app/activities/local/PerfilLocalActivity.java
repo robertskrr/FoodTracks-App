@@ -6,13 +6,20 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -32,6 +39,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.button.MaterialButtonToggleGroup;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;
 import org.osmdroid.config.Configuration;
@@ -83,6 +91,8 @@ public class PerfilLocalActivity extends AppCompatActivity {
     private String nombreLocal = "";
 
     private boolean esInvitado;
+    private ImageView imgEliminarPerfilAdmin;
+    private final String MOTIVO_DEFAULT = "Incumplimiento de las normas de la comunidad.";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,6 +152,8 @@ public class PerfilLocalActivity extends AppCompatActivity {
         recyclerPublicaciones = findViewById(R.id.recyclerPublicacionesLocal);
         recyclerPublicaciones.setLayoutManager(new LinearLayoutManager(this));
         toggleGroupPublicaciones = findViewById(R.id.toggleGroupPublicaciones);
+
+        imgEliminarPerfilAdmin = findViewById(R.id.imgEliminarPerfilAdminLocal);
 
         configBotonTipoPublicaciones();
         configMapa();
@@ -390,6 +402,11 @@ public class PerfilLocalActivity extends AppCompatActivity {
                 .getPerfil(uidUsuarioActual)
                 .addOnSuccessListener(
                         usuarioActual -> {
+
+                            if ("admin".equals(usuarioActual.getRol()) && !uidUsuarioActual.equals(uidLocalVisitado)) {
+                                imgEliminarPerfilAdmin.setVisibility(View.VISIBLE);
+                                imgEliminarPerfilAdmin.setOnClickListener(v -> mostrarDialogoEliminarPerfilAdmin());
+                            }
                             // Si es un cliente y no está viendo su propio perfil, le dejamos
                             // valorar
                             if ("cliente".equals(usuarioActual.getRol())
@@ -526,6 +543,48 @@ public class PerfilLocalActivity extends AppCompatActivity {
                                         });
                             }
                         });
+    }
+
+    private void mostrarDialogoEliminarPerfilAdmin() {
+        EditText inputMotivo = new EditText(this);
+        inputMotivo.setHint(R.string.motivo_eliminacion);
+        inputMotivo.setInputType(android.text.InputType.TYPE_CLASS_TEXT | android.text.InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+
+        FrameLayout container = new FrameLayout(this);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.leftMargin = 50; params.rightMargin = 50;
+        inputMotivo.setLayoutParams(params);
+        container.addView(inputMotivo);
+
+        AlertDialog dialog = new MaterialAlertDialogBuilder(this)
+                .setTitle(R.string.eliminar_perfil_como_admin)
+                .setMessage(R.string.motivo_eliminacion_usuario_como_admin)
+                .setView(container)
+                .setPositiveButton(R.string.eliminar, (dialogInterface, which) -> {
+                    String motivo = inputMotivo.getText().toString().trim();
+                    if (motivo.isEmpty()) motivo = MOTIVO_DEFAULT;
+
+                    layoutContenido.setVisibility(View.GONE);
+                    progressBar.setVisibility(View.VISIBLE);
+
+                    usuarioService.eliminarCuentaByAdmin(uidLocalVisitado, motivo, uidUsuarioActual)
+                            .addOnSuccessListener(unused -> {
+                                Toast.makeText(this, R.string.perfil_eliminado_por_admin, Toast.LENGTH_LONG).show();
+                                finish();
+                            })
+                            .addOnFailureListener(e -> {
+                                layoutContenido.setVisibility(View.VISIBLE);
+                                progressBar.setVisibility(View.GONE);
+                                Log.e("Eliminado usuario local como admin", e.getMessage(), e);
+                                Toast.makeText(this, R.string.error_al_eliminar, Toast.LENGTH_SHORT).show();
+                            });
+                })
+                .setNegativeButton(R.string.cancelar, (dialogInterface, which) -> dialogInterface.dismiss())
+                .show();
+
+        dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE).setTextColor(android.graphics.Color.RED);
+        dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(android.graphics.Color.BLACK);
     }
 
     private void actualizarChinchetaMapa() {

@@ -10,6 +10,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 /**
  * Repositorio encargado de gestionar los logs de auditoría cuando se eliminan datos del sistema.
@@ -39,5 +41,19 @@ public class RegistroBorradoRepository implements IRegistroBorradoRepository {
     public Task<DocumentReference> saveRegistroBorradoPublicacion(
             RegistroBorradoPublicacion registro) {
         return deletedLogPublicacionesCollection.add(registro);
+    }
+
+    @Override
+    public Task<QuerySnapshot> getAllRegistrosUsuarios() {
+        return deletedLogUsuariosCollection
+                .orderBy("fecha_hora", Query.Direction.DESCENDING)
+                .get();
+    }
+
+    @Override
+    public Task<QuerySnapshot> getAllRegistrosPublicaciones() {
+        return deletedLogPublicacionesCollection
+                .orderBy("fecha_hora", Query.Direction.DESCENDING)
+                .get();
     }
 }

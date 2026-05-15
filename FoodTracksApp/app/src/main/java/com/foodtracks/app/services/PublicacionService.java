@@ -84,6 +84,19 @@ public class PublicacionService implements IPublicacionService {
     }
 
     @Override
+    public Task<List<RegistroBorradoPublicacion>> getAllRegistrosBorradoPublicaciones() {
+        return registroBorradoRepository
+                .getAllRegistrosPublicaciones()
+                .continueWith(
+                        task -> {
+                            if (task.isSuccessful() && task.getResult() != null) {
+                                return task.getResult().toObjects(RegistroBorradoPublicacion.class);
+                            }
+                            return new java.util.ArrayList<>();
+                        });
+    }
+
+    @Override
     public Task<List<Publicacion>> getPublicacionesByUsuario(String uidUsuario) {
         return publicacionRepository
                 .getPublicacionesByUsuario(uidUsuario)

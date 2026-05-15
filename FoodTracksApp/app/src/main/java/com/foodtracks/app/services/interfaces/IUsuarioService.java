@@ -6,6 +6,8 @@ import java.util.List;
 
 import android.net.Uri;
 
+import com.foodtracks.app.models.RegistroBorradoPublicacion;
+import com.foodtracks.app.models.RegistroBorradoUsuario;
 import com.foodtracks.app.models.Usuario;
 import com.foodtracks.app.models.UsuarioLocal;
 
@@ -126,4 +128,11 @@ public interface IUsuarioService {
      * @return {@link Task} que representa el estado de la operación.
      */
     Task<Void> registrarVisitaPerfil(String uidVisitante, String uidLocal);
+
+    /**
+     * Recupera todos los registros de borrado de usuarios.
+     * @return @return {@link Task} que contiene una lista de registros {@link RegistroBorradoUsuario}.
+     */
+    Task<List<RegistroBorradoUsuario>> getAllRegistrosBorradoUsuarios();
+
 }
