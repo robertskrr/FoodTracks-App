@@ -149,5 +149,6 @@
     <string name="actualizar">Actualizar</string>
     <string name="contrasenia_actualizada">Contraseña actualizada con éxito</string>
     <string name="contrasenia_proteccion_sesion_antigua">Por seguridad, debes cerrar sesión y volver a entrar antes de cambiar tu contraseña.</string>
+    <string name="panel_de_administrador">Panel de administrador</string>
 
 </resources>
