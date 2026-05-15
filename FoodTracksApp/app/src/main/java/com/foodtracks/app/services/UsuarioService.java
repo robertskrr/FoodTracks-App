@@ -13,6 +13,7 @@ import com.foodtracks.app.R;
 import com.foodtracks.app.api.imagekit.ImageKitResponse;
 import com.foodtracks.app.models.LikePublicacion;
 import com.foodtracks.app.models.Publicacion;
+import com.foodtracks.app.models.RegistroBorradoPublicacion;
 import com.foodtracks.app.models.RegistroBorradoUsuario;
 import com.foodtracks.app.models.Usuario;
 import com.foodtracks.app.models.UsuarioAdmin;
@@ -479,6 +480,17 @@ public class UsuarioService implements IUsuarioService {
         }
 
         return usuarioRepository.incrementarVisitasPerfil(uidLocal);
+    }
+
+    @Override
+    public Task<List<RegistroBorradoUsuario>> getAllRegistrosBorradoUsuarios(){
+        return registroBorradoRepository.getAllRegistrosUsuarios()
+                .continueWith(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        return task.getResult().toObjects(RegistroBorradoUsuario.class);
+                    }
+                    return new java.util.ArrayList<>();
+                });
     }
 
     /*

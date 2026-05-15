@@ -150,5 +150,9 @@
     <string name="contrasenia_actualizada">Contraseña actualizada con éxito</string>
     <string name="contrasenia_proteccion_sesion_antigua">Por seguridad, debes cerrar sesión y volver a entrar antes de cambiar tu contraseña.</string>
     <string name="panel_de_administrador">Panel de administrador</string>
-
+    <string name="usuarios">Usuarios</string>
+    <string name="no_hay_registros_de_este_tipo">No hay registros de este tipo</string>
+    <string name="publicacion_borrada_de">Publicación borrada de:</string>
+    <string name="motivo">Motivo:</string>
+    <string name="cuenta_eliminada_de">Cuenta eliminada:</string>
 </resources>

@@ -7,6 +7,7 @@ import com.foodtracks.app.models.RegistroBorradoUsuario;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.QuerySnapshot;
 
 /**
  * Definición de las operaciones permitidas sobre las colecciones de registros de borrado.
@@ -32,4 +33,16 @@ public interface IRegistroBorradoRepository {
      */
     public Task<DocumentReference> saveRegistroBorradoPublicacion(
             RegistroBorradoPublicacion registro);
+
+    /**
+     * Obtiene todos los registros de borrado de usuarios.
+     * @return {@link Task} con el {@link QuerySnapshot} que contiene los resultados (lista).
+     */
+    public Task<QuerySnapshot> getAllRegistrosUsuarios();
+
+    /**
+     * Obtiene todos los registros de borrado de publicaciones.
+     * @return {@link Task} con el {@link QuerySnapshot} que contiene los resultados (lista).
+     */
+    public Task<QuerySnapshot> getAllRegistrosPublicaciones();
 }

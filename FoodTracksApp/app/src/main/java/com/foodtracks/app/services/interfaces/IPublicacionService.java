@@ -8,6 +8,7 @@ import android.net.Uri;
 
 import com.foodtracks.app.models.Publicacion;
 
+import com.foodtracks.app.models.RegistroBorradoPublicacion;
 import com.google.android.gms.tasks.Task;
 
 /**
@@ -34,6 +35,12 @@ public interface IPublicacionService {
      * @return {@link Task} que contiene una lista de publicaciones {@link Publicacion}.
      */
     Task<List<Publicacion>> getAllPublicaciones();
+
+    /**
+     * Recupera todos los registros de borrado de publicaciones.
+     * @return @return {@link Task} que contiene una lista de registros {@link RegistroBorradoPublicacion}.
+     */
+    public Task<List<RegistroBorradoPublicacion>> getAllRegistrosBorradoPublicaciones();
 
     /**
      * Recupera todas las publicaciones realizadas por un autor específico.

@@ -15,6 +15,7 @@ import com.foodtracks.app.fragments.BusquedaFragment;
 import com.foodtracks.app.fragments.FeedFragment;
 import com.foodtracks.app.fragments.SettingsFragment;
 import com.foodtracks.app.fragments.SubirPublicacionFragment;
+import com.foodtracks.app.fragments.admin.AdminPanelFragment;
 import com.foodtracks.app.fragments.cliente.PerfilClienteFragment;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -83,7 +84,7 @@ public class MainAdminActivity extends AppCompatActivity {
                         return true;
 
                     } else if (itemId == R.id.nav_admin_panel) {
-                        // TODO: cargarFragmento(new AdminPanelFragment());
+                        cargarFragmento(new AdminPanelFragment());
                         return true;
                     } else if (itemId == R.id.nav_busqueda) {
                         cargarFragmento(new BusquedaFragment());
