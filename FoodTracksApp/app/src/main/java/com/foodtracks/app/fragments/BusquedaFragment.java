@@ -312,7 +312,7 @@ public class BusquedaFragment extends Fragment {
                         .setStatusBarColor(
                                 androidx.core.content.ContextCompat.getColor(
                                         requireContext(), R.color.admin_bottom_nav));
-                layoutContenido.setBackgroundColor(getResources().getColor(R.color.black, null));
+                rootView.setBackgroundColor(getResources().getColor(R.color.black, null));
                 topBarBusqueda.setBackgroundColor(
                         getResources().getColor(R.color.admin_bottom_nav, null));
             }
