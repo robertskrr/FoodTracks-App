@@ -7,11 +7,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -28,6 +30,8 @@ import com.foodtracks.app.services.interfaces.IUsuarioService;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException;
+import com.google.firebase.auth.FirebaseUser;
 
 /**
  * Fragment de ajustes de la aplicación.
@@ -39,7 +43,7 @@ public class SettingsFragment extends Fragment {
 
     private View rootView;
     private SwitchMaterial switchNotificaciones, switchSonidos;
-    private Button btnEditarPerfil, btnCerrarSesion, btnEliminarCuenta;
+    private Button btnEditarPerfil, btnCerrarSesion, btnEliminarCuenta, btnCambiarPassword;
     private FrameLayout overlayCarga;
 
     private String uidUsuario;
@@ -85,10 +89,12 @@ public class SettingsFragment extends Fragment {
         btnEditarPerfil = rootView.findViewById(R.id.btnEditarPerfil);
         btnCerrarSesion = rootView.findViewById(R.id.btnCerrarSesion);
         btnEliminarCuenta = rootView.findViewById(R.id.btnEliminarCuenta);
+        btnCambiarPassword = rootView.findViewById(R.id.btnCambiarPassword);
         overlayCarga = rootView.findViewById(R.id.overlayCargaSettings);
 
         if (esInvitado) {
             btnEditarPerfil.setVisibility(View.GONE);
+            btnCambiarPassword.setVisibility(View.GONE);
             btnEliminarCuenta.setVisibility(View.GONE);
             btnCerrarSesion.setText(R.string.salir);
         }
@@ -126,6 +132,9 @@ public class SettingsFragment extends Fragment {
                         mostrarDialogoCerrarSesion();
                     }
                 });
+
+        // Cambiar contraseña
+        btnCambiarPassword.setOnClickListener(v -> mostrarDialogoCambiarPassword());
 
         // Eliminar cuenta
         btnEliminarCuenta.setOnClickListener(v -> mostrarDialogoEliminarCuenta());
@@ -233,6 +242,93 @@ public class SettingsFragment extends Fragment {
 
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.RED);
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
+    }
+
+    private void mostrarDialogoCambiarPassword() {
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user == null) return;
+
+        // Creamos el campo de texto para la contraseña oculta
+        EditText inputPassword = new android.widget.EditText(requireContext());
+        inputPassword.setHint(R.string.nueva_contrasenia);
+        inputPassword.setInputType(
+                InputType.TYPE_CLASS_TEXT
+                        | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+
+        // Lo envolvemos para darle márgenes
+        FrameLayout container = new FrameLayout(requireContext());
+        FrameLayout.LayoutParams params =
+                new FrameLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.leftMargin = 50;
+        params.rightMargin = 50;
+        inputPassword.setLayoutParams(params);
+        container.addView(inputPassword);
+
+        AlertDialog dialog =
+                new MaterialAlertDialogBuilder(requireContext())
+                        .setTitle(R.string.cambiar_contrasenia)
+                        .setMessage(R.string.introduce_nueva_contrasenia)
+                        .setView(container)
+                        .setPositiveButton(
+                                R.string.actualizar,
+                                (dialogInterface, which) -> {
+                                    String nuevaPass = inputPassword.getText().toString().trim();
+
+                                    if (nuevaPass.length() < 8) {
+                                        Toast.makeText(
+                                                        requireContext(),
+                                                        R.string.password_length_error_message,
+                                                        Toast.LENGTH_SHORT)
+                                                .show();
+                                        return;
+                                    }
+
+                                    // Pantalla de carga
+                                    overlayCarga.setVisibility(View.VISIBLE);
+
+                                    // Cambia la contraseña desde Firebase
+                                    user.updatePassword(nuevaPass)
+                                            .addOnSuccessListener(
+                                                    unused -> {
+                                                        overlayCarga.setVisibility(View.GONE);
+                                                        Toast.makeText(
+                                                                        requireContext(),
+                                                                        R.string.contrasenia_actualizada,
+                                                                        Toast.LENGTH_SHORT)
+                                                                .show();
+                                                    })
+                                            .addOnFailureListener(
+                                                    e -> {
+                                                        overlayCarga.setVisibility(View.GONE);
+
+                                                        // Excepción de protección de sesión antigua
+                                                        if (e
+                                                                instanceof
+                                                                FirebaseAuthRecentLoginRequiredException) {
+                                                            Toast.makeText(
+                                                                            requireContext(),
+                                                                            R.string.contrasenia_proteccion_sesion_antigua,
+                                                                            Toast.LENGTH_LONG)
+                                                                    .show();
+                                                        } else {
+                                                            Log.e("Actualizar contraseña", e.getMessage(), e);
+                                                            Toast.makeText(
+                                                                            requireContext(),
+                                                                            R.string.error_al_actualizar,
+                                                                            Toast.LENGTH_SHORT)
+                                                                    .show();
+                                                        }
+                                                    });
+                                })
+                        .setNegativeButton(
+                                R.string.cancelar,
+                                (dialogInterface, which) -> dialogInterface.dismiss())
+                        .show();
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                .setTextColor(ContextCompat.getColor(requireContext(), R.color.black));
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.GRAY);
     }
 
     /**

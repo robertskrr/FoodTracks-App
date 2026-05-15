@@ -40,7 +40,8 @@
     <string name="username_empty_error_message">Username introducido vacío.</string>
     <string name="user_is_not_a_local">El usuario mencionado existe, pero no es un local.</string>
     <string name="local_not_found_with_exact_username">No se encontró ningún local con ese @username exacto.</string>
-    <string name="error_al_eliminar">Error al eliminar.</string>
+    <string name="error_al_eliminar">Error al eliminar</string>
+    <string name="error_al_actualizar">Error al actualizar</string>
 
 
     <!-- LAYOUTS STRINGS -->
@@ -142,5 +143,12 @@
     <string name="salir">Salir</string>
     <string name="cuenta_eliminada">Tu cuenta ha sido eliminada</string>
     <string name="eliminando_datos">Eliminando datos...</string>
+    <string name="cambiar_contrasenia">Cambiar Contraseña</string>
+    <string name="nueva_contrasenia">Nueva contraseña (mín. 8 caracteres)</string>
+    <string name="introduce_nueva_contrasenia">Por favor, introduce tu nueva contraseña:</string>
+    <string name="actualizar">Actualizar</string>
+    <string name="contrasenia_actualizada">Contraseña actualizada con éxito</string>
+    <string name="contrasenia_proteccion_sesion_antigua">Por seguridad, debes cerrar sesión y volver a entrar antes de cambiar tu contraseña.</string>
+    <string name="panel_de_administrador">Panel de administrador</string>
 
 </resources>
