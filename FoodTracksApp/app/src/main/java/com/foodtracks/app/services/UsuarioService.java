@@ -248,91 +248,42 @@ public class UsuarioService implements IUsuarioService {
     }
 
     @Override
-    public Task<Void> actualizarPerfil(Usuario usuarioModificado, Uri fotoUri) {
-        int errorIdValidacion = validarDatos(usuarioModificado);
-        if (errorIdValidacion != 0) {
-            return Tasks.forException(new FoodTracksValidationException(errorIdValidacion));
-        }
+    public Task<Void> actualizarPerfil(Usuario usuario, Uri fotoUri) {
+        // Comprobamos si el username ya existe en otro usuario
+        return usuarioRepository.getUsuarioByUsername(usuario.getUsername()).continueWithTask(task -> {
+            if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
+                DocumentSnapshot doc = task.getResult().getDocuments().get(0);
+                if (!doc.getId().equals(usuario.getUid())) {
+                    return Tasks.forException(new FoodTracksValidationException(R.string.username_validation_error_message));
+                }
+            }
 
-        normalizarDatos(usuarioModificado);
+            int errorIdValidacion = validarDatos(usuario);
+            if (errorIdValidacion != 0) {
+                return Tasks.forException(new FoodTracksValidationException(errorIdValidacion));
+            }
 
-        // Comparamos con el perfil anterior
-        return usuarioRepository
-                .getUsuarioById(usuarioModificado.getUid())
-                .continueWithTask(
-                        task -> {
-                            Usuario usuarioActual = task.getResult().toObject(Usuario.class);
+            normalizarDatos(usuario);
 
-                            if (usuarioActual == null) {
-                                return Tasks.forException(
-                                        new FoodTracksNotFoundException(
-                                                R.string.usuario_not_found_error_message));
-                            }
+            // Actualizamos la foto de perfil
+            if (fotoUri != null) {
+                // Si ya tenía una foto anterior la borramos
+                if (usuario.getFotoId() != null) {
+                    storageRepository.deleteImage(usuario.getFotoId());
+                }
 
-                            Task<ImageKitResponse> uploadTask;
-                            if (fotoUri != null) {
-                                uploadTask =
-                                        storageRepository.uploadImage(
-                                                fotoUri, usuarioModificado.getUid(), "perfiles");
-                            } else {
-                                uploadTask = Tasks.forResult(null);
-                            }
-
-                            return uploadTask.continueWithTask(
-                                    resTask -> {
-                                        if (resTask.isSuccessful() && resTask.getResult() != null) {
-                                            ImageKitResponse res = resTask.getResult();
-
-                                            // Borramos la foto antigua de la nube si el usuario ya
-                                            // tenía una
-                                            if (usuarioActual.getFotoId() != null) {
-                                                storageRepository.deleteImage(
-                                                        usuarioActual.getFotoId());
-                                            }
-
-                                            // Actualizamos los campos de imagen en el usuario
-                                            // modificado
-                                            usuarioModificado.setFotoPerfil(res.getUrl());
-                                            usuarioModificado.setFotoId(res.getFileId());
-                                        } else {
-                                            // Si no hay foto nueva, mantenemos los datos de la foto
-                                            // antigua
-                                            usuarioModificado.setFotoPerfil(
-                                                    usuarioActual.getFotoPerfil());
-                                            usuarioModificado.setFotoId(usuarioActual.getFotoId());
-                                        }
-
-                                        // Comprueba si se ha cambiado el username // TODO: Cambiar
-                                        // de sitio. Primero comprueba esto antes de subir nada
-                                        if (!usuarioActual
-                                                .getUsername()
-                                                .equals(usuarioModificado.getUsername())) {
-                                            // Si el nombre es distinto, comprobamos que el nuevo no
-                                            // esté pillado
-                                            return esUsernameUnico(usuarioModificado.getUsername())
-                                                    .continueWithTask(
-                                                            isUniqueTask -> {
-                                                                if (isUniqueTask.getResult() != null
-                                                                        && !isUniqueTask
-                                                                                .getResult()) {
-                                                                    return Tasks.forException(
-                                                                            new FoodTracksValidationException(
-                                                                                    R.string
-                                                                                            .username_validation_error_message));
-                                                                }
-                                                                // Si es único guardamos los nuevos
-                                                                // datos
-                                                                return usuarioRepository
-                                                                        .saveUsuario(
-                                                                                usuarioModificado);
-                                                            });
-                                        }
-
-                                        // Si el nombre es el mismo que ya tenía se guarda
-                                        // directamente
-                                        return usuarioRepository.saveUsuario(usuarioModificado);
-                                    });
+                return storageRepository.uploadImage(fotoUri, usuario.getUid() + "_" + System.currentTimeMillis(), "perfiles")
+                        .continueWithTask(uploadTask -> {
+                            ImageKitResponse res = uploadTask.getResult();
+                            usuario.setFotoPerfil(res.getUrl());
+                            usuario.setFotoId(res.getFileId());
+                            
+                            return usuarioRepository.saveUsuario(usuario);
                         });
+            } else {
+                return usuarioRepository.saveUsuario(usuario);
+            }
+        });
     }
 
     @Override
