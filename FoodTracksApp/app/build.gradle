@@ -134,4 +134,11 @@ dependencies {
 	 *  ==============================================
 	 */
 	implementation 'org.osmdroid:osmdroid-android:6.1.20'
+
+	/** ==============================================
+	 *                 PHOTOVIEW
+	 *        Librería para hacer zoom en imágenes
+	 *  ==============================================
+	 */
+	implementation 'com.github.chrisbanes:PhotoView:2.3.0'
 }

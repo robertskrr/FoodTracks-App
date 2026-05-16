@@ -23,11 +23,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.foodtracks.app.R;
 import com.foodtracks.app.activities.cliente.PerfilClienteActivity;
 import com.foodtracks.app.activities.local.PerfilLocalActivity;
+import com.foodtracks.app.fragments.VisorImagenDialogFragment;
 import com.foodtracks.app.models.LikePublicacion;
 import com.foodtracks.app.models.Publicacion;
 import com.foodtracks.app.models.Usuario;
@@ -106,6 +108,15 @@ public class PublicacionAdapter
         if (publicacion.getImagen() != null && !publicacion.getImagen().isEmpty()) {
             holder.imgPublicacion.setVisibility(View.VISIBLE);
             Glide.with(context).load(publicacion.getImagen()).into(holder.imgPublicacion);
+
+            // Abre la imagen en pantalla completa
+            holder.imgPublicacion.setOnClickListener(v -> {
+                if (context instanceof AppCompatActivity) {
+                    AppCompatActivity activity = (AppCompatActivity) context;
+                    VisorImagenDialogFragment dialog = VisorImagenDialogFragment.newInstance(publicacion.getImagen());
+                    dialog.show(activity.getSupportFragmentManager(), "VisorImagenCompleta");
+                }
+            });
         } else {
             holder.imgPublicacion.setVisibility(View.GONE);
         }
