@@ -387,7 +387,6 @@ public class PerfilLocalActivity extends AppCompatActivity {
         }
     }
 
-    // TODO -> Añadir sonido al valorar cuando se pruebe desde un cliente
     /** Muestra el bloque de estrellas, gestiona el envío/borrado de la valoración si es cliente
      * e incrementa las visitas del local
      */
