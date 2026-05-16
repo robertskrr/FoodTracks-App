@@ -24,6 +24,7 @@ import androidx.fragment.app.Fragment;
 
 import com.foodtracks.app.R;
 import com.foodtracks.app.activities.MainActivity;
+import com.foodtracks.app.activities.VideoPlayerActivity;
 import com.foodtracks.app.activities.cliente.EditarPerfilClienteActivity;
 import com.foodtracks.app.activities.local.EditarPerfilLocalActivity;
 import com.foodtracks.app.services.ServiceFactory;
@@ -45,14 +46,14 @@ public class SettingsFragment extends Fragment {
 
     private View rootView;
     private SwitchMaterial switchNotificaciones, switchSonidos;
-    private Button btnEditarPerfil, btnCerrarSesion, btnEliminarCuenta, btnCambiarPassword;
+    private Button btnEditarPerfil, btnCerrarSesion, btnEliminarCuenta, btnCambiarPassword, btnVideo, btnPremium;
     private FrameLayout overlayCarga;
 
     private String uidUsuario;
     private IUsuarioService usuarioService;
     private FirebaseAuth mAuth;
     private SharedPreferences sharedPreferences;
-    private boolean esInvitado;
+    private boolean esInvitado, esLocal, esCliente, esAdmin;
 
     // Nombres para SharedPreferences
     private static final String PREFS_NAME = "FoodTracksSettings";
@@ -82,6 +83,7 @@ public class SettingsFragment extends Fragment {
 
         if (mAuth.getCurrentUser() != null) {
             uidUsuario = mAuth.getCurrentUser().getUid();
+            comprobarRol();
         } else {
             esInvitado = true;
         }
@@ -92,14 +94,18 @@ public class SettingsFragment extends Fragment {
         btnCerrarSesion = rootView.findViewById(R.id.btnCerrarSesion);
         btnEliminarCuenta = rootView.findViewById(R.id.btnEliminarCuenta);
         btnCambiarPassword = rootView.findViewById(R.id.btnCambiarPassword);
+        btnVideo = rootView.findViewById(R.id.btnVideo);
+        btnPremium = rootView.findViewById(R.id.btnPlanPremium);
         overlayCarga = rootView.findViewById(R.id.overlayCargaSettings);
 
         if (esInvitado) {
             btnEditarPerfil.setVisibility(View.GONE);
             btnCambiarPassword.setVisibility(View.GONE);
             btnEliminarCuenta.setVisibility(View.GONE);
+            btnPremium.setVisibility(View.GONE);
             btnCerrarSesion.setText(R.string.salir);
         }
+
     }
 
     private void cargarPreferenciasLocales() {
@@ -140,44 +146,39 @@ public class SettingsFragment extends Fragment {
 
         // Eliminar cuenta
         btnEliminarCuenta.setOnClickListener(v -> mostrarDialogoEliminarCuenta());
+
+        // Reproducir vídeo intolerancias y alergias
+        btnVideo.setOnClickListener(v -> startActivity(new Intent(requireContext(), VideoPlayerActivity.class)));
+
+        // Plan premium
+        btnPremium.setOnClickListener(v -> {
+            VisorImagenDialogFragment visor;
+
+            if (esLocal) {
+                visor = VisorImagenDialogFragment.newInstance(R.drawable.premium_local);
+            } else if (esCliente) {
+                visor = VisorImagenDialogFragment.newInstance(R.drawable.premium_cliente);
+            } else {
+                return;
+            }
+
+            if (getActivity() != null) {
+                visor.show(getActivity().getSupportFragmentManager(), "VisorPremium");
+            }
+        });
     }
 
     private void redirigirAEditarPerfil() {
         if (uidUsuario == null) return;
 
-        btnEditarPerfil.setEnabled(false);
+        Intent intent;
+        if (esLocal) {
+            intent = new Intent(requireContext(), EditarPerfilLocalActivity.class);
+        } else {
+            intent = new Intent(requireContext(), EditarPerfilClienteActivity.class);
+        }
 
-        usuarioService
-                .getPerfil(uidUsuario)
-                .addOnSuccessListener(
-                        usuario -> {
-                            if (!isAdded()) return;
-
-                            Intent intent;
-                            if ("local".equals(usuario.getRol())) {
-                                intent =
-                                        new Intent(
-                                                requireContext(), EditarPerfilLocalActivity.class);
-                            } else {
-                                intent =
-                                        new Intent(
-                                                requireContext(),
-                                                EditarPerfilClienteActivity.class);
-                            }
-
-                            startActivity(intent);
-                            btnEditarPerfil.setEnabled(true);
-                        })
-                .addOnFailureListener(
-                        e -> {
-                            if (!isAdded()) return;
-                            Toast.makeText(
-                                            requireContext(),
-                                            R.string.loading_profile_error_message,
-                                            Toast.LENGTH_SHORT)
-                                    .show();
-                            btnEditarPerfil.setEnabled(true);
-                        });
+        startActivity(intent);
     }
 
     private void mostrarDialogoCerrarSesion() {
@@ -339,6 +340,30 @@ public class SettingsFragment extends Fragment {
         dialog.getButton(AlertDialog.BUTTON_POSITIVE)
                 .setTextColor(ContextCompat.getColor(requireContext(), R.color.black));
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.GRAY);
+    }
+
+    /**
+     * Consulta el rol del usuario.
+     */
+    private void comprobarRol() {
+        if (uidUsuario == null) return;
+
+        usuarioService.getPerfil(uidUsuario)
+                .addOnSuccessListener(usuario -> {
+                    if (!isAdded()) return;
+
+                    String rol = usuario.getRol();
+                    if ("local".equals(rol)) {
+                        esLocal = true;
+                        btnPremium.setVisibility(View.VISIBLE);
+                    } else if ("admin".equals(rol)) {
+                        esAdmin = true;
+                    } else {
+                        esCliente = true;
+                        btnPremium.setVisibility(View.VISIBLE);
+                    }
+                })
+                .addOnFailureListener(e -> Log.e("Settings", "Error al obtener rol", e));
     }
 
     /**

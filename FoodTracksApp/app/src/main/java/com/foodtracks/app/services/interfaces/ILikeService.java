@@ -24,8 +24,6 @@ public interface ILikeService {
      */
     Task<LikePublicacion> getLike(String uidUsuario, String uidPublicacion);
 
-    // Task<List<Publicacion>> getLikesByUser(String uidUsuario); TODO --> Si tengo tiempo
-
     /**
      * Añade un like a una publicación.
      *
@@ -43,6 +41,4 @@ public interface ILikeService {
      */
     Task<Void> eliminarLike(String uidUsuario, String uidPublicacion);
 
-    // TODO --> Si se elimina un usuario hay que eliminar todos sus registros, likes también.
-    // Dejar para cuando esté casi todo montado
 }

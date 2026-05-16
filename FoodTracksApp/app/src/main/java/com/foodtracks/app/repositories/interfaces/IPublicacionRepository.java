@@ -73,5 +73,4 @@ public interface IPublicacionRepository {
      */
     public Task<Void> actualizarContadorLikes(String uidPublicacion, int cantidad);
 
-    // TODO --> Si hay tiempo, hacer actualizarPublicacion
 }

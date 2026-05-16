@@ -53,5 +53,4 @@ public class ValoracionLocalRepository implements IValoracionLocalRepository {
         return ratingsCollection.document(uid).delete();
     }
 
-    // TODO --> Borrar todas las valoraciones de un usuario si se elimina su cuenta
 }

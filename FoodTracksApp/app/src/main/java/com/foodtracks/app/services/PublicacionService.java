@@ -73,7 +73,7 @@ public class PublicacionService implements IPublicacionService {
     public Task<List<Publicacion>> getAllPublicaciones() {
         // Pasamos null como checkpoint para cargar la primera página (50 posts)
         return publicacionRepository
-                .getAllPublicaciones(null) // TODO --> Check si marca el checkpoint
+                .getAllPublicaciones(null) // TODO --> Implementar en futuras actualizaciones
                 .continueWith(
                         task -> {
                             if (task.isSuccessful() && task.getResult() != null) {

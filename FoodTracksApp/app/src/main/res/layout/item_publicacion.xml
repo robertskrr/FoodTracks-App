@@ -13,7 +13,10 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="16dp">
+        android:paddingTop="16dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="2dp">
 
         <!-- CABECERA: Avatar del usuario -->
         <com.google.android.material.imageview.ShapeableImageView
@@ -94,7 +97,8 @@
             android:id="@+id/layoutInteracciones"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="-6dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
@@ -103,8 +107,10 @@
 
             <ImageView
                 android:id="@+id/imgLike"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:padding="12dp"
+                android:layout_marginStart="-12dp"
                 android:src="@drawable/ic_like"
                 app:tint="#FFFFFF"
                 tools:ignore="ContentDescription" />
@@ -113,7 +119,7 @@
                 android:id="@+id/tvContadorLikes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:layout_marginStart="-6dp"
                 android:text="@string/zero"
                 android:textColor="#FFFFFF"
                 android:textSize="16sp"

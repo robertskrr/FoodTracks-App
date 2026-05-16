@@ -8,7 +8,9 @@ import java.util.Map;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,11 +23,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.foodtracks.app.R;
 import com.foodtracks.app.activities.cliente.PerfilClienteActivity;
 import com.foodtracks.app.activities.local.PerfilLocalActivity;
+import com.foodtracks.app.fragments.VisorImagenDialogFragment;
 import com.foodtracks.app.models.LikePublicacion;
 import com.foodtracks.app.models.Publicacion;
 import com.foodtracks.app.models.Usuario;
@@ -104,6 +108,15 @@ public class PublicacionAdapter
         if (publicacion.getImagen() != null && !publicacion.getImagen().isEmpty()) {
             holder.imgPublicacion.setVisibility(View.VISIBLE);
             Glide.with(context).load(publicacion.getImagen()).into(holder.imgPublicacion);
+
+            // Abre la imagen en pantalla completa
+            holder.imgPublicacion.setOnClickListener(v -> {
+                if (context instanceof AppCompatActivity) {
+                    AppCompatActivity activity = (AppCompatActivity) context;
+                    VisorImagenDialogFragment dialog = VisorImagenDialogFragment.newInstance(publicacion.getImagen());
+                    dialog.show(activity.getSupportFragmentManager(), "VisorImagenCompleta");
+                }
+            });
         } else {
             holder.imgPublicacion.setVisibility(View.GONE);
         }
@@ -114,21 +127,46 @@ public class PublicacionAdapter
         comprobarLikeInicial(holder, publicacion.getUid());
 
         // La papelera solo es visible si el usuario actual es el autor
-        if ((esLogueado && currentUid.equals(publicacion.getUidUsuario())) || esAdmin) {
+        if (esLogueado && currentUid.equals(publicacion.getUidUsuario())) {
             holder.imgEliminarPublicacion.setVisibility(View.VISIBLE);
+            holder.imgEliminarPublicacion.setOnClickListener(v -> {
+                int adapterPosition = holder.getBindingAdapterPosition();
+                if (adapterPosition != RecyclerView.NO_POSITION) {
+                    mostrarDialogoEliminar(publicacion, adapterPosition);
+                }
+            });
+        } else if (esAdmin) { // Si es administrador puede borrarla
+            // Oculta el botón para hacer la siguiente comprobación: Que no sea de otro admin
+            holder.imgEliminarPublicacion.setVisibility(View.GONE);
 
-            holder.imgEliminarPublicacion.setOnClickListener(
-                    v -> {
-                        // Obtenemos la posición exacta de la publicación en la lista
+            // Comprobamos el rol del autor en memoria caché (que no sea admin)
+            if (cacheUsuarios.containsKey(publicacion.getUidUsuario()) && cacheUsuarios.get(publicacion.getUidUsuario()) != null) {
+                Usuario autor = cacheUsuarios.get(publicacion.getUidUsuario());
+                // Si no lo es, activamos la opción de borrar
+                if (!"admin".equals(autor.getRol())) {
+                    holder.imgEliminarPublicacion.setVisibility(View.VISIBLE);
+                    holder.imgEliminarPublicacion.setOnClickListener(v -> {
                         int adapterPosition = holder.getBindingAdapterPosition();
                         if (adapterPosition != RecyclerView.NO_POSITION) {
-                            if (esAdmin && !currentUid.equals(publicacion.getUidUsuario())) {
-                                mostrarDialogoEliminarByAdmin(publicacion, adapterPosition);
-                            } else {
-                                mostrarDialogoEliminar(publicacion, adapterPosition);
-                            }
+                            mostrarDialogoEliminarByAdmin(publicacion, adapterPosition);
                         }
                     });
+                }
+            } else {
+                // Si no está en la memoria caché, lo consultamos en la base de datos
+                usuarioService.getPerfil(publicacion.getUidUsuario()).addOnSuccessListener(autor -> {
+                    if (autor != null && !"admin".equals(autor.getRol())) {
+                        holder.imgEliminarPublicacion.setVisibility(View.VISIBLE);
+                        holder.imgEliminarPublicacion.setOnClickListener(v -> {
+                            int adapterPosition = holder.getBindingAdapterPosition();
+                            if (adapterPosition != RecyclerView.NO_POSITION) {
+                                mostrarDialogoEliminarByAdmin(publicacion, adapterPosition);
+                            }
+                        });
+                    }
+                });
+            }
+
         } else {
             holder.imgEliminarPublicacion.setVisibility(View.GONE);
         }
@@ -148,53 +186,43 @@ public class PublicacionAdapter
 
                     boolean isLiked =
                             holder.imgLike.getTag() != null && (boolean) holder.imgLike.getTag();
-                    holder.imgLike.setEnabled(false); // Evita el doble click rápido
 
                     if (isLiked) {
-                        // QUITAR LIKE
-                        likeService
-                                .eliminarLike(currentUid, publicacion.getUid())
-                                .addOnSuccessListener(
-                                        unused -> {
-                                            marcarComoLike(holder, false);
+                        // Simulamos quitar el like rápidamente
+                        marcarComoLike(holder, false);
+                        long nuevosLikes = publicacion.getNumLikes() - 1;
+                        publicacion.setNumLikes(Math.max(0, nuevosLikes));
+                        holder.tvContadorLikes.setText(String.valueOf(publicacion.getNumLikes()));
 
-                                            // Restamos 1 al contador de likes en tiempo real
-                                            // Aunque se cambie en Firebase así evitamos tener que
-                                            // hacer otra petición innecesaria para recoger este
-                                            // dato
-                                            long nuevosLikes = publicacion.getNumLikes() - 1;
-                                            publicacion.setNumLikes(
-                                                    Math.max(0, nuevosLikes)); // Evitar números
-                                            // negativos
-                                            holder.tvContadorLikes.setText(
-                                                    String.valueOf(publicacion.getNumLikes()));
-
-                                            holder.imgLike.setEnabled(true);
-                                        })
-                                .addOnFailureListener(e -> holder.imgLike.setEnabled(true));
+                        // Petición en segundo plano
+                        likeService.eliminarLike(currentUid, publicacion.getUid())
+                                .addOnFailureListener(e -> {
+                                    // Si falla deshacemos el cambio visual
+                                    marcarComoLike(holder, true);
+                                    publicacion.setNumLikes(publicacion.getNumLikes() + 1);
+                                    holder.tvContadorLikes.setText(String.valueOf(publicacion.getNumLikes()));
+                                });
                     } else {
-                        // DAR LIKE
-                        LikePublicacion nuevoLike =
-                                LikePublicacion.builder()
-                                        .uidUsuario(currentUid)
-                                        .uidPublicacion(publicacion.getUid())
-                                        .build();
+                        // Simulamos dar like rápidamente
+                        sonidoLike();
+                        marcarComoLike(holder, true);
+                        long nuevosLikes = publicacion.getNumLikes() + 1;
+                        publicacion.setNumLikes(nuevosLikes);
+                        holder.tvContadorLikes.setText(String.valueOf(publicacion.getNumLikes()));
 
-                        likeService
-                                .addLike(nuevoLike)
-                                .addOnSuccessListener(
-                                        unused -> {
-                                            marcarComoLike(holder, true);
+                        // Petición en segundo plano
+                        LikePublicacion nuevoLike = LikePublicacion.builder()
+                                .uidUsuario(currentUid)
+                                .uidPublicacion(publicacion.getUid())
+                                .build();
 
-                                            // Sumamos 1 al contador de likes en tiempo real
-                                            long nuevosLikes = publicacion.getNumLikes() + 1;
-                                            publicacion.setNumLikes(nuevosLikes);
-                                            holder.tvContadorLikes.setText(
-                                                    String.valueOf(publicacion.getNumLikes()));
-
-                                            holder.imgLike.setEnabled(true);
-                                        })
-                                .addOnFailureListener(e -> holder.imgLike.setEnabled(true));
+                        likeService.addLike(nuevoLike)
+                                .addOnFailureListener(e -> {
+                                    // Si falla deshacemos el cambio visual
+                                    marcarComoLike(holder, false);
+                                    publicacion.setNumLikes(Math.max(0, publicacion.getNumLikes() - 1));
+                                    holder.tvContadorLikes.setText(String.valueOf(publicacion.getNumLikes()));
+                                });
                     }
                 });
     }
@@ -208,6 +236,24 @@ public class PublicacionAdapter
             holder.imgLike.setColorFilter(Color.parseColor("#E91E63")); // Rojo
         } else {
             holder.imgLike.setColorFilter(Color.parseColor("#FFFFFF")); // Blanco
+        }
+    }
+
+    /**
+     * Reproducción del sonido de like.
+     */
+    private void sonidoLike() {
+        // Comprueba las preferencias de "Sonidos silenciados"
+        SharedPreferences prefs = context.getSharedPreferences("FoodTracksSettings", Context.MODE_PRIVATE);
+
+        boolean sonidosSilenciados = prefs.getBoolean("sonidos_silenciados", false);
+
+        // Si no la tiene activada reproduce el sonido
+        if (!sonidosSilenciados){
+            MediaPlayer mp = MediaPlayer.create(context, R.raw.like);
+            mp.start();
+
+            mp.setOnCompletionListener(mediaPlayer -> mp.release());
         }
     }
 
