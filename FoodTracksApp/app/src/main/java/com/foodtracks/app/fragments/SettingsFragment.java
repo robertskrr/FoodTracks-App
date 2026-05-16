@@ -46,7 +46,12 @@ public class SettingsFragment extends Fragment {
 
     private View rootView;
     private SwitchMaterial switchNotificaciones, switchSonidos;
-    private Button btnEditarPerfil, btnCerrarSesion, btnEliminarCuenta, btnCambiarPassword, btnVideo, btnPremium;
+    private Button btnEditarPerfil,
+            btnCerrarSesion,
+            btnEliminarCuenta,
+            btnCambiarPassword,
+            btnVideo,
+            btnPremium;
     private FrameLayout overlayCarga;
 
     private String uidUsuario;
@@ -105,7 +110,6 @@ public class SettingsFragment extends Fragment {
             btnPremium.setVisibility(View.GONE);
             btnCerrarSesion.setText(R.string.salir);
         }
-
     }
 
     private void cargarPreferenciasLocales() {
@@ -148,24 +152,26 @@ public class SettingsFragment extends Fragment {
         btnEliminarCuenta.setOnClickListener(v -> mostrarDialogoEliminarCuenta());
 
         // Reproducir vídeo intolerancias y alergias
-        btnVideo.setOnClickListener(v -> startActivity(new Intent(requireContext(), VideoPlayerActivity.class)));
+        btnVideo.setOnClickListener(
+                v -> startActivity(new Intent(requireContext(), VideoPlayerActivity.class)));
 
         // Plan premium
-        btnPremium.setOnClickListener(v -> {
-            VisorImagenDialogFragment visor;
+        btnPremium.setOnClickListener(
+                v -> {
+                    VisorImagenDialogFragment visor;
 
-            if (esLocal) {
-                visor = VisorImagenDialogFragment.newInstance(R.drawable.premium_local);
-            } else if (esCliente) {
-                visor = VisorImagenDialogFragment.newInstance(R.drawable.premium_cliente);
-            } else {
-                return;
-            }
+                    if (esLocal) {
+                        visor = VisorImagenDialogFragment.newInstance(R.drawable.premium_local);
+                    } else if (esCliente) {
+                        visor = VisorImagenDialogFragment.newInstance(R.drawable.premium_cliente);
+                    } else {
+                        return;
+                    }
 
-            if (getActivity() != null) {
-                visor.show(getActivity().getSupportFragmentManager(), "VisorPremium");
-            }
-        });
+                    if (getActivity() != null) {
+                        visor.show(getActivity().getSupportFragmentManager(), "VisorPremium");
+                    }
+                });
     }
 
     private void redirigirAEditarPerfil() {
@@ -348,21 +354,23 @@ public class SettingsFragment extends Fragment {
     private void comprobarRol() {
         if (uidUsuario == null) return;
 
-        usuarioService.getPerfil(uidUsuario)
-                .addOnSuccessListener(usuario -> {
-                    if (!isAdded()) return;
+        usuarioService
+                .getPerfil(uidUsuario)
+                .addOnSuccessListener(
+                        usuario -> {
+                            if (!isAdded()) return;
 
-                    String rol = usuario.getRol();
-                    if ("local".equals(rol)) {
-                        esLocal = true;
-                        btnPremium.setVisibility(View.VISIBLE);
-                    } else if ("admin".equals(rol)) {
-                        esAdmin = true;
-                    } else {
-                        esCliente = true;
-                        btnPremium.setVisibility(View.VISIBLE);
-                    }
-                })
+                            String rol = usuario.getRol();
+                            if ("local".equals(rol)) {
+                                esLocal = true;
+                                btnPremium.setVisibility(View.VISIBLE);
+                            } else if ("admin".equals(rol)) {
+                                esAdmin = true;
+                            } else {
+                                esCliente = true;
+                                btnPremium.setVisibility(View.VISIBLE);
+                            }
+                        })
                 .addOnFailureListener(e -> Log.e("Settings", "Error al obtener rol", e));
     }
 

@@ -52,5 +52,4 @@ public class ValoracionLocalRepository implements IValoracionLocalRepository {
     public Task<Void> deleteValoracion(String uid) {
         return ratingsCollection.document(uid).delete();
     }
-
 }

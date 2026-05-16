@@ -1,3 +1,5 @@
+/** © FoodTracks Project ===robertskrr=== */
+
 package com.foodtracks.app.fragments;
 
 import android.content.DialogInterface;
@@ -6,14 +8,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
-import com.bumptech.glide.Glide;
 import com.foodtracks.app.R;
+
+import com.bumptech.glide.Glide;
 import com.github.chrisbanes.photoview.PhotoView;
 
 /**
@@ -60,7 +61,10 @@ public class VisorImagenDialogFragment extends DialogFragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(
+            @NonNull LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_visor_imagen, container, false);
 
         PhotoView imgCompleta = view.findViewById(R.id.imgVisorCompleta);

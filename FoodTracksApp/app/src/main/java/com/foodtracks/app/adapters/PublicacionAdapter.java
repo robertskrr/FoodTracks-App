@@ -110,13 +110,16 @@ public class PublicacionAdapter
             Glide.with(context).load(publicacion.getImagen()).into(holder.imgPublicacion);
 
             // Abre la imagen en pantalla completa
-            holder.imgPublicacion.setOnClickListener(v -> {
-                if (context instanceof AppCompatActivity) {
-                    AppCompatActivity activity = (AppCompatActivity) context;
-                    VisorImagenDialogFragment dialog = VisorImagenDialogFragment.newInstance(publicacion.getImagen());
-                    dialog.show(activity.getSupportFragmentManager(), "VisorImagenCompleta");
-                }
-            });
+            holder.imgPublicacion.setOnClickListener(
+                    v -> {
+                        if (context instanceof AppCompatActivity) {
+                            AppCompatActivity activity = (AppCompatActivity) context;
+                            VisorImagenDialogFragment dialog =
+                                    VisorImagenDialogFragment.newInstance(publicacion.getImagen());
+                            dialog.show(
+                                    activity.getSupportFragmentManager(), "VisorImagenCompleta");
+                        }
+                    });
         } else {
             holder.imgPublicacion.setVisibility(View.GONE);
         }
@@ -129,42 +132,52 @@ public class PublicacionAdapter
         // La papelera solo es visible si el usuario actual es el autor
         if (esLogueado && currentUid.equals(publicacion.getUidUsuario())) {
             holder.imgEliminarPublicacion.setVisibility(View.VISIBLE);
-            holder.imgEliminarPublicacion.setOnClickListener(v -> {
-                int adapterPosition = holder.getBindingAdapterPosition();
-                if (adapterPosition != RecyclerView.NO_POSITION) {
-                    mostrarDialogoEliminar(publicacion, adapterPosition);
-                }
-            });
+            holder.imgEliminarPublicacion.setOnClickListener(
+                    v -> {
+                        int adapterPosition = holder.getBindingAdapterPosition();
+                        if (adapterPosition != RecyclerView.NO_POSITION) {
+                            mostrarDialogoEliminar(publicacion, adapterPosition);
+                        }
+                    });
         } else if (esAdmin) { // Si es administrador puede borrarla
             // Oculta el botón para hacer la siguiente comprobación: Que no sea de otro admin
             holder.imgEliminarPublicacion.setVisibility(View.GONE);
 
             // Comprobamos el rol del autor en memoria caché (que no sea admin)
-            if (cacheUsuarios.containsKey(publicacion.getUidUsuario()) && cacheUsuarios.get(publicacion.getUidUsuario()) != null) {
+            if (cacheUsuarios.containsKey(publicacion.getUidUsuario())
+                    && cacheUsuarios.get(publicacion.getUidUsuario()) != null) {
                 Usuario autor = cacheUsuarios.get(publicacion.getUidUsuario());
                 // Si no lo es, activamos la opción de borrar
                 if (!"admin".equals(autor.getRol())) {
                     holder.imgEliminarPublicacion.setVisibility(View.VISIBLE);
-                    holder.imgEliminarPublicacion.setOnClickListener(v -> {
-                        int adapterPosition = holder.getBindingAdapterPosition();
-                        if (adapterPosition != RecyclerView.NO_POSITION) {
-                            mostrarDialogoEliminarByAdmin(publicacion, adapterPosition);
-                        }
-                    });
+                    holder.imgEliminarPublicacion.setOnClickListener(
+                            v -> {
+                                int adapterPosition = holder.getBindingAdapterPosition();
+                                if (adapterPosition != RecyclerView.NO_POSITION) {
+                                    mostrarDialogoEliminarByAdmin(publicacion, adapterPosition);
+                                }
+                            });
                 }
             } else {
                 // Si no está en la memoria caché, lo consultamos en la base de datos
-                usuarioService.getPerfil(publicacion.getUidUsuario()).addOnSuccessListener(autor -> {
-                    if (autor != null && !"admin".equals(autor.getRol())) {
-                        holder.imgEliminarPublicacion.setVisibility(View.VISIBLE);
-                        holder.imgEliminarPublicacion.setOnClickListener(v -> {
-                            int adapterPosition = holder.getBindingAdapterPosition();
-                            if (adapterPosition != RecyclerView.NO_POSITION) {
-                                mostrarDialogoEliminarByAdmin(publicacion, adapterPosition);
-                            }
-                        });
-                    }
-                });
+                usuarioService
+                        .getPerfil(publicacion.getUidUsuario())
+                        .addOnSuccessListener(
+                                autor -> {
+                                    if (autor != null && !"admin".equals(autor.getRol())) {
+                                        holder.imgEliminarPublicacion.setVisibility(View.VISIBLE);
+                                        holder.imgEliminarPublicacion.setOnClickListener(
+                                                v -> {
+                                                    int adapterPosition =
+                                                            holder.getBindingAdapterPosition();
+                                                    if (adapterPosition
+                                                            != RecyclerView.NO_POSITION) {
+                                                        mostrarDialogoEliminarByAdmin(
+                                                                publicacion, adapterPosition);
+                                                    }
+                                                });
+                                    }
+                                });
             }
 
         } else {
@@ -195,13 +208,16 @@ public class PublicacionAdapter
                         holder.tvContadorLikes.setText(String.valueOf(publicacion.getNumLikes()));
 
                         // Petición en segundo plano
-                        likeService.eliminarLike(currentUid, publicacion.getUid())
-                                .addOnFailureListener(e -> {
-                                    // Si falla deshacemos el cambio visual
-                                    marcarComoLike(holder, true);
-                                    publicacion.setNumLikes(publicacion.getNumLikes() + 1);
-                                    holder.tvContadorLikes.setText(String.valueOf(publicacion.getNumLikes()));
-                                });
+                        likeService
+                                .eliminarLike(currentUid, publicacion.getUid())
+                                .addOnFailureListener(
+                                        e -> {
+                                            // Si falla deshacemos el cambio visual
+                                            marcarComoLike(holder, true);
+                                            publicacion.setNumLikes(publicacion.getNumLikes() + 1);
+                                            holder.tvContadorLikes.setText(
+                                                    String.valueOf(publicacion.getNumLikes()));
+                                        });
                     } else {
                         // Simulamos dar like rápidamente
                         sonidoLike();
@@ -211,18 +227,23 @@ public class PublicacionAdapter
                         holder.tvContadorLikes.setText(String.valueOf(publicacion.getNumLikes()));
 
                         // Petición en segundo plano
-                        LikePublicacion nuevoLike = LikePublicacion.builder()
-                                .uidUsuario(currentUid)
-                                .uidPublicacion(publicacion.getUid())
-                                .build();
+                        LikePublicacion nuevoLike =
+                                LikePublicacion.builder()
+                                        .uidUsuario(currentUid)
+                                        .uidPublicacion(publicacion.getUid())
+                                        .build();
 
-                        likeService.addLike(nuevoLike)
-                                .addOnFailureListener(e -> {
-                                    // Si falla deshacemos el cambio visual
-                                    marcarComoLike(holder, false);
-                                    publicacion.setNumLikes(Math.max(0, publicacion.getNumLikes() - 1));
-                                    holder.tvContadorLikes.setText(String.valueOf(publicacion.getNumLikes()));
-                                });
+                        likeService
+                                .addLike(nuevoLike)
+                                .addOnFailureListener(
+                                        e -> {
+                                            // Si falla deshacemos el cambio visual
+                                            marcarComoLike(holder, false);
+                                            publicacion.setNumLikes(
+                                                    Math.max(0, publicacion.getNumLikes() - 1));
+                                            holder.tvContadorLikes.setText(
+                                                    String.valueOf(publicacion.getNumLikes()));
+                                        });
                     }
                 });
     }
@@ -244,12 +265,13 @@ public class PublicacionAdapter
      */
     private void sonidoLike() {
         // Comprueba las preferencias de "Sonidos silenciados"
-        SharedPreferences prefs = context.getSharedPreferences("FoodTracksSettings", Context.MODE_PRIVATE);
+        SharedPreferences prefs =
+                context.getSharedPreferences("FoodTracksSettings", Context.MODE_PRIVATE);
 
         boolean sonidosSilenciados = prefs.getBoolean("sonidos_silenciados", false);
 
         // Si no la tiene activada reproduce el sonido
-        if (!sonidosSilenciados){
+        if (!sonidosSilenciados) {
             MediaPlayer mp = MediaPlayer.create(context, R.raw.like);
             mp.start();
 

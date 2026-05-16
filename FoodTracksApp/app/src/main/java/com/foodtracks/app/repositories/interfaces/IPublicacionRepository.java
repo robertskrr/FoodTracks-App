@@ -72,5 +72,4 @@ public interface IPublicacionRepository {
      * @return  {@link Task} que representa el estado de la actualización.
      */
     public Task<Void> actualizarContadorLikes(String uidPublicacion, int cantidad);
-
 }

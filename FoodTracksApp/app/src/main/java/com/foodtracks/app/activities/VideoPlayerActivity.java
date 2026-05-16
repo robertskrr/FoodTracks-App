@@ -1,3 +1,5 @@
+/** © FoodTracks Project ===robertskrr=== */
+
 package com.foodtracks.app.activities;
 
 import android.graphics.Color;
@@ -5,7 +7,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.widget.MediaController;
 import android.widget.VideoView;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.foodtracks.app.R;
@@ -26,7 +27,7 @@ public class VideoPlayerActivity extends AppCompatActivity {
         configVideo();
     }
 
-    private void configVideo(){
+    private void configVideo() {
         getWindow().setStatusBarColor(Color.BLACK);
         getWindow().setNavigationBarColor(Color.BLACK);
 
@@ -36,7 +37,8 @@ public class VideoPlayerActivity extends AppCompatActivity {
         mediaController.setAnchorView(videoView);
         videoView.setMediaController(mediaController);
 
-        String videoPath = "android.resource://" + getPackageName() + "/" + R.raw.video_alergias_intolerancias;
+        String videoPath =
+                "android.resource://" + getPackageName() + "/" + R.raw.video_alergias_intolerancias;
         Uri uri = Uri.parse(videoPath);
         videoView.setVideoURI(uri);
 

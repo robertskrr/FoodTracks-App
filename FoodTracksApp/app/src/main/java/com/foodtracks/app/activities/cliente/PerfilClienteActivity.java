@@ -266,21 +266,33 @@ public class PerfilClienteActivity extends AppCompatActivity {
     private void comprobarSiEsAdmin() {
         if (esInvitado || uidUsuarioActual == null) return;
 
-        usuarioService.getPerfil(uidUsuarioActual).addOnSuccessListener(usuarioActual -> {
-            if ("admin".equals(usuarioActual.getRol()) && !uidUsuarioActual.equals(uidCliente)) {
+        usuarioService
+                .getPerfil(uidUsuarioActual)
+                .addOnSuccessListener(
+                        usuarioActual -> {
+                            if ("admin".equals(usuarioActual.getRol())
+                                    && !uidUsuarioActual.equals(uidCliente)) {
 
-                // Comprobamos el rol del perfil que estamos visitando
-                usuarioService.getPerfil(uidCliente).addOnSuccessListener(usuarioVisitado -> {
-                    // Si el otro usuario es admin no activamos la opción de borrar
-                    if (!"admin".equals(usuarioVisitado.getRol())) {
-                        imgEliminarPerfilAdmin.setVisibility(android.view.View.VISIBLE);
-                        imgEliminarPerfilAdmin.setOnClickListener(v -> mostrarDialogoEliminarPerfilAdmin());
-                    } else {
-                        imgEliminarPerfilAdmin.setVisibility(android.view.View.GONE);
-                    }
-                });
-            }
-        });
+                                // Comprobamos el rol del perfil que estamos visitando
+                                usuarioService
+                                        .getPerfil(uidCliente)
+                                        .addOnSuccessListener(
+                                                usuarioVisitado -> {
+                                                    // Si el otro usuario es admin no activamos la
+                                                    // opción de borrar
+                                                    if (!"admin".equals(usuarioVisitado.getRol())) {
+                                                        imgEliminarPerfilAdmin.setVisibility(
+                                                                android.view.View.VISIBLE);
+                                                        imgEliminarPerfilAdmin.setOnClickListener(
+                                                                v ->
+                                                                        mostrarDialogoEliminarPerfilAdmin());
+                                                    } else {
+                                                        imgEliminarPerfilAdmin.setVisibility(
+                                                                android.view.View.GONE);
+                                                    }
+                                                });
+                            }
+                        });
     }
 
     private void mostrarDialogoEliminarPerfilAdmin() {

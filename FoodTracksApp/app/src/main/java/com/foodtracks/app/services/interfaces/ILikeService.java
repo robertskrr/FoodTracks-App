@@ -40,5 +40,4 @@ public interface ILikeService {
      * @return {@link Task} con el resultado final del proceso.
      */
     Task<Void> eliminarLike(String uidUsuario, String uidPublicacion);
-
 }

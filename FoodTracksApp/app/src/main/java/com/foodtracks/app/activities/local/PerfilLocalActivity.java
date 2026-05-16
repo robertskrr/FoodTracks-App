@@ -553,12 +553,13 @@ public class PerfilLocalActivity extends AppCompatActivity {
      */
     private void sonidoValoracion() {
         // Comprueba las preferencias de "Sonidos silenciados"
-        SharedPreferences prefs = this.getSharedPreferences("FoodTracksSettings", Context.MODE_PRIVATE);
+        SharedPreferences prefs =
+                this.getSharedPreferences("FoodTracksSettings", Context.MODE_PRIVATE);
 
         boolean sonidosSilenciados = prefs.getBoolean("sonidos_silenciados", false);
 
         // Si no la tiene activada reproduce el sonido
-        if (!sonidosSilenciados){
+        if (!sonidosSilenciados) {
             MediaPlayer mp = MediaPlayer.create(this, R.raw.valoracion);
             mp.start();
 
