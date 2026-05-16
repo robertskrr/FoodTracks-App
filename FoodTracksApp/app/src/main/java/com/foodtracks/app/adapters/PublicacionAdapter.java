@@ -8,7 +8,9 @@ import java.util.Map;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -209,6 +211,7 @@ public class PublicacionAdapter
                                 .addLike(nuevoLike)
                                 .addOnSuccessListener(
                                         unused -> {
+                                            sonidoLike();
                                             marcarComoLike(holder, true);
 
                                             // Sumamos 1 al contador de likes en tiempo real
@@ -233,6 +236,24 @@ public class PublicacionAdapter
             holder.imgLike.setColorFilter(Color.parseColor("#E91E63")); // Rojo
         } else {
             holder.imgLike.setColorFilter(Color.parseColor("#FFFFFF")); // Blanco
+        }
+    }
+
+    /**
+     * Reproducción del sonido de like.
+     */
+    private void sonidoLike() {
+        // Comprueba las preferencias de "Sonidos silenciados"
+        SharedPreferences prefs = context.getSharedPreferences("FoodTracksSettings", Context.MODE_PRIVATE);
+
+        boolean sonidosSilenciados = prefs.getBoolean("sonidos_silenciados", false);
+
+        // Si no la tiene activada reproduce el sonido
+        if (!sonidosSilenciados){
+            MediaPlayer mp = MediaPlayer.create(context, R.raw.like);
+            mp.start();
+
+            mp.setOnCompletionListener(mediaPlayer -> mp.release());
         }
     }
 
