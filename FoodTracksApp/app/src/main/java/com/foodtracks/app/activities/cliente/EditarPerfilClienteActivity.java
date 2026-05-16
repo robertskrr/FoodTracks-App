@@ -1,3 +1,5 @@
+/** © FoodTracks Project ===robertskrr=== */
+
 package com.foodtracks.app.activities.cliente;
 
 import android.net.Uri;
@@ -8,19 +10,19 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.bumptech.glide.Glide;
 import com.foodtracks.app.R;
 import com.foodtracks.app.models.Usuario;
 import com.foodtracks.app.services.ServiceFactory;
 import com.foodtracks.app.services.exceptions.FoodTracksNotFoundException;
 import com.foodtracks.app.services.exceptions.FoodTracksValidationException;
 import com.foodtracks.app.services.interfaces.IUsuarioService;
+
+import com.bumptech.glide.Glide;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -67,53 +69,64 @@ public class EditarPerfilClienteActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressEditarCliente);
         layoutContenido = findViewById(R.id.layoutEditarCliente);
 
-        imgFoto.setOnClickListener(v -> pickMedia.launch(new PickVisualMediaRequest.Builder()
-                .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE).build()));
+        imgFoto.setOnClickListener(
+                v ->
+                        pickMedia.launch(
+                                new PickVisualMediaRequest.Builder()
+                                        .setMediaType(
+                                                ActivityResultContracts.PickVisualMedia.ImageOnly
+                                                        .INSTANCE)
+                                        .build()));
 
         findViewById(R.id.btnGuardarCambiosCliente).setOnClickListener(v -> guardar());
         findViewById(R.id.btnVolverSettings).setOnClickListener(v -> finish());
     }
 
     private void mostrarOtraPreferencia() {
-        cbOtro.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                layoutEspecifiqueOtro.setVisibility(View.VISIBLE);
-            } else {
-                layoutEspecifiqueOtro.setVisibility(View.GONE);
-                txtEspecifiqueOtro.setText("");
-            }
-        });
+        cbOtro.setOnCheckedChangeListener(
+                (buttonView, isChecked) -> {
+                    if (isChecked) {
+                        layoutEspecifiqueOtro.setVisibility(View.VISIBLE);
+                    } else {
+                        layoutEspecifiqueOtro.setVisibility(View.GONE);
+                        txtEspecifiqueOtro.setText("");
+                    }
+                });
     }
 
     private void cargarDatos() {
         String uid = FirebaseAuth.getInstance().getUid();
-        usuarioService.getPerfil(uid).addOnSuccessListener(usuario -> {
-            usuarioActual = usuario;
-            txtNombre.setText(usuario.getNombre());
-            txtUsername.setText(usuario.getUsername());
-            txtCiudad.setText(usuario.getCiudad());
-            cbVegano.setChecked(usuario.isEsVegano());
-            cbVegetariano.setChecked(usuario.isEsVegetariano());
-            cbLactosa.setChecked(usuario.isSinLactosa());
-            cbCeliaco.setChecked(usuario.isEsCeliaco());
+        usuarioService
+                .getPerfil(uid)
+                .addOnSuccessListener(
+                        usuario -> {
+                            usuarioActual = usuario;
+                            txtNombre.setText(usuario.getNombre());
+                            txtUsername.setText(usuario.getUsername());
+                            txtCiudad.setText(usuario.getCiudad());
+                            cbVegano.setChecked(usuario.isEsVegano());
+                            cbVegetariano.setChecked(usuario.isEsVegetariano());
+                            cbLactosa.setChecked(usuario.isSinLactosa());
+                            cbCeliaco.setChecked(usuario.isEsCeliaco());
 
-            // Si hay otra preferencia escrita, la mostramos
-            if (usuario.getOtraPreferencia() instanceof String otra && !otra.trim().isEmpty()) {
-                cbOtro.setChecked(true);
-                txtEspecifiqueOtro.setText(otra);
-                layoutEspecifiqueOtro.setVisibility(View.VISIBLE);
-            } else {
-                cbOtro.setChecked(false);
-                layoutEspecifiqueOtro.setVisibility(View.GONE);
-            }
+                            // Si hay otra preferencia escrita, la mostramos
+                            if (usuario.getOtraPreferencia() instanceof String otra
+                                    && !otra.trim().isEmpty()) {
+                                cbOtro.setChecked(true);
+                                txtEspecifiqueOtro.setText(otra);
+                                layoutEspecifiqueOtro.setVisibility(View.VISIBLE);
+                            } else {
+                                cbOtro.setChecked(false);
+                                layoutEspecifiqueOtro.setVisibility(View.GONE);
+                            }
 
-            if (usuario.getFotoPerfil() != null) {
-                Glide.with(this).load(usuario.getFotoPerfil()).into(imgFoto);
-            }
+                            if (usuario.getFotoPerfil() != null) {
+                                Glide.with(this).load(usuario.getFotoPerfil()).into(imgFoto);
+                            }
 
-            progressBar.setVisibility(View.GONE);
-            layoutContenido.setVisibility(View.VISIBLE);
-        });
+                            progressBar.setVisibility(View.GONE);
+                            layoutContenido.setVisibility(View.VISIBLE);
+                        });
     }
 
     private void guardar() {
@@ -125,35 +138,46 @@ public class EditarPerfilClienteActivity extends AppCompatActivity {
         usuarioActual.setSinLactosa(cbLactosa.isChecked());
         usuarioActual.setEsCeliaco(cbCeliaco.isChecked());
 
-        usuarioActual.setOtraPreferencia(cbOtro.isChecked() ? txtEspecifiqueOtro.getText().toString() : false);
+        usuarioActual.setOtraPreferencia(
+                cbOtro.isChecked() ? txtEspecifiqueOtro.getText().toString() : false);
 
         layoutContenido.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
 
-        usuarioService.actualizarPerfil(usuarioActual, nuevaFotoUri)
-                .addOnSuccessListener(unused -> {
-                    Toast.makeText(this, R.string.perfil_actualizado, Toast.LENGTH_SHORT).show();
-                    finish();
-                })
-                .addOnFailureListener(e -> {
-                    progressBar.setVisibility(View.GONE);
-                    layoutContenido.setVisibility(View.VISIBLE);
-                    Log.e("Actualizar perfil CLIENTE", e.getMessage(), e);
-                    if (e instanceof FoodTracksValidationException ex) {
-                        Toast.makeText(this, ex.getErrorResId(), Toast.LENGTH_LONG).show();
-                    } else if (e instanceof FoodTracksNotFoundException ex) {
-                        Toast.makeText(this, ex.getErrorResId(), Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(this, R.string.error_al_actualizar, Toast.LENGTH_LONG).show();
-                    }
-                });
+        usuarioService
+                .actualizarPerfil(usuarioActual, nuevaFotoUri)
+                .addOnSuccessListener(
+                        unused -> {
+                            Toast.makeText(this, R.string.perfil_actualizado, Toast.LENGTH_SHORT)
+                                    .show();
+                            finish();
+                        })
+                .addOnFailureListener(
+                        e -> {
+                            progressBar.setVisibility(View.GONE);
+                            layoutContenido.setVisibility(View.VISIBLE);
+                            Log.e("Actualizar perfil CLIENTE", e.getMessage(), e);
+                            if (e instanceof FoodTracksValidationException ex) {
+                                Toast.makeText(this, ex.getErrorResId(), Toast.LENGTH_LONG).show();
+                            } else if (e instanceof FoodTracksNotFoundException ex) {
+                                Toast.makeText(this, ex.getErrorResId(), Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(
+                                                this,
+                                                R.string.error_al_actualizar,
+                                                Toast.LENGTH_LONG)
+                                        .show();
+                            }
+                        });
     }
 
     private final ActivityResultLauncher<PickVisualMediaRequest> pickMedia =
-            registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
-                if (uri != null) {
-                    nuevaFotoUri = uri;
-                    imgFoto.setImageURI(uri);
-                }
-            });
+            registerForActivityResult(
+                    new ActivityResultContracts.PickVisualMedia(),
+                    uri -> {
+                        if (uri != null) {
+                            nuevaFotoUri = uri;
+                            imgFoto.setImageURI(uri);
+                        }
+                    });
 }

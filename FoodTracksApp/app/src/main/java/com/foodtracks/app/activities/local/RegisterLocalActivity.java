@@ -1,6 +1,4 @@
-/**
- * © FoodTracks Project ===robertskrr===
- */
+/** © FoodTracks Project ===robertskrr=== */
 
 package com.foodtracks.app.activities.local;
 
@@ -11,7 +9,6 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
@@ -54,12 +51,14 @@ public class RegisterLocalActivity extends AppCompatActivity {
 
     // Launcher para abrir la galería y recuperar la imagen
     private final ActivityResultLauncher<PickVisualMediaRequest> galleryLauncher =
-            registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
-                if (uri != null) {
-                    uriFotoSeleccionada = uri;
-                    fotoPerfil.setImageURI(uri); // Muestra la foto elegida en el círculo
-                }
-            });
+            registerForActivityResult(
+                    new ActivityResultContracts.PickVisualMedia(),
+                    uri -> {
+                        if (uri != null) {
+                            uriFotoSeleccionada = uri;
+                            fotoPerfil.setImageURI(uri); // Muestra la foto elegida en el círculo
+                        }
+                    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,9 +128,10 @@ public class RegisterLocalActivity extends AppCompatActivity {
      * @param view Vista de la interfaz.
      */
     public void setGalleryLauncher(View view) {
-        galleryLauncher.launch(new PickVisualMediaRequest.Builder()
-                .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
-                .build());
+        galleryLauncher.launch(
+                new PickVisualMediaRequest.Builder()
+                        .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                        .build());
     }
 
     /**
@@ -194,7 +194,7 @@ public class RegisterLocalActivity extends AppCompatActivity {
                                                     if (e
                                                             instanceof
                                                             FoodTracksValidationException
-                                                                    ex) {
+                                                            ex) {
                                                         Toast.makeText(
                                                                         this,
                                                                         ex.getErrorResId(),
@@ -204,8 +204,8 @@ public class RegisterLocalActivity extends AppCompatActivity {
                                                         Toast.makeText(
                                                                         this,
                                                                         getString(
-                                                                                R.string
-                                                                                        .register_critic_error_message)
+                                                                                        R.string
+                                                                                                .register_critic_error_message)
                                                                                 + ": "
                                                                                 + e.getMessage(),
                                                                         Toast.LENGTH_SHORT)

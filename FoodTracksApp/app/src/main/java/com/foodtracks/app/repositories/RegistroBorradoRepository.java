@@ -45,9 +45,7 @@ public class RegistroBorradoRepository implements IRegistroBorradoRepository {
 
     @Override
     public Task<QuerySnapshot> getAllRegistrosUsuarios() {
-        return deletedLogUsuariosCollection
-                .orderBy("fecha_hora", Query.Direction.DESCENDING)
-                .get();
+        return deletedLogUsuariosCollection.orderBy("fecha_hora", Query.Direction.DESCENDING).get();
     }
 
     @Override

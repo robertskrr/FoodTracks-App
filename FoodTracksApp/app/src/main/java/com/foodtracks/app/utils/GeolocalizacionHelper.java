@@ -29,7 +29,8 @@ public class GeolocalizacionHelper {
         Geocoder geocoder = new Geocoder(context, Locale.getDefault());
 
         try {
-            List<Address> direcciones = geocoder.getFromLocationName(direccion.trim() + ", " + ciudad.trim(), 1);
+            List<Address> direcciones =
+                    geocoder.getFromLocationName(direccion.trim() + ", " + ciudad.trim(), 1);
 
             if (direcciones != null && !direcciones.isEmpty()) {
                 Address direccionEncontrada = direcciones.get(0);

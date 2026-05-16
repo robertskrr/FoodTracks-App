@@ -41,12 +41,14 @@ public class RegisterClienteActivity extends AppCompatActivity {
 
     // Launcher para abrir la galería y recuperar la imagen
     private final ActivityResultLauncher<PickVisualMediaRequest> galleryLauncher =
-            registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
-                if (uri != null) {
-                    uriFotoSeleccionada = uri;
-                    fotoPerfil.setImageURI(uri); // Muestra la foto elegida en el círculo
-                }
-            });
+            registerForActivityResult(
+                    new ActivityResultContracts.PickVisualMedia(),
+                    uri -> {
+                        if (uri != null) {
+                            uriFotoSeleccionada = uri;
+                            fotoPerfil.setImageURI(uri); // Muestra la foto elegida en el círculo
+                        }
+                    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,9 +116,10 @@ public class RegisterClienteActivity extends AppCompatActivity {
      * @param view Vista de la interfaz.
      */
     public void setGalleryLauncher(View view) {
-        galleryLauncher.launch(new PickVisualMediaRequest.Builder()
-                .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
-                .build());
+        galleryLauncher.launch(
+                new PickVisualMediaRequest.Builder()
+                        .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                        .build());
     }
 
     /**

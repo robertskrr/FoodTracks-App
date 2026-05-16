@@ -13,7 +13,6 @@ import com.foodtracks.app.R;
 import com.foodtracks.app.api.imagekit.ImageKitResponse;
 import com.foodtracks.app.models.LikePublicacion;
 import com.foodtracks.app.models.Publicacion;
-import com.foodtracks.app.models.RegistroBorradoPublicacion;
 import com.foodtracks.app.models.RegistroBorradoUsuario;
 import com.foodtracks.app.models.Usuario;
 import com.foodtracks.app.models.UsuarioAdmin;
@@ -250,40 +249,53 @@ public class UsuarioService implements IUsuarioService {
     @Override
     public Task<Void> actualizarPerfil(Usuario usuario, Uri fotoUri) {
         // Comprobamos si el username ya existe en otro usuario
-        return usuarioRepository.getUsuarioByUsername(usuario.getUsername()).continueWithTask(task -> {
-            if (task.isSuccessful() && task.getResult() != null && !task.getResult().isEmpty()) {
-                DocumentSnapshot doc = task.getResult().getDocuments().get(0);
-                if (!doc.getId().equals(usuario.getUid())) {
-                    return Tasks.forException(new FoodTracksValidationException(R.string.username_validation_error_message));
-                }
-            }
+        return usuarioRepository
+                .getUsuarioByUsername(usuario.getUsername())
+                .continueWithTask(
+                        task -> {
+                            if (task.isSuccessful()
+                                    && task.getResult() != null
+                                    && !task.getResult().isEmpty()) {
+                                DocumentSnapshot doc = task.getResult().getDocuments().get(0);
+                                if (!doc.getId().equals(usuario.getUid())) {
+                                    return Tasks.forException(
+                                            new FoodTracksValidationException(
+                                                    R.string.username_validation_error_message));
+                                }
+                            }
 
-            int errorIdValidacion = validarDatos(usuario);
-            if (errorIdValidacion != 0) {
-                return Tasks.forException(new FoodTracksValidationException(errorIdValidacion));
-            }
+                            int errorIdValidacion = validarDatos(usuario);
+                            if (errorIdValidacion != 0) {
+                                return Tasks.forException(
+                                        new FoodTracksValidationException(errorIdValidacion));
+                            }
 
-            normalizarDatos(usuario);
+                            normalizarDatos(usuario);
 
-            // Actualizamos la foto de perfil
-            if (fotoUri != null) {
-                // Si ya tenía una foto anterior la borramos
-                if (usuario.getFotoId() != null) {
-                    storageRepository.deleteImage(usuario.getFotoId());
-                }
+                            // Actualizamos la foto de perfil
+                            if (fotoUri != null) {
+                                // Si ya tenía una foto anterior la borramos
+                                if (usuario.getFotoId() != null) {
+                                    storageRepository.deleteImage(usuario.getFotoId());
+                                }
 
-                return storageRepository.uploadImage(fotoUri, usuario.getUid() + "_" + System.currentTimeMillis(), "perfiles")
-                        .continueWithTask(uploadTask -> {
-                            ImageKitResponse res = uploadTask.getResult();
-                            usuario.setFotoPerfil(res.getUrl());
-                            usuario.setFotoId(res.getFileId());
-                            
-                            return usuarioRepository.saveUsuario(usuario);
+                                return storageRepository
+                                        .uploadImage(
+                                                fotoUri,
+                                                usuario.getUid() + "_" + System.currentTimeMillis(),
+                                                "perfiles")
+                                        .continueWithTask(
+                                                uploadTask -> {
+                                                    ImageKitResponse res = uploadTask.getResult();
+                                                    usuario.setFotoPerfil(res.getUrl());
+                                                    usuario.setFotoId(res.getFileId());
+
+                                                    return usuarioRepository.saveUsuario(usuario);
+                                                });
+                            } else {
+                                return usuarioRepository.saveUsuario(usuario);
+                            }
                         });
-            } else {
-                return usuarioRepository.saveUsuario(usuario);
-            }
-        });
     }
 
     @Override
@@ -434,14 +446,16 @@ public class UsuarioService implements IUsuarioService {
     }
 
     @Override
-    public Task<List<RegistroBorradoUsuario>> getAllRegistrosBorradoUsuarios(){
-        return registroBorradoRepository.getAllRegistrosUsuarios()
-                .continueWith(task -> {
-                    if (task.isSuccessful() && task.getResult() != null) {
-                        return task.getResult().toObjects(RegistroBorradoUsuario.class);
-                    }
-                    return new java.util.ArrayList<>();
-                });
+    public Task<List<RegistroBorradoUsuario>> getAllRegistrosBorradoUsuarios() {
+        return registroBorradoRepository
+                .getAllRegistrosUsuarios()
+                .continueWith(
+                        task -> {
+                            if (task.isSuccessful() && task.getResult() != null) {
+                                return task.getResult().toObjects(RegistroBorradoUsuario.class);
+                            }
+                            return new java.util.ArrayList<>();
+                        });
     }
 
     /*

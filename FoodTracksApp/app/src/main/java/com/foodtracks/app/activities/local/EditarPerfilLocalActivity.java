@@ -1,3 +1,5 @@
+/** © FoodTracks Project ===robertskrr=== */
+
 package com.foodtracks.app.activities.local;
 
 import android.net.Uri;
@@ -7,20 +9,20 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.bumptech.glide.Glide;
 import com.foodtracks.app.R;
 import com.foodtracks.app.models.UsuarioLocal;
 import com.foodtracks.app.services.ServiceFactory;
 import com.foodtracks.app.services.exceptions.FoodTracksNotFoundException;
 import com.foodtracks.app.services.exceptions.FoodTracksValidationException;
 import com.foodtracks.app.services.interfaces.IUsuarioService;
-import com.foodtracks.app.utils.GeolocalizacionHelper; // Helper de localización
+import com.foodtracks.app.utils.GeolocalizacionHelper;
+
+import com.bumptech.glide.Glide;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -69,56 +71,69 @@ public class EditarPerfilLocalActivity extends AppCompatActivity {
         layoutContenido = findViewById(R.id.layoutEditarLocal);
         progress = findViewById(R.id.progressEditarLocal);
 
-        imgFoto.setOnClickListener(v -> pickMedia.launch(new PickVisualMediaRequest.Builder()
-                .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE).build()));
+        imgFoto.setOnClickListener(
+                v ->
+                        pickMedia.launch(
+                                new PickVisualMediaRequest.Builder()
+                                        .setMediaType(
+                                                ActivityResultContracts.PickVisualMedia.ImageOnly
+                                                        .INSTANCE)
+                                        .build()));
 
         findViewById(R.id.btnGuardarCambiosLocal).setOnClickListener(v -> actualizar());
         findViewById(R.id.btnVolverSettingsL).setOnClickListener(v -> finish());
     }
 
     private void mostrarOtraPreferencia() {
-        otro.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                layoutEspecifiqueOtro.setVisibility(View.VISIBLE);
-            } else {
-                layoutEspecifiqueOtro.setVisibility(View.GONE);
-                especifiqueOtro.setText("");
-            }
-        });
+        otro.setOnCheckedChangeListener(
+                (buttonView, isChecked) -> {
+                    if (isChecked) {
+                        layoutEspecifiqueOtro.setVisibility(View.VISIBLE);
+                    } else {
+                        layoutEspecifiqueOtro.setVisibility(View.GONE);
+                        especifiqueOtro.setText("");
+                    }
+                });
     }
 
     private void cargarDatos() {
         String uid = FirebaseAuth.getInstance().getUid();
-        usuarioService.getPerfil(uid).addOnSuccessListener(usuario -> {
-            if (usuario instanceof UsuarioLocal) {
-                localActual = (UsuarioLocal) usuario;
-                nombre.setText(localActual.getNombre());
-                username.setText(localActual.getUsername());
-                ciudad.setText(localActual.getCiudad());
-                direccion.setText(localActual.getDireccion());
-                telefono.setText(localActual.getTelefono());
-                web.setText(localActual.getSitioWeb());
-                vegano.setChecked(localActual.isEsVegano());
-                vegetariano.setChecked(localActual.isEsVegetariano());
-                lactosa.setChecked(localActual.isSinLactosa());
-                celiaco.setChecked(localActual.isEsCeliaco());
+        usuarioService
+                .getPerfil(uid)
+                .addOnSuccessListener(
+                        usuario -> {
+                            if (usuario instanceof UsuarioLocal) {
+                                localActual = (UsuarioLocal) usuario;
+                                nombre.setText(localActual.getNombre());
+                                username.setText(localActual.getUsername());
+                                ciudad.setText(localActual.getCiudad());
+                                direccion.setText(localActual.getDireccion());
+                                telefono.setText(localActual.getTelefono());
+                                web.setText(localActual.getSitioWeb());
+                                vegano.setChecked(localActual.isEsVegano());
+                                vegetariano.setChecked(localActual.isEsVegetariano());
+                                lactosa.setChecked(localActual.isSinLactosa());
+                                celiaco.setChecked(localActual.isEsCeliaco());
 
-                if (localActual.getOtraPreferencia() instanceof String otraPref && !otraPref.trim().isEmpty()) {
-                    otro.setChecked(true);
-                    especifiqueOtro.setText(otraPref);
-                    layoutEspecifiqueOtro.setVisibility(View.VISIBLE);
-                } else {
-                    otro.setChecked(false);
-                    layoutEspecifiqueOtro.setVisibility(View.GONE);
-                }
+                                if (localActual.getOtraPreferencia() instanceof String otraPref
+                                        && !otraPref.trim().isEmpty()) {
+                                    otro.setChecked(true);
+                                    especifiqueOtro.setText(otraPref);
+                                    layoutEspecifiqueOtro.setVisibility(View.VISIBLE);
+                                } else {
+                                    otro.setChecked(false);
+                                    layoutEspecifiqueOtro.setVisibility(View.GONE);
+                                }
 
-                if (localActual.getFotoPerfil() != null) {
-                    Glide.with(this).load(localActual.getFotoPerfil()).into(imgFoto);
-                }
-                progress.setVisibility(View.GONE);
-                layoutContenido.setVisibility(View.VISIBLE);
-            }
-        });
+                                if (localActual.getFotoPerfil() != null) {
+                                    Glide.with(this)
+                                            .load(localActual.getFotoPerfil())
+                                            .into(imgFoto);
+                                }
+                                progress.setVisibility(View.GONE);
+                                layoutContenido.setVisibility(View.VISIBLE);
+                            }
+                        });
     }
 
     private void actualizar() {
@@ -132,7 +147,8 @@ public class EditarPerfilLocalActivity extends AppCompatActivity {
             localActual.setLatitud(coordenadas[0]);
             localActual.setLongitud(coordenadas[1]);
         } else {
-            Toast.makeText(this, R.string.address_not_found_error_message, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.address_not_found_error_message, Toast.LENGTH_LONG)
+                    .show();
             return;
         }
 
@@ -146,36 +162,46 @@ public class EditarPerfilLocalActivity extends AppCompatActivity {
         localActual.setEsVegetariano(vegetariano.isChecked());
         localActual.setSinLactosa(lactosa.isChecked());
         localActual.setEsCeliaco(celiaco.isChecked());
-        localActual.setOtraPreferencia(otro.isChecked() ? especifiqueOtro.getText().toString() : false);
-
+        localActual.setOtraPreferencia(
+                otro.isChecked() ? especifiqueOtro.getText().toString() : false);
 
         layoutContenido.setVisibility(View.GONE);
         progress.setVisibility(View.VISIBLE);
 
-        usuarioService.actualizarPerfil(localActual, nuevaFotoUri)
-                .addOnSuccessListener(unused -> {
-                    Toast.makeText(this, R.string.perfil_actualizado, Toast.LENGTH_SHORT).show();
-                    finish();
-                })
-                .addOnFailureListener(e -> {
-                    progress.setVisibility(View.GONE);
-                    layoutContenido.setVisibility(View.VISIBLE);
-                    Log.e("Actualizar perfil LOCAL", e.getMessage(), e);
-                    if (e instanceof FoodTracksValidationException ex) {
-                        Toast.makeText(this, ex.getErrorResId(), Toast.LENGTH_LONG).show();
-                    } else if (e instanceof FoodTracksNotFoundException ex) {
-                        Toast.makeText(this, ex.getErrorResId(), Toast.LENGTH_LONG).show();
-                    } else {
-                        Toast.makeText(this, R.string.error_al_actualizar, Toast.LENGTH_LONG).show();
-                    }
-                });
+        usuarioService
+                .actualizarPerfil(localActual, nuevaFotoUri)
+                .addOnSuccessListener(
+                        unused -> {
+                            Toast.makeText(this, R.string.perfil_actualizado, Toast.LENGTH_SHORT)
+                                    .show();
+                            finish();
+                        })
+                .addOnFailureListener(
+                        e -> {
+                            progress.setVisibility(View.GONE);
+                            layoutContenido.setVisibility(View.VISIBLE);
+                            Log.e("Actualizar perfil LOCAL", e.getMessage(), e);
+                            if (e instanceof FoodTracksValidationException ex) {
+                                Toast.makeText(this, ex.getErrorResId(), Toast.LENGTH_LONG).show();
+                            } else if (e instanceof FoodTracksNotFoundException ex) {
+                                Toast.makeText(this, ex.getErrorResId(), Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(
+                                                this,
+                                                R.string.error_al_actualizar,
+                                                Toast.LENGTH_LONG)
+                                        .show();
+                            }
+                        });
     }
 
     private final ActivityResultLauncher<PickVisualMediaRequest> pickMedia =
-            registerForActivityResult(new ActivityResultContracts.PickVisualMedia(), uri -> {
-                if (uri != null) {
-                    nuevaFotoUri = uri;
-                    imgFoto.setImageURI(uri);
-                }
-            });
+            registerForActivityResult(
+                    new ActivityResultContracts.PickVisualMedia(),
+                    uri -> {
+                        if (uri != null) {
+                            nuevaFotoUri = uri;
+                            imgFoto.setImageURI(uri);
+                        }
+                    });
 }
