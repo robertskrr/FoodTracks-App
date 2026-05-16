@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.bumptech.glide.Glide;
@@ -17,6 +18,7 @@ import com.github.chrisbanes.photoview.PhotoView;
 
 /**
  * Fragment de visor de imágenes en tamaño completo con opción de zoom.
+ * Soporta URLs remotas y recursos locales.
  *
  * @author Robert
  * @since 16/05
@@ -24,8 +26,10 @@ import com.github.chrisbanes.photoview.PhotoView;
 public class VisorImagenDialogFragment extends DialogFragment {
 
     private static final String ARG_IMAGE_URL = "image_url";
-    private String imageUrl;
+    private static final String ARG_IMAGE_RES = "image_res";
 
+    private String imageUrl;
+    private int imageResId = 0;
     private int colorOriginalBarra;
 
     public static VisorImagenDialogFragment newInstance(String imageUrl) {
@@ -36,11 +40,20 @@ public class VisorImagenDialogFragment extends DialogFragment {
         return fragment;
     }
 
+    public static VisorImagenDialogFragment newInstance(int imageResId) {
+        VisorImagenDialogFragment fragment = new VisorImagenDialogFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_IMAGE_RES, imageResId);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             imageUrl = getArguments().getString(ARG_IMAGE_URL);
+            imageResId = getArguments().getInt(ARG_IMAGE_RES, 0);
         }
         setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
     }
@@ -50,10 +63,13 @@ public class VisorImagenDialogFragment extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_visor_imagen, container, false);
 
-        // Con PhotoView podremos hacer zoom a la imagen
         PhotoView imgCompleta = view.findViewById(R.id.imgVisorCompleta);
 
-        Glide.with(this).load(imageUrl).into(imgCompleta);
+        if (imageUrl != null && !imageUrl.trim().isEmpty()) {
+            Glide.with(this).load(imageUrl).into(imgCompleta);
+        } else if (imageResId != 0) {
+            Glide.with(this).load(imageResId).into(imgCompleta);
+        }
 
         view.findViewById(R.id.btnCerrarVisor).setOnClickListener(v -> dismiss());
         return view;
