@@ -175,54 +175,43 @@ public class PublicacionAdapter
 
                     boolean isLiked =
                             holder.imgLike.getTag() != null && (boolean) holder.imgLike.getTag();
-                    holder.imgLike.setEnabled(false); // Evita el doble click rápido
 
                     if (isLiked) {
-                        // QUITAR LIKE
-                        likeService
-                                .eliminarLike(currentUid, publicacion.getUid())
-                                .addOnSuccessListener(
-                                        unused -> {
-                                            marcarComoLike(holder, false);
+                        // Simulamos quitar el like rápidamente
+                        marcarComoLike(holder, false);
+                        long nuevosLikes = publicacion.getNumLikes() - 1;
+                        publicacion.setNumLikes(Math.max(0, nuevosLikes));
+                        holder.tvContadorLikes.setText(String.valueOf(publicacion.getNumLikes()));
 
-                                            // Restamos 1 al contador de likes en tiempo real
-                                            // Aunque se cambie en Firebase así evitamos tener que
-                                            // hacer otra petición innecesaria para recoger este
-                                            // dato
-                                            long nuevosLikes = publicacion.getNumLikes() - 1;
-                                            publicacion.setNumLikes(
-                                                    Math.max(0, nuevosLikes)); // Evitar números
-                                            // negativos
-                                            holder.tvContadorLikes.setText(
-                                                    String.valueOf(publicacion.getNumLikes()));
-
-                                            holder.imgLike.setEnabled(true);
-                                        })
-                                .addOnFailureListener(e -> holder.imgLike.setEnabled(true));
+                        // Petición en segundo plano
+                        likeService.eliminarLike(currentUid, publicacion.getUid())
+                                .addOnFailureListener(e -> {
+                                    // Si falla deshacemos el cambio visual
+                                    marcarComoLike(holder, true);
+                                    publicacion.setNumLikes(publicacion.getNumLikes() + 1);
+                                    holder.tvContadorLikes.setText(String.valueOf(publicacion.getNumLikes()));
+                                });
                     } else {
-                        // DAR LIKE
-                        LikePublicacion nuevoLike =
-                                LikePublicacion.builder()
-                                        .uidUsuario(currentUid)
-                                        .uidPublicacion(publicacion.getUid())
-                                        .build();
+                        // Simulamos dar like rápidamente
+                        sonidoLike();
+                        marcarComoLike(holder, true);
+                        long nuevosLikes = publicacion.getNumLikes() + 1;
+                        publicacion.setNumLikes(nuevosLikes);
+                        holder.tvContadorLikes.setText(String.valueOf(publicacion.getNumLikes()));
 
-                        likeService
-                                .addLike(nuevoLike)
-                                .addOnSuccessListener(
-                                        unused -> {
-                                            sonidoLike();
-                                            marcarComoLike(holder, true);
+                        // Petición en segundo plano
+                        LikePublicacion nuevoLike = LikePublicacion.builder()
+                                .uidUsuario(currentUid)
+                                .uidPublicacion(publicacion.getUid())
+                                .build();
 
-                                            // Sumamos 1 al contador de likes en tiempo real
-                                            long nuevosLikes = publicacion.getNumLikes() + 1;
-                                            publicacion.setNumLikes(nuevosLikes);
-                                            holder.tvContadorLikes.setText(
-                                                    String.valueOf(publicacion.getNumLikes()));
-
-                                            holder.imgLike.setEnabled(true);
-                                        })
-                                .addOnFailureListener(e -> holder.imgLike.setEnabled(true));
+                        likeService.addLike(nuevoLike)
+                                .addOnFailureListener(e -> {
+                                    // Si falla deshacemos el cambio visual
+                                    marcarComoLike(holder, false);
+                                    publicacion.setNumLikes(Math.max(0, publicacion.getNumLikes() - 1));
+                                    holder.tvContadorLikes.setText(String.valueOf(publicacion.getNumLikes()));
+                                });
                     }
                 });
     }
