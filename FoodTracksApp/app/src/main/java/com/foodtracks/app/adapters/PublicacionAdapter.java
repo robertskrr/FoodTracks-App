@@ -114,21 +114,46 @@ public class PublicacionAdapter
         comprobarLikeInicial(holder, publicacion.getUid());
 
         // La papelera solo es visible si el usuario actual es el autor
-        if ((esLogueado && currentUid.equals(publicacion.getUidUsuario())) || esAdmin) {
+        if (esLogueado && currentUid.equals(publicacion.getUidUsuario())) {
             holder.imgEliminarPublicacion.setVisibility(View.VISIBLE);
+            holder.imgEliminarPublicacion.setOnClickListener(v -> {
+                int adapterPosition = holder.getBindingAdapterPosition();
+                if (adapterPosition != RecyclerView.NO_POSITION) {
+                    mostrarDialogoEliminar(publicacion, adapterPosition);
+                }
+            });
+        } else if (esAdmin) { // Si es administrador puede borrarla
+            // Oculta el botón para hacer la siguiente comprobación: Que no sea de otro admin
+            holder.imgEliminarPublicacion.setVisibility(View.GONE);
 
-            holder.imgEliminarPublicacion.setOnClickListener(
-                    v -> {
-                        // Obtenemos la posición exacta de la publicación en la lista
+            // Comprobamos el rol del autor en memoria caché (que no sea admin)
+            if (cacheUsuarios.containsKey(publicacion.getUidUsuario()) && cacheUsuarios.get(publicacion.getUidUsuario()) != null) {
+                Usuario autor = cacheUsuarios.get(publicacion.getUidUsuario());
+                // Si no lo es, activamos la opción de borrar
+                if (!"admin".equals(autor.getRol())) {
+                    holder.imgEliminarPublicacion.setVisibility(View.VISIBLE);
+                    holder.imgEliminarPublicacion.setOnClickListener(v -> {
                         int adapterPosition = holder.getBindingAdapterPosition();
                         if (adapterPosition != RecyclerView.NO_POSITION) {
-                            if (esAdmin && !currentUid.equals(publicacion.getUidUsuario())) {
-                                mostrarDialogoEliminarByAdmin(publicacion, adapterPosition);
-                            } else {
-                                mostrarDialogoEliminar(publicacion, adapterPosition);
-                            }
+                            mostrarDialogoEliminarByAdmin(publicacion, adapterPosition);
                         }
                     });
+                }
+            } else {
+                // Si no está en la memoria caché, lo consultamos en la base de datos
+                usuarioService.getPerfil(publicacion.getUidUsuario()).addOnSuccessListener(autor -> {
+                    if (autor != null && !"admin".equals(autor.getRol())) {
+                        holder.imgEliminarPublicacion.setVisibility(View.VISIBLE);
+                        holder.imgEliminarPublicacion.setOnClickListener(v -> {
+                            int adapterPosition = holder.getBindingAdapterPosition();
+                            if (adapterPosition != RecyclerView.NO_POSITION) {
+                                mostrarDialogoEliminarByAdmin(publicacion, adapterPosition);
+                            }
+                        });
+                    }
+                });
+            }
+
         } else {
             holder.imgEliminarPublicacion.setVisibility(View.GONE);
         }
