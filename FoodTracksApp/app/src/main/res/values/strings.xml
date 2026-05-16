@@ -42,6 +42,7 @@
     <string name="local_not_found_with_exact_username">No se encontró ningún local con ese @username exacto.</string>
     <string name="error_al_eliminar">Error al eliminar</string>
     <string name="error_al_actualizar">Error al actualizar</string>
+    <string name="credenciales_incorrectas">El correo o la contraseña son incorrectos.</string>
 
 
     <!-- LAYOUTS STRINGS -->
