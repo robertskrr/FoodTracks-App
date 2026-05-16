@@ -9,6 +9,7 @@ import java.util.Locale;
 import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
+import android.util.Log;
 
 /**
  * Clase de ayuda para la geolocalización de los locales
@@ -28,7 +29,7 @@ public class GeolocalizacionHelper {
         Geocoder geocoder = new Geocoder(context, Locale.getDefault());
 
         try {
-            List<Address> direcciones = geocoder.getFromLocationName(direccion + ", " + ciudad, 1);
+            List<Address> direcciones = geocoder.getFromLocationName(direccion.trim() + ", " + ciudad.trim(), 1);
 
             if (direcciones != null && !direcciones.isEmpty()) {
                 Address direccionEncontrada = direcciones.get(0);
@@ -39,8 +40,7 @@ public class GeolocalizacionHelper {
                 return new double[] {latitud, longitud};
             }
         } catch (IOException e) {
-            // Error de red o servicio de Google Play no disponible
-            e.printStackTrace();
+            Log.e("GEOCODER", e.getMessage(), e);
         }
 
         return null; // No se encontró la dirección
