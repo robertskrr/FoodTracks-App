@@ -49,6 +49,12 @@
             android:exported="false"
             android:theme="@style/Theme.FoodTracks">
         </activity>
+        <activity
+            android:name=".activities.local.EditarPerfilLocalActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.cliente.EditarPerfilClienteActivity"
+            android:exported="false" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

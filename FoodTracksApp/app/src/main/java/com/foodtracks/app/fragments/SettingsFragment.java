@@ -24,6 +24,8 @@ import androidx.fragment.app.Fragment;
 
 import com.foodtracks.app.R;
 import com.foodtracks.app.activities.MainActivity;
+import com.foodtracks.app.activities.cliente.EditarPerfilClienteActivity;
+import com.foodtracks.app.activities.local.EditarPerfilLocalActivity;
 import com.foodtracks.app.services.ServiceFactory;
 import com.foodtracks.app.services.interfaces.IUsuarioService;
 
@@ -120,8 +122,8 @@ public class SettingsFragment extends Fragment {
                     sharedPreferences.edit().putBoolean(KEY_SOUNDS, isChecked).apply();
                 });
 
-        // Editar perfil (dependiendo del rol)
-        btnEditarPerfil.setOnClickListener(v -> redirigirAEdicionPerfil());
+        // Editar perfil
+        btnEditarPerfil.setOnClickListener(v -> redirigirAEditarPerfil());
 
         // Cerrar sesión
         btnCerrarSesion.setOnClickListener(
@@ -140,7 +142,7 @@ public class SettingsFragment extends Fragment {
         btnEliminarCuenta.setOnClickListener(v -> mostrarDialogoEliminarCuenta());
     }
 
-    private void redirigirAEdicionPerfil() {
+    private void redirigirAEditarPerfil() {
         if (uidUsuario == null) return;
 
         btnEditarPerfil.setEnabled(false);
@@ -153,14 +155,17 @@ public class SettingsFragment extends Fragment {
 
                             Intent intent;
                             if ("local".equals(usuario.getRol())) {
-                                // TODO: intent = new Intent(requireContext(),
-                                // EditarPerfilLocalActivity.class);
+                                intent =
+                                        new Intent(
+                                                requireContext(), EditarPerfilLocalActivity.class);
                             } else {
-                                // TODO: intent = new Intent(requireContext(),
-                                // EditarPerfilClienteActivity.class);
+                                intent =
+                                        new Intent(
+                                                requireContext(),
+                                                EditarPerfilClienteActivity.class);
                             }
 
-                            // startActivity(intent);
+                            startActivity(intent);
                             btnEditarPerfil.setEnabled(true);
                         })
                 .addOnFailureListener(
@@ -252,8 +257,7 @@ public class SettingsFragment extends Fragment {
         EditText inputPassword = new android.widget.EditText(requireContext());
         inputPassword.setHint(R.string.nueva_contrasenia);
         inputPassword.setInputType(
-                InputType.TYPE_CLASS_TEXT
-                        | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
         // Lo envolvemos para darle márgenes
         FrameLayout container = new FrameLayout(requireContext());
@@ -294,7 +298,8 @@ public class SettingsFragment extends Fragment {
                                                         overlayCarga.setVisibility(View.GONE);
                                                         Toast.makeText(
                                                                         requireContext(),
-                                                                        R.string.contrasenia_actualizada,
+                                                                        R.string
+                                                                                .contrasenia_actualizada,
                                                                         Toast.LENGTH_SHORT)
                                                                 .show();
                                                     })
@@ -308,14 +313,19 @@ public class SettingsFragment extends Fragment {
                                                                 FirebaseAuthRecentLoginRequiredException) {
                                                             Toast.makeText(
                                                                             requireContext(),
-                                                                            R.string.contrasenia_proteccion_sesion_antigua,
+                                                                            R.string
+                                                                                    .contrasenia_proteccion_sesion_antigua,
                                                                             Toast.LENGTH_LONG)
                                                                     .show();
                                                         } else {
-                                                            Log.e("Actualizar contraseña", e.getMessage(), e);
+                                                            Log.e(
+                                                                    "Actualizar contraseña",
+                                                                    e.getMessage(),
+                                                                    e);
                                                             Toast.makeText(
                                                                             requireContext(),
-                                                                            R.string.error_al_actualizar,
+                                                                            R.string
+                                                                                    .error_al_actualizar,
                                                                             Toast.LENGTH_SHORT)
                                                                     .show();
                                                         }

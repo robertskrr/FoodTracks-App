@@ -7,8 +7,8 @@ import java.util.List;
 import android.net.Uri;
 
 import com.foodtracks.app.models.Publicacion;
-
 import com.foodtracks.app.models.RegistroBorradoPublicacion;
+
 import com.google.android.gms.tasks.Task;
 
 /**

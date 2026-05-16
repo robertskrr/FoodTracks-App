@@ -159,4 +159,8 @@
     <string name="eliminar_perfil_como_admin">Eliminar Perfil (Admin)</string>
     <string name="motivo_eliminacion_usuario_como_admin">Esta acción eliminará permanentemente al usuario y todo su rastro en la aplicación. Por favor, indica el motivo para el registro de auditoría:</string>
     <string name="perfil_eliminado_por_admin">Perfil eliminado por administrador</string>
+    <string name="toca_la_imagen_para_cambiarla">Toca la imagen para cambiarla</string>
+    <string name="tus_preferencias_alimenticias">Tus preferencias alimenticias:</string>
+    <string name="guardar_cambios">Guardar Cambios</string>
+    <string name="perfil_actualizado">Perfil actualizado</string>
 </resources>

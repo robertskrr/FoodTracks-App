@@ -1,4 +1,9 @@
+/** © FoodTracks Project ===robertskrr=== */
+
 package com.foodtracks.app.fragments.admin;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -6,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -18,10 +22,8 @@ import com.foodtracks.app.adapters.RegistroBorradoAdapter;
 import com.foodtracks.app.services.ServiceFactory;
 import com.foodtracks.app.services.interfaces.IPublicacionService;
 import com.foodtracks.app.services.interfaces.IUsuarioService;
-import com.google.android.material.button.MaterialButtonToggleGroup;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.google.android.material.button.MaterialButtonToggleGroup;
 
 /**
  * Fragment de panel de administrador.
@@ -52,7 +54,10 @@ public class AdminPanelFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(
+            @NonNull LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_admin_panel, container, false);
 
         configTheme();
@@ -78,39 +83,48 @@ public class AdminPanelFragment extends Fragment {
 
     private void cargarDatosYRegistros() {
         // Descargamos la lista de Usuarios borrados
-        usuarioService.getAllRegistrosBorradoUsuarios().addOnSuccessListener(lista -> {
-            if (!isAdded()) return;
-            listaUsuariosBorrados.clear();
-            if (lista != null) {
-                listaUsuariosBorrados.addAll(lista);
-            }
-            comprobarCarga();
-        }).addOnFailureListener(e -> comprobarCarga());
+        usuarioService
+                .getAllRegistrosBorradoUsuarios()
+                .addOnSuccessListener(
+                        lista -> {
+                            if (!isAdded()) return;
+                            listaUsuariosBorrados.clear();
+                            if (lista != null) {
+                                listaUsuariosBorrados.addAll(lista);
+                            }
+                            comprobarCarga();
+                        })
+                .addOnFailureListener(e -> comprobarCarga());
 
         // Descargamos la lista de publicaciones borradas
-        publicacionService.getAllRegistrosBorradoPublicaciones().addOnSuccessListener(lista -> {
-            if (!isAdded()) return;
-            listaPostsBorrados.clear();
-            if (lista != null) {
-                listaPostsBorrados.addAll(lista);
-            }
-            comprobarCarga();
-        }).addOnFailureListener(e -> comprobarCarga());
+        publicacionService
+                .getAllRegistrosBorradoPublicaciones()
+                .addOnSuccessListener(
+                        lista -> {
+                            if (!isAdded()) return;
+                            listaPostsBorrados.clear();
+                            if (lista != null) {
+                                listaPostsBorrados.addAll(lista);
+                            }
+                            comprobarCarga();
+                        })
+                .addOnFailureListener(e -> comprobarCarga());
     }
 
     /**
      * Configura que botón está seleccionado del toggle
      */
     private void configurarToggle() {
-        toggleGroup.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
-            if (isChecked) {
-                if (checkedId == R.id.btnVerUsuariosBorrados) {
-                    mostrarLista(listaUsuariosBorrados);
-                } else if (checkedId == R.id.btnVerPublicacionesBorradas) {
-                    mostrarLista(listaPostsBorrados);
-                }
-            }
-        });
+        toggleGroup.addOnButtonCheckedListener(
+                (group, checkedId, isChecked) -> {
+                    if (isChecked) {
+                        if (checkedId == R.id.btnVerUsuariosBorrados) {
+                            mostrarLista(listaUsuariosBorrados);
+                        } else if (checkedId == R.id.btnVerPublicacionesBorradas) {
+                            mostrarLista(listaPostsBorrados);
+                        }
+                    }
+                });
     }
 
     /**

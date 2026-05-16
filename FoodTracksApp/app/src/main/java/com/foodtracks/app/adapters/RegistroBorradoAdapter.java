@@ -1,4 +1,8 @@
+/** © FoodTracks Project ===robertskrr=== */
+
 package com.foodtracks.app.adapters;
+
+import java.util.List;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -14,15 +18,14 @@ import com.foodtracks.app.models.RegistroBorradoPublicacion;
 import com.foodtracks.app.models.RegistroBorradoUsuario;
 import com.foodtracks.app.utils.DateUtils;
 
-import java.util.List;
-
 /**
  * Adapter para gestionar y renderizar la lista de registros de borrado.
  *
  * @author Robert
  * @since 15/05
  */
-public class RegistroBorradoAdapter extends RecyclerView.Adapter<RegistroBorradoAdapter.ViewHolder> {
+public class RegistroBorradoAdapter
+        extends RecyclerView.Adapter<RegistroBorradoAdapter.ViewHolder> {
 
     private final List<Object> listaRegistros;
     private final Context context;
@@ -35,7 +38,8 @@ public class RegistroBorradoAdapter extends RecyclerView.Adapter<RegistroBorrado
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_registro_borrado, parent, false);
+        View view =
+                LayoutInflater.from(context).inflate(R.layout.item_registro_borrado, parent, false);
         return new ViewHolder(view);
     }
 
@@ -45,19 +49,33 @@ public class RegistroBorradoAdapter extends RecyclerView.Adapter<RegistroBorrado
 
         // Si es un registro de borrado de usuario
         if (item instanceof RegistroBorradoUsuario reg) {
-            holder.tvTitulo.setText(context.getString(R.string.cuenta_eliminada_de) + " @" + reg.getUsernameUsuario());
-            holder.tvMotivo.setText(context.getString(R.string.motivo) +" "+ reg.getMotivo());
+            holder.tvTitulo.setText(
+                    context.getString(R.string.cuenta_eliminada_de)
+                            + " @"
+                            + reg.getUsernameUsuario());
+            holder.tvMotivo.setText(context.getString(R.string.motivo) + " " + reg.getMotivo());
             if (reg.getFechaHora() != null) {
-                holder.tvFecha.setText("Admin: " + reg.getUidAdmin().substring(0,5) + "... | " + DateUtils.getFechaFormateadaShort(reg.getFechaHora()));
+                holder.tvFecha.setText(
+                        "Admin: "
+                                + reg.getUidAdmin().substring(0, 5)
+                                + "... | "
+                                + DateUtils.getFechaFormateadaShort(reg.getFechaHora()));
             }
             holder.imgIcono.setImageResource(R.drawable.ic_person);
 
             // Si es un registro de borrado de publicación
         } else if (item instanceof RegistroBorradoPublicacion reg) {
-            holder.tvTitulo.setText(context.getString(R.string.publicacion_borrada_de) +  " @" + reg.getUsernameUsuario());
+            holder.tvTitulo.setText(
+                    context.getString(R.string.publicacion_borrada_de)
+                            + " @"
+                            + reg.getUsernameUsuario());
             holder.tvMotivo.setText(context.getString(R.string.motivo) + " " + reg.getMotivo());
             if (reg.getFechaHora() != null) {
-                holder.tvFecha.setText("Admin: " + reg.getUidAdmin().substring(0,5) + "... | " + DateUtils.getFechaFormateadaShort(reg.getFechaHora()));
+                holder.tvFecha.setText(
+                        "Admin: "
+                                + reg.getUidAdmin().substring(0, 5)
+                                + "... | "
+                                + DateUtils.getFechaFormateadaShort(reg.getFechaHora()));
             }
             holder.imgIcono.setImageResource(android.R.drawable.ic_menu_gallery);
         }

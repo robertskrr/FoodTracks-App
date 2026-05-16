@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -49,9 +50,9 @@ public class RegisterLocalActivity extends AppCompatActivity {
     private Uri uriFotoSeleccionada;
 
     // Launcher para abrir la galería y recuperar la imagen
-    private final ActivityResultLauncher<String> galleryLauncher =
+    private final ActivityResultLauncher<PickVisualMediaRequest> galleryLauncher =
             registerForActivityResult(
-                    new ActivityResultContracts.GetContent(),
+                    new ActivityResultContracts.PickVisualMedia(),
                     uri -> {
                         if (uri != null) {
                             uriFotoSeleccionada = uri;
@@ -127,7 +128,10 @@ public class RegisterLocalActivity extends AppCompatActivity {
      * @param view Vista de la interfaz.
      */
     public void setGalleryLauncher(View view) {
-        galleryLauncher.launch("image/*");
+        galleryLauncher.launch(
+                new PickVisualMediaRequest.Builder()
+                        .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
+                        .build());
     }
 
     /**
