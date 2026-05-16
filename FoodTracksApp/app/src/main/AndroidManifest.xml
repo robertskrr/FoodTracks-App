@@ -55,6 +55,10 @@
         <activity
             android:name=".activities.cliente.EditarPerfilClienteActivity"
             android:exported="false" />
+        <activity
+            android:name=".activities.VideoPlayerActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:theme="@style/Theme.MaterialComponents.NoActionBar" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

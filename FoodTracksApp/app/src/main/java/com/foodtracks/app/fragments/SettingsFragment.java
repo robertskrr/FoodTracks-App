@@ -24,6 +24,7 @@ import androidx.fragment.app.Fragment;
 
 import com.foodtracks.app.R;
 import com.foodtracks.app.activities.MainActivity;
+import com.foodtracks.app.activities.VideoPlayerActivity;
 import com.foodtracks.app.activities.cliente.EditarPerfilClienteActivity;
 import com.foodtracks.app.activities.local.EditarPerfilLocalActivity;
 import com.foodtracks.app.services.ServiceFactory;
@@ -45,7 +46,7 @@ public class SettingsFragment extends Fragment {
 
     private View rootView;
     private SwitchMaterial switchNotificaciones, switchSonidos;
-    private Button btnEditarPerfil, btnCerrarSesion, btnEliminarCuenta, btnCambiarPassword;
+    private Button btnEditarPerfil, btnCerrarSesion, btnEliminarCuenta, btnCambiarPassword, btnVideo;
     private FrameLayout overlayCarga;
 
     private String uidUsuario;
@@ -92,6 +93,7 @@ public class SettingsFragment extends Fragment {
         btnCerrarSesion = rootView.findViewById(R.id.btnCerrarSesion);
         btnEliminarCuenta = rootView.findViewById(R.id.btnEliminarCuenta);
         btnCambiarPassword = rootView.findViewById(R.id.btnCambiarPassword);
+        btnVideo = rootView.findViewById(R.id.btnVideo);
         overlayCarga = rootView.findViewById(R.id.overlayCargaSettings);
 
         if (esInvitado) {
@@ -140,6 +142,9 @@ public class SettingsFragment extends Fragment {
 
         // Eliminar cuenta
         btnEliminarCuenta.setOnClickListener(v -> mostrarDialogoEliminarCuenta());
+
+        // Reproducir vídeo intolerancias y alergias
+        btnVideo.setOnClickListener(v -> startActivity(new Intent(requireContext(), VideoPlayerActivity.class)));
     }
 
     private void redirigirAEditarPerfil() {

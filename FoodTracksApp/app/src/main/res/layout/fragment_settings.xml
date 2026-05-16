@@ -134,6 +134,29 @@
                 app:iconTint="#FF3B30" />
 
             <TextView
+                android:id="@+id/textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:text="@string/acerca_de"
+                android:textColor="@color/tertiary"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/btnVideo"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:gravity="start|center_vertical"
+                android:text="@string/alergias_e_intolerancias"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                app:icon="@android:drawable/ic_menu_slideshow"
+                app:iconTint="@color/black" />
+
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
