@@ -3,7 +3,10 @@
 package com.foodtracks.app.activities.local;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -451,6 +454,7 @@ public class PerfilLocalActivity extends AppCompatActivity {
                                                     .valorarLocal(nuevaValoracion)
                                                     .addOnSuccessListener(
                                                             unused -> {
+                                                                sonidoValoracion();
                                                                 Toast.makeText(
                                                                                 this,
                                                                                 R.string
@@ -543,6 +547,24 @@ public class PerfilLocalActivity extends AppCompatActivity {
                                         });
                             }
                         });
+    }
+
+    /**
+     * Reproducción del sonido de valoración enviada
+     */
+    private void sonidoValoracion() {
+        // Comprueba las preferencias de "Sonidos silenciados"
+        SharedPreferences prefs = this.getSharedPreferences("FoodTracksSettings", Context.MODE_PRIVATE);
+
+        boolean sonidosSilenciados = prefs.getBoolean("sonidos_silenciados", false);
+
+        // Si no la tiene activada reproduce el sonido
+        if (!sonidosSilenciados){
+            MediaPlayer mp = MediaPlayer.create(this, R.raw.valoracion);
+            mp.start();
+
+            mp.setOnCompletionListener(mediaPlayer -> mp.release());
+        }
     }
 
     private void mostrarDialogoEliminarPerfilAdmin() {
