@@ -24,6 +24,8 @@ import androidx.fragment.app.Fragment;
 
 import com.foodtracks.app.R;
 import com.foodtracks.app.activities.MainActivity;
+import com.foodtracks.app.activities.cliente.EditarPerfilClienteActivity;
+import com.foodtracks.app.activities.local.EditarPerfilLocalActivity;
 import com.foodtracks.app.services.ServiceFactory;
 import com.foodtracks.app.services.interfaces.IUsuarioService;
 
@@ -120,8 +122,8 @@ public class SettingsFragment extends Fragment {
                     sharedPreferences.edit().putBoolean(KEY_SOUNDS, isChecked).apply();
                 });
 
-        // Editar perfil (dependiendo del rol)
-        btnEditarPerfil.setOnClickListener(v -> redirigirAEdicionPerfil());
+        // Editar perfil
+        btnEditarPerfil.setOnClickListener(v -> redirigirAEditarPerfil());
 
         // Cerrar sesión
         btnCerrarSesion.setOnClickListener(
@@ -140,7 +142,7 @@ public class SettingsFragment extends Fragment {
         btnEliminarCuenta.setOnClickListener(v -> mostrarDialogoEliminarCuenta());
     }
 
-    private void redirigirAEdicionPerfil() {
+    private void redirigirAEditarPerfil() {
         if (uidUsuario == null) return;
 
         btnEditarPerfil.setEnabled(false);
@@ -153,14 +155,12 @@ public class SettingsFragment extends Fragment {
 
                             Intent intent;
                             if ("local".equals(usuario.getRol())) {
-                                // TODO: intent = new Intent(requireContext(),
-                                // EditarPerfilLocalActivity.class);
+                                intent = new Intent(requireContext(), EditarPerfilLocalActivity.class);
                             } else {
-                                // TODO: intent = new Intent(requireContext(),
-                                // EditarPerfilClienteActivity.class);
+                                intent = new Intent(requireContext(), EditarPerfilClienteActivity.class);
                             }
 
-                            // startActivity(intent);
+                            startActivity(intent);
                             btnEditarPerfil.setEnabled(true);
                         })
                 .addOnFailureListener(
