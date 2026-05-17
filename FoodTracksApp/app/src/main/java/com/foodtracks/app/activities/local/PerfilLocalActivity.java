@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -685,10 +686,10 @@ public class PerfilLocalActivity extends AppCompatActivity {
     private void configTheme() {
         getWindow()
                 .setStatusBarColor(
-                        androidx.core.content.ContextCompat.getColor(this, R.color.tertiary));
+                        ContextCompat.getColor(this, R.color.tertiary));
         getWindow()
                 .setNavigationBarColor(
-                        androidx.core.content.ContextCompat.getColor(this, R.color.fondo_perfil_local));
+                       ContextCompat.getColor(this, R.color.fondo_perfil_local));
     }
 
     @Override

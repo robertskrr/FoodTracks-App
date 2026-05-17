@@ -9,7 +9,8 @@
     <color name="admin_bottom_nav">#818181</color>
     <color name="fondo_main_cliente">#939F5C</color>
     <color name="fondo_main_local">#EBAF75</color>
-    <color name="fondo_perfil_cliente">#FF9914</color>
+    <color name="fondo_perfil_cliente">#79B6A4</color>
+    <color name="secondary_perfil_cliente">#88B04B</color>
     <color name="fondo_perfil_local">#7EB77F</color>
     <color name="eliminar">#920000</color>
 </resources>

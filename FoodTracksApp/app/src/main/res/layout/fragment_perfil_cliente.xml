@@ -9,7 +9,7 @@
         android:id="@+id/topBarPerfil"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/fondo"
+        android:background="@color/secondary_perfil_cliente"
         android:paddingHorizontal="25dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -190,10 +190,10 @@
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="0dp"
                 android:layout_marginBottom="4dp"
-                app:cardBackgroundColor="@color/fondo"
+                app:cardBackgroundColor="@color/secondary_perfil_cliente"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="0dp"
-                app:strokeColor="@color/fondo"
+                app:strokeColor="@color/secondary_perfil_cliente"
                 app:strokeWidth="3dp">
 
                 <TextView

@@ -213,9 +213,9 @@ public class PerfilClienteActivity extends AppCompatActivity {
         chip.setCheckable(false);
         chip.setClickable(false);
 
-        chip.setChipBackgroundColorResource(R.color.fondo);
+        chip.setChipBackgroundColorResource(R.color.secondary_perfil_cliente);
         chip.setTextColor(getResources().getColor(R.color.white, null));
-        chip.setChipStrokeColorResource(R.color.fondo);
+        chip.setChipStrokeColorResource(R.color.secondary_perfil_cliente);
 
         chipGroupPreferencias.addView(chip);
     }
@@ -373,6 +373,9 @@ public class PerfilClienteActivity extends AppCompatActivity {
      * Configura la barra de navegación y de estado
      */
     private void configTheme() {
+        getWindow()
+                .setStatusBarColor(
+                        ContextCompat.getColor(this, R.color.secondary_perfil_cliente));
         getWindow()
                 .setNavigationBarColor(
                         ContextCompat.getColor(this, R.color.fondo_perfil_cliente));
