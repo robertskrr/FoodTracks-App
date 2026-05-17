@@ -37,7 +37,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="#920000" />
+            app:tint="@color/eliminar" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

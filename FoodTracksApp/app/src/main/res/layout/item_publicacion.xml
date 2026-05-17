@@ -136,7 +136,7 @@
                 android:layout_height="24dp"
                 android:src="@drawable/ic_delete"
                 android:visibility="gone"
-                app:tint="#FF3B30"
+                app:tint="@color/eliminar"
                 tools:ignore="ContentDescription" />
 
         </LinearLayout>

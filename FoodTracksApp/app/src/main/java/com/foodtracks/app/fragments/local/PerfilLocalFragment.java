@@ -537,8 +537,10 @@ public class PerfilLocalFragment extends Fragment {
         chip.setText(texto);
         chip.setCheckable(false);
         chip.setClickable(false);
-        chip.setChipBackgroundColorResource(R.color.primary);
-        chip.setTextColor(getResources().getColor(R.color.black, null));
+        chip.setChipBackgroundColorResource(R.color.tertiary);
+        chip.setTextColor(getResources().getColor(R.color.white, null));
+        chip.setChipStrokeColorResource(R.color.tertiary);
+
         chipGroupOpciones.addView(chip);
     }
 
