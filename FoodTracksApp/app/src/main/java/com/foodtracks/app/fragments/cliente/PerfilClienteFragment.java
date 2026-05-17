@@ -180,8 +180,9 @@ public class PerfilClienteFragment extends Fragment {
         chip.setText(texto);
         chip.setCheckable(false);
         chip.setClickable(false);
-        chip.setChipBackgroundColorResource(R.color.tertiary);
+        chip.setChipBackgroundColorResource(R.color.fondo);
         chip.setTextColor(getResources().getColor(R.color.white, null));
+        chip.setChipStrokeColorResource(R.color.fondo);
         chipGroupPreferencias.addView(chip);
     }
 

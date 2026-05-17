@@ -2,6 +2,7 @@
 
 package com.foodtracks.app.activities.cliente;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -211,8 +213,9 @@ public class PerfilClienteActivity extends AppCompatActivity {
         chip.setCheckable(false);
         chip.setClickable(false);
 
-        chip.setChipBackgroundColorResource(R.color.tertiary);
+        chip.setChipBackgroundColorResource(R.color.fondo);
         chip.setTextColor(getResources().getColor(R.color.white, null));
+        chip.setChipStrokeColorResource(R.color.fondo);
 
         chipGroupPreferencias.addView(chip);
     }
@@ -360,10 +363,10 @@ public class PerfilClienteActivity extends AppCompatActivity {
                                 (dialogInterface, which) -> dialogInterface.dismiss())
                         .show();
 
-        dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_POSITIVE)
-                .setTextColor(android.graphics.Color.RED);
-        dialog.getButton(androidx.appcompat.app.AlertDialog.BUTTON_NEGATIVE)
-                .setTextColor(android.graphics.Color.BLACK);
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                .setTextColor(Color.RED);
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                .setTextColor(Color.BLACK);
     }
 
     /**
@@ -372,6 +375,6 @@ public class PerfilClienteActivity extends AppCompatActivity {
     private void configTheme() {
         getWindow()
                 .setNavigationBarColor(
-                        androidx.core.content.ContextCompat.getColor(this, R.color.primary));
+                        ContextCompat.getColor(this, R.color.fondo_perfil_cliente));
     }
 }

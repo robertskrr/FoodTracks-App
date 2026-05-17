@@ -9,4 +9,5 @@
     <color name="admin_bottom_nav">#818181</color>
     <color name="fondo_main_cliente">#939F5C</color>
     <color name="fondo_main_local">#EBAF75</color>
+    <color name="fondo_perfil_cliente">#FF9914</color>
 </resources>
