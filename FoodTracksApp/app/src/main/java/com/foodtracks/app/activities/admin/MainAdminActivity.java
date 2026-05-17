@@ -108,15 +108,6 @@ public class MainAdminActivity extends AppCompatActivity {
                 });
     }
 
-    private void logOut() {
-        mAuth.signOut();
-        Intent intent = new Intent(MainAdminActivity.this, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        Toast.makeText(getApplicationContext(), R.string.despedida_app, Toast.LENGTH_SHORT).show();
-        startActivity(intent);
-        finish();
-    }
-
     private void configTheme() {
         getWindow()
                 .setStatusBarColor(

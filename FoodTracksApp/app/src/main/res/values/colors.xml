@@ -7,4 +7,6 @@
     <color name="secondary">#9EC438</color>
     <color name="tertiary">#314357</color>
     <color name="admin_bottom_nav">#818181</color>
+    <color name="fondo_main_cliente">#939F5C</color>
+    <color name="fondo_main_local">#EBAF75</color>
 </resources>

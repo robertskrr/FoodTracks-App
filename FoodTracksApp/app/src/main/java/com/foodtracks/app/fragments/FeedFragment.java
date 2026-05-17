@@ -19,6 +19,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.foodtracks.app.R;
+import com.foodtracks.app.activities.admin.MainAdminActivity;
+import com.foodtracks.app.activities.cliente.MainClienteActivity;
+import com.foodtracks.app.activities.local.MainLocalActivity;
 import com.foodtracks.app.adapters.PublicacionAdapter;
 import com.foodtracks.app.models.UsuarioAdmin;
 import com.foodtracks.app.models.UsuarioCliente;
@@ -88,35 +91,33 @@ public class FeedFragment extends Fragment {
         tvSinPublicaciones = rootView.findViewById(R.id.tvSinPublicacionesFeed);
         recyclerPublicaciones = rootView.findViewById(R.id.recyclerPublicacionesFeed);
         recyclerPublicaciones.setLayoutManager(new LinearLayoutManager(requireContext()));
+
+        if (getActivity() instanceof MainLocalActivity) {
+            esLocal = true;
+        } else if (getActivity() instanceof MainClienteActivity) {
+            if (!esInvitado) {
+                esCliente = true;
+            }
+        } else if (getActivity() instanceof MainAdminActivity) {
+            esAdmin = true;
+        }
+
+        configTheme();
     }
 
     private void mostrarDatosUsuario() {
-        if (uidUsuarioActual == null) {
+        if (esInvitado) {
             comprobarCargaCompleta();
             return;
         }
+
         usuarioService
                 .getPerfil(uidUsuarioActual)
                 .addOnSuccessListener(
                         usuario -> {
                             if (!isAdded()) return; // Red de seguridad
-                            tvUsername.setText("@" + usuario.getUsername());
 
-                            switch (usuario) {
-                                case UsuarioAdmin ignored -> {
-                                    esAdmin = true;
-                                    configTheme();
-                                }
-                                case UsuarioCliente ignored -> {
-                                    esCliente = true;
-                                    configTheme();
-                                }
-                                case UsuarioLocal ignored -> {
-                                    esLocal = true;
-                                    configTheme();
-                                }
-                                default -> {}
-                            }
+                            tvUsername.setText("@" + usuario.getUsername());
                             comprobarCargaCompleta();
                         })
                 .addOnFailureListener(
@@ -131,7 +132,6 @@ public class FeedFragment extends Fragment {
                             comprobarCargaCompleta();
                         });
     }
-
     private void cargarPublicaciones() {
         publicacionService
                 .getAllPublicaciones()
@@ -177,27 +177,25 @@ public class FeedFragment extends Fragment {
         if (getActivity() != null) {
 
             if (esAdmin) {
-                getActivity()
-                        .getWindow()
-                        .setStatusBarColor(
-                                ContextCompat.getColor(requireContext(), R.color.admin_bottom_nav));
-                layoutContenido.setBackgroundColor(getResources().getColor(R.color.black, null));
-                topBarFeed.setBackgroundColor(
-                        getResources().getColor(R.color.admin_bottom_nav, null));
-                tvUsername.setTextColor(getResources().getColor(R.color.white, null));
+                // Tema Administrador
+                getActivity().getWindow().setStatusBarColor(ContextCompat.getColor(requireContext(), R.color.admin_bottom_nav));
+                topBarFeed.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.admin_bottom_nav));
+                tvUsername.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
             }
+            else if (esCliente || esInvitado) {
+                // Tema Cliente o Invitado
+                getActivity().getWindow().setStatusBarColor(ContextCompat.getColor(requireContext(), R.color.secondary));
 
-            if (esCliente || esInvitado) {
-                getActivity()
-                        .getWindow()
-                        .setStatusBarColor(
-                                androidx.core.content.ContextCompat.getColor(
-                                        requireContext(), R.color.fondo));
-                // TODO -> Interfaz de cliente/invitado (colores, etc)
+                topBarFeed.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.secondary));
+
+                if (esInvitado) {
+                    tvUsername.setText(R.string.feed);
+                }
             }
-
-            if (esLocal) {
-                // TODO -> Interfaz de local (colores, etc)
+            else if (esLocal) {
+                // Tema Local
+                getActivity().getWindow().setStatusBarColor(ContextCompat.getColor(requireContext(), R.color.primary));
+                topBarFeed.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.primary));
             }
         }
     }
