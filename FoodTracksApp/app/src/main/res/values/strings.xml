@@ -77,6 +77,7 @@
     <string name="direccion_requerimientos">Dirección (Calle, Número)</string>
     <string name="telefono">Teléfono de contacto</string>
     <string name="sitio_web">Sitio web</string>
+    <string name="sitio_web_opcional">Sitio web (Opcional)</string>
     <string name="opciones_alimenticias_que_ofrece">Opciones alimenticias que ofrece</string>
     <string name="opciones_alimenticias">Opciones alimenticias</string>
     <string name="no_tienes_cuenta_registrate">¿No tienes cuenta? Regístrate aquí</string>
