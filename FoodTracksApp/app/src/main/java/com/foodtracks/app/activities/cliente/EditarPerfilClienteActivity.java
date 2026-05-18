@@ -14,6 +14,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.foodtracks.app.R;
 import com.foodtracks.app.models.Usuario;
@@ -47,6 +48,7 @@ public class EditarPerfilClienteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editar_perfil_cliente);
 
+        configTheme();
         inicializar();
         cargarDatos();
         mostrarOtraPreferencia();
@@ -180,4 +182,16 @@ public class EditarPerfilClienteActivity extends AppCompatActivity {
                             imgFoto.setImageURI(uri);
                         }
                     });
+
+    /**
+     * Configura el tema de la pantalla.
+     */
+    private void configTheme() {
+        getWindow()
+                .setStatusBarColor(
+                        ContextCompat.getColor(this, R.color.secondary_perfil_cliente));
+        getWindow()
+                .setNavigationBarColor(
+                        ContextCompat.getColor(this, R.color.secondary_perfil_cliente));
+    }
 }

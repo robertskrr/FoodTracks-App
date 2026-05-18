@@ -136,7 +136,7 @@
     <string name="notificaciones">Notificaciones</string>
     <string name="silenciar_sonidos">Silenciar sonidos</string>
     <string name="cuenta">Cuenta</string>
-    <string name="editar_perfil">Editar Perfil</string>
+    <string name="editar_perfil">EDITAR PERFIL</string>
     <string name="eliminar_cuenta">Eliminar Cuenta</string>
     <string name="eliminar_cuenta_warning">⚠️ Eliminar Cuenta</string>
     <string name="confirm_eliminar_cuenta">¿Estás completamente seguro? Esta acción borrará permanentemente todos tus datos, publicaciones y configuraciones. No se puede deshacer.</string>
