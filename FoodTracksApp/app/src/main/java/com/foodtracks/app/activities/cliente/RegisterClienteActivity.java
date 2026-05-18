@@ -5,6 +5,7 @@ package com.foodtracks.app.activities.cliente;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -62,6 +63,31 @@ public class RegisterClienteActivity extends AppCompatActivity {
     }
 
     /**
+     * Inicializa los elementos y componentes
+     */
+    private void inicializar() {
+        mAuth = FirebaseAuth.getInstance();
+        usuarioService = ServiceFactory.provideUsuarioService(this);
+
+        // Campos del usuario
+        fotoPerfil = findViewById(R.id.imgPerfilCliente);
+        nombre = findViewById(R.id.txtNombre);
+        username = findViewById(R.id.txtUsername);
+        email = findViewById(R.id.txtEmail);
+        password = findViewById(R.id.txtPassword);
+        confirmPassword = findViewById(R.id.txtConfirmPassword);
+        ciudad = findViewById(R.id.txtCiudad);
+
+        // Preferencias alimenticias
+        esVegano = findViewById(R.id.cbVegano);
+        esVegetariano = findViewById(R.id.cbVegetariano);
+        sinLactosa = findViewById(R.id.cbLactosa);
+        esCeliaco = findViewById(R.id.cbCeliaco);
+        otraPreferencia = findViewById(R.id.cbOtro);
+        especifiqueOtro = findViewById(R.id.txtEspecifiqueOtro);
+    }
+
+    /**
      * Acción al pulsar el registrar.
      *
      * @param view Vista de registro.
@@ -102,11 +128,10 @@ public class RegisterClienteActivity extends AppCompatActivity {
                                                 Toast.LENGTH_SHORT)
                                         .show();
                             } else {
+                                Log.e("Creación cuenta cliente", e.getMessage(), e);
                                 Toast.makeText(
                                                 this,
-                                                getString(R.string.create_account_error_message)
-                                                        + ": "
-                                                        + e.getMessage(),
+                                                getString(R.string.create_account_error_message),
                                                 Toast.LENGTH_SHORT)
                                         .show();
                             }
@@ -170,44 +195,18 @@ public class RegisterClienteActivity extends AppCompatActivity {
                                                                         Toast.LENGTH_SHORT)
                                                                 .show();
                                                     } else {
+                                                        Log.e("Creación cuenta cliente", e.getMessage(), e);
                                                         Toast.makeText(
                                                                         this,
                                                                         getString(
                                                                                         R.string
-                                                                                                .register_critic_error_message)
-                                                                                + ": "
-                                                                                + e.getMessage(),
+                                                                                                .register_critic_error_message),
                                                                         Toast.LENGTH_SHORT)
                                                                 .show();
                                                     }
                                                 });
                             }
                         });
-    }
-
-    /**
-     * Inicializa los elementos y componentes
-     */
-    private void inicializar() {
-        mAuth = FirebaseAuth.getInstance();
-        usuarioService = ServiceFactory.provideUsuarioService(this);
-
-        // Campos del usuario
-        fotoPerfil = findViewById(R.id.imgPerfilCliente);
-        nombre = findViewById(R.id.txtNombre);
-        username = findViewById(R.id.txtUsername);
-        email = findViewById(R.id.txtEmail);
-        password = findViewById(R.id.txtPassword);
-        confirmPassword = findViewById(R.id.txtConfirmPassword);
-        ciudad = findViewById(R.id.txtCiudad);
-
-        // Preferencias alimenticias
-        esVegano = findViewById(R.id.cbVegano);
-        esVegetariano = findViewById(R.id.cbVegetariano);
-        sinLactosa = findViewById(R.id.cbLactosa);
-        esCeliaco = findViewById(R.id.cbCeliaco);
-        otraPreferencia = findViewById(R.id.cbOtro);
-        especifiqueOtro = findViewById(R.id.txtEspecifiqueOtro);
     }
 
     /**

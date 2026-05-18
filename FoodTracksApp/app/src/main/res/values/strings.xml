@@ -72,7 +72,7 @@
     <string name="otro">Otro:</string>
     <string name="cual">¿Cuál?</string>
     <string name="crear_cuenta">Crear cuenta</string>
-    <string name="registro_local">Registro local</string>
+    <string name="registro_local">REGISTRO LOCAL</string>
     <string name="nombre_del_establecimiento">Nombre del establecimiento</string>
     <string name="direccion_requerimientos">Dirección (Calle, Número)</string>
     <string name="telefono">Teléfono de contacto</string>
