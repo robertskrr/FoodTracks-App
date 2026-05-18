@@ -168,4 +168,6 @@
     <string name="alergias_e_intolerancias">Alergias e intolerancias</string>
     <string name="acerca_de">Acerca de</string>
     <string name="plan_premium">Plan Premium (Próximamente…)</string>
+    <string name="cliente">Cliente</string>
+    <string name="local">Local</string>
 </resources>
