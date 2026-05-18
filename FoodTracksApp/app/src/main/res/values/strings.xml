@@ -54,7 +54,7 @@
     <string name="perfil">Perfil</string>
     <string name="succesful_register">¡Usuario registrado con éxito!</string>
     <string name="admin_panel">Admin panel</string>
-    <string name="dashboard">Dashboard</string>
+    <string name="dashboard">DASHBOARD</string>
     <string name="mi_perfil">Mi Perfil</string>
     <string name="registro_cliente">REGISTRO CLIENTE</string>
     <string name="cambiar_foto_de_perfil">Cambiar foto de perfil</string>
@@ -107,7 +107,7 @@
     <string name="elegir_de_la_galeria">Elegir de la galería</string>
     <string name="despedida_app">¡Hasta pronto!</string>
     <string name="busqueda">Búsqueda</string>
-    <string name="ajustes">Ajustes</string>
+    <string name="ajustes">AJUSTES</string>
     <string name="inicio">Inicio</string>
     <string name="feed">FEED</string>
     <string name="sin_resultados">Sin resultados</string>
@@ -151,7 +151,7 @@
     <string name="actualizar">Actualizar</string>
     <string name="contrasenia_actualizada">Contraseña actualizada con éxito</string>
     <string name="contrasenia_proteccion_sesion_antigua">Por seguridad, debes cerrar sesión y volver a entrar antes de cambiar tu contraseña.</string>
-    <string name="panel_de_administrador">Panel de administrador</string>
+    <string name="panel_de_administrador">PANEL DE ADMINISTRADOR</string>
     <string name="usuarios">Usuarios</string>
     <string name="no_hay_registros_de_este_tipo">No hay registros de este tipo</string>
     <string name="publicacion_borrada_de">Publicación borrada de:</string>
