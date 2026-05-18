@@ -94,7 +94,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="20dp"
-                android:hint="@string/sitio_web" />
+                android:hint="@string/sitio_web_opcional" />
 
             <TextView
                 android:layout_width="match_parent"
