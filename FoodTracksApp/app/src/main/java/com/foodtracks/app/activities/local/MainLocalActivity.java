@@ -112,9 +112,9 @@ public class MainLocalActivity extends AppCompatActivity {
     private void configTheme() {
         getWindow()
                 .setStatusBarColor(
-                        ContextCompat.getColor(this, R.color.primary));
+                        ContextCompat.getColor(this, R.color.tertiary));
         getWindow()
                 .setNavigationBarColor(
-                        ContextCompat.getColor(this, R.color.primary));
+                        ContextCompat.getColor(this, R.color.tertiary));
     }
 }

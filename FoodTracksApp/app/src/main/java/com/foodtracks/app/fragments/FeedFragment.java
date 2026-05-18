@@ -194,8 +194,9 @@ public class FeedFragment extends Fragment {
             }
             else if (esLocal) {
                 // Tema Local
-                getActivity().getWindow().setStatusBarColor(ContextCompat.getColor(requireContext(), R.color.primary));
-                topBarFeed.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.primary));
+                getActivity().getWindow().setStatusBarColor(ContextCompat.getColor(requireContext(), R.color.tertiary));
+                topBarFeed.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.tertiary));
+                tvUsername.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
             }
         }
     }

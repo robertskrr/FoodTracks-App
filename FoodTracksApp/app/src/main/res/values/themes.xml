@@ -26,4 +26,9 @@
         <item name="colorControlActivated">@color/secondary</item>
         <item name="colorPrimaryContainer">@color/secondary</item>
     </style>
+
+    <style name="Theme.BottomNavLocal" parent="Theme.FoodTracks">
+        <item name="colorSecondaryContainer">@color/black</item>
+        <item name="colorOnSecondaryContainer">@color/white</item>
+    </style>
 </resources>

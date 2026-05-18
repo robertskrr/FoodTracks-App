@@ -310,10 +310,10 @@ public class BusquedaFragment extends Fragment {
                         .getWindow()
                         .setStatusBarColor(
                                 ContextCompat.getColor(
-                                        requireContext(), R.color.primary));
+                                        requireContext(), R.color.tertiary));
                 rootView.setBackgroundColor(getResources().getColor(R.color.fondo_perfil_local, null));
                 topBarBusqueda.setBackgroundColor(
-                        getResources().getColor(R.color.primary, null));            }
+                        getResources().getColor(R.color.tertiary, null));            }
         }
     }
 }
