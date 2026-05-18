@@ -13,6 +13,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.foodtracks.app.R;
 import com.foodtracks.app.models.UsuarioCliente;
@@ -55,6 +56,7 @@ public class RegisterClienteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_cliente);
 
+        configTheme();
         inicializar();
         mostrarOtraPreferencia();
     }
@@ -231,5 +233,17 @@ public class RegisterClienteActivity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
+    }
+
+    /**
+     * Configura el tema de la pantalla.
+     */
+    private void configTheme() {
+        getWindow()
+                .setStatusBarColor(
+                        ContextCompat.getColor(this, R.color.secondary_perfil_cliente));
+        getWindow()
+                .setNavigationBarColor(
+                        ContextCompat.getColor(this, R.color.secondary_perfil_cliente));
     }
 }
