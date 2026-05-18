@@ -2,7 +2,6 @@
 
 package com.foodtracks.app.activities.cliente;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -11,7 +10,6 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.foodtracks.app.R;
-import com.foodtracks.app.activities.MainActivity;
 import com.foodtracks.app.fragments.BusquedaFragment;
 import com.foodtracks.app.fragments.FeedFragment;
 import com.foodtracks.app.fragments.SettingsFragment;
@@ -135,8 +133,7 @@ public class MainClienteActivity extends AppCompatActivity {
 
     private void configTheme() {
         getWindow()
-                .setStatusBarColor(
-                        ContextCompat.getColor(this, R.color.secondary_perfil_cliente));
+                .setStatusBarColor(ContextCompat.getColor(this, R.color.secondary_perfil_cliente));
         getWindow()
                 .setNavigationBarColor(
                         ContextCompat.getColor(this, R.color.secondary_perfil_cliente));

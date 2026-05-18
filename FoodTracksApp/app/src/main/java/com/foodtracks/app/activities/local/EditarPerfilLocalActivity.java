@@ -211,11 +211,7 @@ public class EditarPerfilLocalActivity extends AppCompatActivity {
      * Configura el tema de la pantalla.
      */
     private void configTheme() {
-        getWindow()
-                .setStatusBarColor(
-                        ContextCompat.getColor(this, R.color.fondo_perfil_local));
-        getWindow()
-                .setNavigationBarColor(
-                        ContextCompat.getColor(this, R.color.fondo_perfil_local));
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.fondo_perfil_local));
+        getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.fondo_perfil_local));
     }
 }

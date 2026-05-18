@@ -2,15 +2,12 @@
 
 package com.foodtracks.app.activities.admin;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import com.foodtracks.app.R;
-import com.foodtracks.app.activities.MainActivity;
 import com.foodtracks.app.fragments.BusquedaFragment;
 import com.foodtracks.app.fragments.FeedFragment;
 import com.foodtracks.app.fragments.SettingsFragment;

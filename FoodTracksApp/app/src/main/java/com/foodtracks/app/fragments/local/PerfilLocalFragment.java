@@ -564,9 +564,7 @@ public class PerfilLocalFragment extends Fragment {
         if (getActivity() != null) {
             getActivity()
                     .getWindow()
-                    .setStatusBarColor(
-                            ContextCompat.getColor(
-                                    requireContext(), R.color.tertiary));
+                    .setStatusBarColor(ContextCompat.getColor(requireContext(), R.color.tertiary));
         }
     }
 }

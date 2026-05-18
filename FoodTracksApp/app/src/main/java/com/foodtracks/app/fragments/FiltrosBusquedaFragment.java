@@ -2,7 +2,6 @@
 
 package com.foodtracks.app.fragments;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -87,9 +86,11 @@ public class FiltrosBusquedaFragment extends BottomSheetDialogFragment {
     public void onStart() {
         super.onStart();
         if (getDialog() != null && getDialog().getWindow() != null) {
-            getDialog().getWindow().setNavigationBarColor(
-                    ContextCompat.getColor(requireContext(), R.color.fondo_filtro_busqueda));
+            getDialog()
+                    .getWindow()
+                    .setNavigationBarColor(
+                            ContextCompat.getColor(
+                                    requireContext(), R.color.fondo_filtro_busqueda));
         }
     }
-
 }

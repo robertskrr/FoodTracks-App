@@ -188,8 +188,7 @@ public class EditarPerfilClienteActivity extends AppCompatActivity {
      */
     private void configTheme() {
         getWindow()
-                .setStatusBarColor(
-                        ContextCompat.getColor(this, R.color.secondary_perfil_cliente));
+                .setStatusBarColor(ContextCompat.getColor(this, R.color.secondary_perfil_cliente));
         getWindow()
                 .setNavigationBarColor(
                         ContextCompat.getColor(this, R.color.secondary_perfil_cliente));

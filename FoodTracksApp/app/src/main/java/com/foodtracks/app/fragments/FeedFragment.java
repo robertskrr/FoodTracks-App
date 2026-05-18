@@ -23,9 +23,6 @@ import com.foodtracks.app.activities.admin.MainAdminActivity;
 import com.foodtracks.app.activities.cliente.MainClienteActivity;
 import com.foodtracks.app.activities.local.MainLocalActivity;
 import com.foodtracks.app.adapters.PublicacionAdapter;
-import com.foodtracks.app.models.UsuarioAdmin;
-import com.foodtracks.app.models.UsuarioCliente;
-import com.foodtracks.app.models.UsuarioLocal;
 import com.foodtracks.app.services.ServiceFactory;
 import com.foodtracks.app.services.interfaces.IPublicacionService;
 import com.foodtracks.app.services.interfaces.IUsuarioService;
@@ -132,6 +129,7 @@ public class FeedFragment extends Fragment {
                             comprobarCargaCompleta();
                         });
     }
+
     private void cargarPublicaciones() {
         publicacionService
                 .getAllPublicaciones()
@@ -178,24 +176,35 @@ public class FeedFragment extends Fragment {
 
             if (esAdmin) {
                 // Tema Administrador
-                getActivity().getWindow().setStatusBarColor(ContextCompat.getColor(requireContext(), R.color.admin_bottom_nav));
-                topBarFeed.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.admin_bottom_nav));
+                getActivity()
+                        .getWindow()
+                        .setStatusBarColor(
+                                ContextCompat.getColor(requireContext(), R.color.admin_bottom_nav));
+                topBarFeed.setBackgroundColor(
+                        ContextCompat.getColor(requireContext(), R.color.admin_bottom_nav));
                 tvUsername.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
-            }
-            else if (esCliente || esInvitado) {
+            } else if (esCliente || esInvitado) {
                 // Tema Cliente o Invitado
-                getActivity().getWindow().setStatusBarColor(ContextCompat.getColor(requireContext(), R.color.secondary_perfil_cliente));
+                getActivity()
+                        .getWindow()
+                        .setStatusBarColor(
+                                ContextCompat.getColor(
+                                        requireContext(), R.color.secondary_perfil_cliente));
 
-                topBarFeed.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.secondary_perfil_cliente));
+                topBarFeed.setBackgroundColor(
+                        ContextCompat.getColor(requireContext(), R.color.secondary_perfil_cliente));
 
                 if (esInvitado) {
                     tvUsername.setText(R.string.feed);
                 }
-            }
-            else if (esLocal) {
+            } else if (esLocal) {
                 // Tema Local
-                getActivity().getWindow().setStatusBarColor(ContextCompat.getColor(requireContext(), R.color.tertiary));
-                topBarFeed.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.tertiary));
+                getActivity()
+                        .getWindow()
+                        .setStatusBarColor(
+                                ContextCompat.getColor(requireContext(), R.color.tertiary));
+                topBarFeed.setBackgroundColor(
+                        ContextCompat.getColor(requireContext(), R.color.tertiary));
                 tvUsername.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
             }
         }

@@ -1,6 +1,4 @@
-/**
- * © FoodTracks Project ===robertskrr===
- */
+/** © FoodTracks Project ===robertskrr=== */
 
 package com.foodtracks.app.activities.local;
 
@@ -12,8 +10,6 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
-
-import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -226,14 +222,17 @@ public class RegisterLocalActivity extends AppCompatActivity {
                                                     if (e
                                                             instanceof
                                                             FoodTracksValidationException
-                                                                    ex) {
+                                                            ex) {
                                                         Toast.makeText(
                                                                         this,
                                                                         ex.getErrorResId(),
                                                                         Toast.LENGTH_SHORT)
                                                                 .show();
                                                     } else {
-                                                        Log.e("Creación cuenta local", e.getMessage(), e);
+                                                        Log.e(
+                                                                "Creación cuenta local",
+                                                                e.getMessage(),
+                                                                e);
                                                         Toast.makeText(
                                                                         this,
                                                                         R.string
@@ -275,11 +274,7 @@ public class RegisterLocalActivity extends AppCompatActivity {
      * Configura el tema de la pantalla.
      */
     private void configTheme() {
-        getWindow()
-                .setStatusBarColor(
-                        ContextCompat.getColor(this, R.color.fondo_perfil_local));
-        getWindow()
-                .setNavigationBarColor(
-                        ContextCompat.getColor(this, R.color.fondo_perfil_local));
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.fondo_perfil_local));
+        getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.fondo_perfil_local));
     }
 }

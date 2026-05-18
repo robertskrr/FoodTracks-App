@@ -363,10 +363,8 @@ public class PerfilClienteActivity extends AppCompatActivity {
                                 (dialogInterface, which) -> dialogInterface.dismiss())
                         .show();
 
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                .setTextColor(Color.RED);
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-                .setTextColor(Color.BLACK);
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.RED);
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
     }
 
     /**
@@ -374,10 +372,8 @@ public class PerfilClienteActivity extends AppCompatActivity {
      */
     private void configTheme() {
         getWindow()
-                .setStatusBarColor(
-                        ContextCompat.getColor(this, R.color.secondary_perfil_cliente));
+                .setStatusBarColor(ContextCompat.getColor(this, R.color.secondary_perfil_cliente));
         getWindow()
-                .setNavigationBarColor(
-                        ContextCompat.getColor(this, R.color.fondo_perfil_cliente));
+                .setNavigationBarColor(ContextCompat.getColor(this, R.color.fondo_perfil_cliente));
     }
 }

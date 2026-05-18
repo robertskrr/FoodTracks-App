@@ -32,9 +32,6 @@ import com.foodtracks.app.activities.cliente.MainClienteActivity;
 import com.foodtracks.app.activities.local.MainLocalActivity;
 import com.foodtracks.app.adapters.PerfilUsuarioAdapter;
 import com.foodtracks.app.models.Usuario;
-import com.foodtracks.app.models.UsuarioAdmin;
-import com.foodtracks.app.models.UsuarioCliente;
-import com.foodtracks.app.models.UsuarioLocal;
 import com.foodtracks.app.services.ServiceFactory;
 import com.foodtracks.app.services.exceptions.FoodTracksNotFoundException;
 import com.foodtracks.app.services.interfaces.IUsuarioService;
@@ -287,8 +284,7 @@ public class BusquedaFragment extends Fragment {
                 getActivity()
                         .getWindow()
                         .setStatusBarColor(
-                                ContextCompat.getColor(
-                                        requireContext(), R.color.admin_bottom_nav));
+                                ContextCompat.getColor(requireContext(), R.color.admin_bottom_nav));
                 rootView.setBackgroundColor(getResources().getColor(R.color.black, null));
                 topBarBusqueda.setBackgroundColor(
                         getResources().getColor(R.color.admin_bottom_nav, null));
@@ -300,7 +296,8 @@ public class BusquedaFragment extends Fragment {
                         .setStatusBarColor(
                                 ContextCompat.getColor(
                                         requireContext(), R.color.secondary_perfil_cliente));
-                rootView.setBackgroundColor(getResources().getColor(R.color.fondo_perfil_cliente, null));
+                rootView.setBackgroundColor(
+                        getResources().getColor(R.color.fondo_perfil_cliente, null));
                 topBarBusqueda.setBackgroundColor(
                         getResources().getColor(R.color.secondary_perfil_cliente, null));
             }
@@ -309,11 +306,11 @@ public class BusquedaFragment extends Fragment {
                 getActivity()
                         .getWindow()
                         .setStatusBarColor(
-                                ContextCompat.getColor(
-                                        requireContext(), R.color.tertiary));
-                rootView.setBackgroundColor(getResources().getColor(R.color.fondo_perfil_local, null));
-                topBarBusqueda.setBackgroundColor(
-                        getResources().getColor(R.color.tertiary, null));            }
+                                ContextCompat.getColor(requireContext(), R.color.tertiary));
+                rootView.setBackgroundColor(
+                        getResources().getColor(R.color.fondo_perfil_local, null));
+                topBarBusqueda.setBackgroundColor(getResources().getColor(R.color.tertiary, null));
+            }
         }
     }
 }

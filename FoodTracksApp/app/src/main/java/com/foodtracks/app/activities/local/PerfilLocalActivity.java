@@ -483,13 +483,15 @@ public class PerfilLocalActivity extends AppCompatActivity {
                                                                                             .LENGTH_SHORT)
                                                                             .show();
                                                                 } else {
-                                                                    Log.e("Enviar valoración", e.getMessage(), e);
+                                                                    Log.e(
+                                                                            "Enviar valoración",
+                                                                            e.getMessage(),
+                                                                            e);
                                                                     Toast.makeText(
                                                                                     this,
                                                                                     getString(
-                                                                                                    R
-                                                                                                            .string
-                                                                                                            .send_valoracion_error_mensaje),
+                                                                                            R.string
+                                                                                                    .send_valoracion_error_mensaje),
                                                                                     Toast
                                                                                             .LENGTH_SHORT)
                                                                             .show();
@@ -529,13 +531,15 @@ public class PerfilLocalActivity extends AppCompatActivity {
                                                             })
                                                     .addOnFailureListener(
                                                             e -> {
-                                                                Log.e("Borrar valoración", e.getMessage(), e);
+                                                                Log.e(
+                                                                        "Borrar valoración",
+                                                                        e.getMessage(),
+                                                                        e);
                                                                 Toast.makeText(
                                                                                 this,
                                                                                 getString(
-                                                                                                R
-                                                                                                        .string
-                                                                                                        .delete_valoracion_error_mensaje),
+                                                                                        R.string
+                                                                                                .delete_valoracion_error_mensaje),
                                                                                 Toast.LENGTH_SHORT)
                                                                         .show();
                                                                 btnBorrarValoracion.setEnabled(
@@ -683,12 +687,8 @@ public class PerfilLocalActivity extends AppCompatActivity {
     }
 
     private void configTheme() {
-        getWindow()
-                .setStatusBarColor(
-                        ContextCompat.getColor(this, R.color.tertiary));
-        getWindow()
-                .setNavigationBarColor(
-                       ContextCompat.getColor(this, R.color.fondo_perfil_local));
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.tertiary));
+        getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.fondo_perfil_local));
     }
 
     @Override
