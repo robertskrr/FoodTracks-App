@@ -184,9 +184,9 @@ public class FeedFragment extends Fragment {
             }
             else if (esCliente || esInvitado) {
                 // Tema Cliente o Invitado
-                getActivity().getWindow().setStatusBarColor(ContextCompat.getColor(requireContext(), R.color.secondary));
+                getActivity().getWindow().setStatusBarColor(ContextCompat.getColor(requireContext(), R.color.secondary_perfil_cliente));
 
-                topBarFeed.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.secondary));
+                topBarFeed.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.secondary_perfil_cliente));
 
                 if (esInvitado) {
                     tvUsername.setText(R.string.feed);

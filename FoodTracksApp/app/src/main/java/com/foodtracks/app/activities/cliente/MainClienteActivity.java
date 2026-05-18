@@ -136,9 +136,9 @@ public class MainClienteActivity extends AppCompatActivity {
     private void configTheme() {
         getWindow()
                 .setStatusBarColor(
-                        ContextCompat.getColor(this, R.color.secondary));
+                        ContextCompat.getColor(this, R.color.secondary_perfil_cliente));
         getWindow()
                 .setNavigationBarColor(
-                        ContextCompat.getColor(this, R.color.secondary));
+                        ContextCompat.getColor(this, R.color.secondary_perfil_cliente));
     }
 }
