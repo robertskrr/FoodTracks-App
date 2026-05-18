@@ -2,6 +2,7 @@
 
 package com.foodtracks.app.fragments;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import com.foodtracks.app.R;
 
@@ -35,12 +37,12 @@ public class FiltrosBusquedaFragment extends BottomSheetDialogFragment {
         View view = inflater.inflate(R.layout.fragment_filtros, container, false);
 
         inicializar(view);
-        setListeners(view);
+        setListeners();
 
         return view;
     }
 
-    private void setListeners(View view) {
+    private void setListeners() {
         // Aplica filtros personalizados
         btnAplicarManual.setOnClickListener(
                 v -> {
@@ -80,4 +82,14 @@ public class FiltrosBusquedaFragment extends BottomSheetDialogFragment {
         btnAplicarManual = view.findViewById(R.id.btnAplicarFiltros);
         btnUsarMisPreferencias = view.findViewById(R.id.btnMisPreferencias);
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (getDialog() != null && getDialog().getWindow() != null) {
+            getDialog().getWindow().setNavigationBarColor(
+                    ContextCompat.getColor(requireContext(), R.color.fondo_filtro_busqueda));
+        }
+    }
+
 }

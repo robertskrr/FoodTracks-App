@@ -11,4 +11,5 @@
     <color name="secondary_perfil_cliente">#88B04B</color>
     <color name="fondo_perfil_local">#7EB77F</color>
     <color name="eliminar">#920000</color>
+    <color name="fondo_filtro_busqueda">#B6BAAE</color>
 </resources>

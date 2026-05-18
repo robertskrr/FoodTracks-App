@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/fondo"
+    android:background="@color/fondo_filtro_busqueda"
     android:padding="24dp">
 
     <LinearLayout
@@ -23,8 +23,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:letterSpacing="0.03"
             android:text="@string/busqueda_de_locales_por_filtros"
-            android:textColor="@color/black"
+            android:textAlignment="center"
+            android:textColor="@color/tertiary"
             android:textSize="20sp"
             android:textStyle="bold" />
 
@@ -33,7 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:text="@string/ciudad"
-            android:textColor="#494949"
+            android:textColor="@color/tertiary"
             android:textSize="14sp"
             android:textStyle="bold" />
 
@@ -55,45 +58,48 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="12dp"
             android:text="@string/opciones_alimenticias"
-            android:textColor="#494949"
+            android:textColor="@color/tertiary"
             android:textSize="14sp"
             android:textStyle="bold" />
 
         <GridLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="20dp"
+            android:alignmentMode="alignBounds"
             android:columnCount="2"
-            android:layout_marginBottom="10dp">
+            android:rowCount="2">
 
-            <CheckBox
+            <com.google.android.material.checkbox.MaterialCheckBox
                 android:id="@+id/cbFiltroVegano"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
+                android:buttonTint="@color/tertiary"
                 android:text="@string/vegano"
                 android:textColor="@color/black" />
 
-            <CheckBox
+            <com.google.android.material.checkbox.MaterialCheckBox
                 android:id="@+id/cbFiltroVegetariano"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
+                android:buttonTint="@color/tertiary"
                 android:text="@string/vegetariano"
                 android:textColor="@color/black" />
 
-            <CheckBox
+            <com.google.android.material.checkbox.MaterialCheckBox
                 android:id="@+id/cbFiltroLactosa"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
+                android:buttonTint="@color/tertiary"
                 android:text="@string/sin_lactosa"
                 android:textColor="@color/black" />
 
-            <CheckBox
+            <com.google.android.material.checkbox.MaterialCheckBox
                 android:id="@+id/cbFiltroCeliaco"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_columnWeight="1"
+                android:buttonTint="@color/tertiary"
                 android:text="@string/celiaco"
                 android:textColor="@color/black" />
         </GridLayout>
