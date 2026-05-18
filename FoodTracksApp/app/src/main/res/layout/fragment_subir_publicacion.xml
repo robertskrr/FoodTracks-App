@@ -17,9 +17,11 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-condensed-medium"
             android:gravity="center"
+            android:letterSpacing="0.03"
             android:text="@string/nueva_publicacion"
-            android:textColor="@color/black"
+            android:textColor="@color/tertiary"
             android:textSize="20sp"
             android:textStyle="bold" />
 
