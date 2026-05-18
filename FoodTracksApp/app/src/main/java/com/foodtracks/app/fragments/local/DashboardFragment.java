@@ -193,7 +193,7 @@ public class DashboardFragment extends Fragment {
                     .getWindow()
                     .setStatusBarColor(
                             ContextCompat.getColor(
-                                    requireContext(), R.color.fondo));
+                                    requireContext(), R.color.tertiary));
         }
     }
 }

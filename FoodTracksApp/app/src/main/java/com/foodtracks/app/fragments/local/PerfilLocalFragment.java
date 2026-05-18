@@ -65,6 +65,7 @@ public class PerfilLocalFragment extends Fragment {
             tvTelefono,
             tvPuntuacion,
             tvSitioWeb,
+            tvTituloSitioWeb,
             tvSinPublicaciones;
     private ShapeableImageView imgPerfil;
     private ChipGroup chipGroupOpciones;
@@ -139,6 +140,7 @@ public class PerfilLocalFragment extends Fragment {
         tvTelefono = rootView.findViewById(R.id.tvTlfLocal);
         tvPuntuacion = rootView.findViewById(R.id.tvPuntuacionMedia);
         tvSitioWeb = rootView.findViewById(R.id.tvSitioWebLocal);
+        tvTituloSitioWeb = rootView.findViewById(R.id.tvTituloSitioWebLocal);
         imgPerfil = rootView.findViewById(R.id.imgPerfilLocal);
         chipGroupOpciones = rootView.findViewById(R.id.chipGroupOpcionesLocal);
         progressBar = rootView.findViewById(R.id.progressBarPerfilLocal);
@@ -252,10 +254,8 @@ public class PerfilLocalFragment extends Fragment {
                                                 startActivity(intent);
                                             });
                                 } else {
-                                    tvSitioWeb.setText(R.string.no_disponible);
-                                    tvSitioWeb.setTextColor(
-                                            getResources().getColor(R.color.black, null));
-                                    tvSitioWeb.setOnClickListener(null);
+                                    tvTituloSitioWeb.setVisibility(View.GONE);
+                                    tvSitioWeb.setVisibility(View.GONE);
                                 }
 
                                 if (local.getFotoPerfil() != null) {

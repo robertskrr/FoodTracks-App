@@ -224,7 +224,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/telefono"
                         android:textAllCaps="true"
-                        android:textColor="#4B4B4B"
+                        android:textColor="@color/black"
                         android:textSize="12sp"
                         android:textStyle="bold" />
 
@@ -238,11 +238,12 @@
                         android:textSize="16sp" />
 
                     <TextView
+                        android:id="@+id/tvTituloSitioWebLocal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/sitio_web"
                         android:textAllCaps="true"
-                        android:textColor="#4B4B4B"
+                        android:textColor="@color/black"
                         android:textSize="12sp"
                         android:textStyle="bold" />
 
@@ -260,7 +261,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/ubicacion"
                         android:textAllCaps="true"
-                        android:textColor="#4B4B4B"
+                        android:textColor="@color/black"
                         android:textSize="12sp"
                         android:textStyle="bold" />
 
@@ -292,7 +293,7 @@
                         android:layout_marginBottom="10dp"
                         android:text="@string/opciones_alimenticias"
                         android:textAllCaps="true"
-                        android:textColor="#4B4B4B"
+                        android:textColor="@color/black"
                         android:textSize="12sp"
                         android:textStyle="bold" />
 

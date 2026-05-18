@@ -64,6 +64,7 @@ public class PerfilLocalActivity extends AppCompatActivity {
             tvTelefono,
             tvPuntuacion,
             tvSitioWeb,
+            tvTituloSitioWeb,
             tvSinPublicaciones;
     private ShapeableImageView imgPerfil;
     private ChipGroup chipGroupOpciones;
@@ -140,6 +141,7 @@ public class PerfilLocalActivity extends AppCompatActivity {
         tvTelefono = findViewById(R.id.tvTlfLocal);
         tvPuntuacion = findViewById(R.id.tvPuntuacionMedia);
         tvSitioWeb = findViewById(R.id.tvSitioWebLocal);
+        tvTituloSitioWeb = findViewById(R.id.tvTituloSitioWebLocal);
         imgPerfil = findViewById(R.id.imgPerfilLocal);
         chipGroupOpciones = findViewById(R.id.chipGroupOpcionesLocal);
         progressBar = findViewById(R.id.progressBarPerfilLocal);
@@ -279,11 +281,8 @@ public class PerfilLocalActivity extends AppCompatActivity {
                                                 startActivity(intent);
                                             });
                                 } else {
-                                    tvSitioWeb.setText(R.string.no_disponible);
-                                    tvSitioWeb.setTextColor(
-                                            getResources().getColor(R.color.black, null));
-                                    tvSitioWeb.setOnClickListener(
-                                            null); // Desactivamos el click si no hay web
+                                    tvTituloSitioWeb.setVisibility(View.GONE);
+                                    tvSitioWeb.setVisibility(View.GONE);
                                 }
 
                                 if (local.getFotoPerfil() != null) {
