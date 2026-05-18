@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#D1F698">
+    android:background="@color/fondo_perfil_local">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/topBarDashboard"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/fondo"
+        android:background="@color/tertiary"
         android:paddingHorizontal="25dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -19,9 +19,10 @@
             android:id="@+id/tvDashboard"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-smallcaps"
+            android:fontFamily="sans-serif-condensed-medium"
+            android:letterSpacing="0.03"
             android:text="@string/dashboard"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -43,7 +44,7 @@
         android:id="@+id/layoutContenidoDashboard"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/topBarDashboard">
 

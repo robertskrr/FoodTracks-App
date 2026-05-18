@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.foodtracks.app.R;
@@ -132,26 +133,12 @@ public class MainClienteActivity extends AppCompatActivity {
         return mAuth.getCurrentUser() == null;
     }
 
-    /**
-     * Cierra la sesión del usuario y lo devuelve a la pantalla de inicio.
-     */
-    private void logOut() {
-        if (!esInvitado()) {
-            mAuth.signOut();
-        }
-        Intent intent = new Intent(MainClienteActivity.this, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        Toast.makeText(getApplicationContext(), R.string.despedida_app, Toast.LENGTH_SHORT).show();
-        startActivity(intent);
-        finish();
-    }
-
     private void configTheme() {
         getWindow()
                 .setStatusBarColor(
-                        androidx.core.content.ContextCompat.getColor(this, R.color.fondo));
+                        ContextCompat.getColor(this, R.color.secondary_perfil_cliente));
         getWindow()
                 .setNavigationBarColor(
-                        androidx.core.content.ContextCompat.getColor(this, R.color.secondary));
+                        ContextCompat.getColor(this, R.color.secondary_perfil_cliente));
     }
 }

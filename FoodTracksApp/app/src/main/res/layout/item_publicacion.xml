@@ -59,12 +59,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawablePadding="4dp"
-            android:textColor="@color/fondo"
+            android:textColor="@color/primary"
             android:textSize="12sp"
             android:textStyle="bold"
             android:visibility="gone"
             app:drawableStartCompat="@drawable/ic_local"
-            app:drawableTint="@color/fondo"
+            app:drawableTint="@color/primary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -136,7 +136,7 @@
                 android:layout_height="24dp"
                 android:src="@drawable/ic_delete"
                 android:visibility="gone"
-                app:tint="#FF3B30"
+                app:tint="@color/eliminar"
                 tools:ignore="ContentDescription" />
 
         </LinearLayout>

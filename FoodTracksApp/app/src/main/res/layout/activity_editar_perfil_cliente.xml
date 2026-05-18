@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/fondo">
+    android:background="@color/secondary_perfil_cliente"
+    android:fitsSystemWindows="true">
 
     <ProgressBar
         android:id="@+id/progressEditarCliente"
@@ -19,6 +20,7 @@
         android:id="@+id/layoutEditarCliente"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fillViewport="true"
         android:visibility="gone">
 
         <LinearLayout
@@ -26,15 +28,18 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:padding="20dp">
+            android:paddingHorizontal="24dp"
+            android:paddingVertical="32dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="24dp"
+                android:fontFamily="sans-serif-condensed-medium"
+                android:letterSpacing="0.05"
                 android:text="@string/editar_perfil"
                 android:textColor="@color/tertiary"
-                android:textSize="28sp"
+                android:textSize="30sp"
                 android:textStyle="bold" />
 
             <com.google.android.material.imageview.ShapeableImageView
@@ -42,20 +47,25 @@
                 android:layout_width="120dp"
                 android:layout_height="120dp"
                 android:layout_marginBottom="10dp"
+                android:background="@color/secondary"
+                android:padding="2dp"
                 android:scaleType="centerCrop"
                 android:src="@drawable/avatar_default"
-                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent" />
+                app:contentPadding="2dp"
+                app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent"
+                app:strokeColor="@color/tertiary"
+                app:strokeWidth="3dp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="25dp"
+                android:layout_marginBottom="24dp"
                 android:text="@string/toca_la_imagen_para_cambiarla"
                 android:textColor="@color/tertiary"
                 android:textSize="12sp" />
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/EstiloInputRegistro"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp">
@@ -69,7 +79,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/EstiloInputRegistro"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp">
@@ -83,10 +93,10 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/EstiloInputRegistro"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="20dp">
+                android:layout_marginBottom="12dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/txtEditCiudad"
@@ -99,53 +109,66 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:gravity="center_horizontal"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"
                 android:text="@string/tus_preferencias_alimenticias"
-                android:textColor="@color/black"
+                android:textAlignment="center"
+                android:textColor="@color/tertiary"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
             <GridLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
+                android:alignmentMode="alignBounds"
                 android:columnCount="2"
-                android:useDefaultMargins="true">
+                android:foregroundGravity="center_horizontal"
+                android:rowCount="3">
 
-                <CheckBox
+                <com.google.android.material.checkbox.MaterialCheckBox
                     android:id="@+id/cbEditVegano"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/vegano" />
+                    android:buttonTint="@color/tertiary"
+                    android:text="@string/vegano"
+                    android:textColor="@color/white" />
 
-                <CheckBox
+                <com.google.android.material.checkbox.MaterialCheckBox
                     android:id="@+id/cbEditVegetariano"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/vegetariano" />
+                    android:buttonTint="@color/tertiary"
+                    android:text="@string/vegetariano"
+                    android:textColor="@color/white" />
 
-                <CheckBox
+                <com.google.android.material.checkbox.MaterialCheckBox
                     android:id="@+id/cbEditLactosa"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/sin_lactosa" />
+                    android:buttonTint="@color/tertiary"
+                    android:text="@string/sin_lactosa"
+                    android:textColor="@color/white" />
 
-                <CheckBox
+                <com.google.android.material.checkbox.MaterialCheckBox
                     android:id="@+id/cbEditCeliaco"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/celiaco" />
+                    android:buttonTint="@color/tertiary"
+                    android:text="@string/celiaco"
+                    android:textColor="@color/white" />
 
-                <CheckBox
+                <com.google.android.material.checkbox.MaterialCheckBox
                     android:id="@+id/cbEditOtro"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/otro" />
+                    android:buttonTint="@color/tertiary"
+                    android:text="@string/otro"
+                    android:textColor="@color/white" />
             </GridLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/layoutEditEspecifiqueOtro"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/EstiloInputRegistro"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -162,13 +185,13 @@
             <Button
                 android:id="@+id/btnGuardarCambiosCliente"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="35dp"
-                android:backgroundTint="@color/primary"
-                android:padding="12dp"
+                android:layout_height="56dp"
+                android:layout_marginTop="32dp"
+                android:backgroundTint="@color/tertiary"
                 android:text="@string/guardar_cambios"
-                android:textColor="@color/black"
-                android:textStyle="bold" />
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:cornerRadius="16dp" />
 
             <Button
                 android:id="@+id/btnVolverSettings"

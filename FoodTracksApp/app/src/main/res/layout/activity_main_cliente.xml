@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/fondo"
+    android:background="@color/fondo_perfil_cliente"
     tools:context=".activities.cliente.MainClienteActivity">
 
     <FrameLayout
@@ -21,7 +21,7 @@
         android:id="@+id/bottomNavigation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@color/secondary"
+        android:background="@color/secondary_perfil_cliente"
         app:itemIconTint="@color/black"
         app:itemTextColor="@color/black"
         app:labelVisibilityMode="unlabeled"

@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/tertiary"
+    android:background="@color/fondo_perfil_local"
     tools:context=".activities.local.MainLocalActivity">
 
     <FrameLayout
@@ -21,8 +21,8 @@
         android:id="@+id/bottomNavigation"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@color/primary"
-        app:itemIconTint="@color/black"
+        android:background="@color/tertiary"
+        android:theme="@style/Theme.BottomNavLocal" app:itemIconTint="@color/white"
         app:itemTextColor="@color/black"
         app:labelVisibilityMode="unlabeled"
         app:layout_constraintBottom_toBottomOf="parent"

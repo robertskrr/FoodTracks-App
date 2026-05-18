@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/tertiary">
+    android:background="@color/fondo_perfil_cliente">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/topBarBusqueda"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/fondo"
+        android:background="@color/secondary_perfil_cliente"
         android:paddingHorizontal="25dp"
         android:paddingVertical="10dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -28,8 +28,8 @@
             <EditText
                 android:id="@+id/etBuscador"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="48dp"
+                android:layout_weight="1"
                 android:background="@drawable/bg_search_bar"
                 android:drawableEnd="@drawable/ic_search"
                 android:drawablePadding="10dp"
@@ -86,7 +86,7 @@
             android:textColor="#888888"
             android:textSize="16sp"
             android:textStyle="italic"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <!-- LISTA DE PERFILES -->
         <androidx.recyclerview.widget.RecyclerView

@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -63,6 +64,7 @@ public class PerfilLocalActivity extends AppCompatActivity {
             tvTelefono,
             tvPuntuacion,
             tvSitioWeb,
+            tvTituloSitioWeb,
             tvSinPublicaciones;
     private ShapeableImageView imgPerfil;
     private ChipGroup chipGroupOpciones;
@@ -139,6 +141,7 @@ public class PerfilLocalActivity extends AppCompatActivity {
         tvTelefono = findViewById(R.id.tvTlfLocal);
         tvPuntuacion = findViewById(R.id.tvPuntuacionMedia);
         tvSitioWeb = findViewById(R.id.tvSitioWebLocal);
+        tvTituloSitioWeb = findViewById(R.id.tvTituloSitioWebLocal);
         imgPerfil = findViewById(R.id.imgPerfilLocal);
         chipGroupOpciones = findViewById(R.id.chipGroupOpcionesLocal);
         progressBar = findViewById(R.id.progressBarPerfilLocal);
@@ -278,11 +281,8 @@ public class PerfilLocalActivity extends AppCompatActivity {
                                                 startActivity(intent);
                                             });
                                 } else {
-                                    tvSitioWeb.setText(R.string.no_disponible);
-                                    tvSitioWeb.setTextColor(
-                                            getResources().getColor(R.color.black, null));
-                                    tvSitioWeb.setOnClickListener(
-                                            null); // Desactivamos el click si no hay web
+                                    tvTituloSitioWeb.setVisibility(View.GONE);
+                                    tvSitioWeb.setVisibility(View.GONE);
                                 }
 
                                 if (local.getFotoPerfil() != null) {
@@ -483,14 +483,13 @@ public class PerfilLocalActivity extends AppCompatActivity {
                                                                                             .LENGTH_SHORT)
                                                                             .show();
                                                                 } else {
+                                                                    Log.e("Enviar valoración", e.getMessage(), e);
                                                                     Toast.makeText(
                                                                                     this,
                                                                                     getString(
                                                                                                     R
                                                                                                             .string
-                                                                                                            .send_valoracion_error_mensaje)
-                                                                                            + e
-                                                                                                    .getMessage(),
+                                                                                                            .send_valoracion_error_mensaje),
                                                                                     Toast
                                                                                             .LENGTH_SHORT)
                                                                             .show();
@@ -530,14 +529,13 @@ public class PerfilLocalActivity extends AppCompatActivity {
                                                             })
                                                     .addOnFailureListener(
                                                             e -> {
+                                                                Log.e("Borrar valoración", e.getMessage(), e);
                                                                 Toast.makeText(
                                                                                 this,
                                                                                 getString(
                                                                                                 R
                                                                                                         .string
-                                                                                                        .delete_valoracion_error_mensaje)
-                                                                                        + e
-                                                                                                .getMessage(),
+                                                                                                        .delete_valoracion_error_mensaje),
                                                                                 Toast.LENGTH_SHORT)
                                                                         .show();
                                                                 btnBorrarValoracion.setEnabled(
@@ -678,18 +676,19 @@ public class PerfilLocalActivity extends AppCompatActivity {
         chip.setText(texto);
         chip.setCheckable(false);
         chip.setClickable(false);
-        chip.setChipBackgroundColorResource(R.color.primary);
-        chip.setTextColor(getResources().getColor(R.color.black, null));
+        chip.setChipBackgroundColorResource(R.color.tertiary);
+        chip.setTextColor(getResources().getColor(R.color.white, null));
+        chip.setChipStrokeColorResource(R.color.tertiary);
         chipGroupOpciones.addView(chip);
     }
 
     private void configTheme() {
         getWindow()
                 .setStatusBarColor(
-                        androidx.core.content.ContextCompat.getColor(this, R.color.tertiary));
+                        ContextCompat.getColor(this, R.color.tertiary));
         getWindow()
                 .setNavigationBarColor(
-                        androidx.core.content.ContextCompat.getColor(this, R.color.secondary));
+                       ContextCompat.getColor(this, R.color.fondo_perfil_local));
     }
 
     @Override

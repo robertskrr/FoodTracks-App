@@ -12,6 +12,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 
@@ -191,8 +192,8 @@ public class DashboardFragment extends Fragment {
             getActivity()
                     .getWindow()
                     .setStatusBarColor(
-                            androidx.core.content.ContextCompat.getColor(
-                                    requireContext(), R.color.fondo));
+                            ContextCompat.getColor(
+                                    requireContext(), R.color.tertiary));
         }
     }
 }

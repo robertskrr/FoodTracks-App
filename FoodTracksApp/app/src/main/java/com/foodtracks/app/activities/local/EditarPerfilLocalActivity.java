@@ -13,6 +13,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.foodtracks.app.R;
 import com.foodtracks.app.models.UsuarioLocal;
@@ -46,6 +47,7 @@ public class EditarPerfilLocalActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editar_perfil_local);
 
+        configTheme();
         inicializar();
         cargarDatos();
         mostrarOtraPreferencia();
@@ -204,4 +206,16 @@ public class EditarPerfilLocalActivity extends AppCompatActivity {
                             imgFoto.setImageURI(uri);
                         }
                     });
+
+    /**
+     * Configura el tema de la pantalla.
+     */
+    private void configTheme() {
+        getWindow()
+                .setStatusBarColor(
+                        ContextCompat.getColor(this, R.color.fondo_perfil_local));
+        getWindow()
+                .setNavigationBarColor(
+                        ContextCompat.getColor(this, R.color.fondo_perfil_local));
+    }
 }

@@ -21,11 +21,15 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.foodtracks.app.R;
+import com.foodtracks.app.activities.admin.MainAdminActivity;
+import com.foodtracks.app.activities.cliente.MainClienteActivity;
+import com.foodtracks.app.activities.local.MainLocalActivity;
 import com.foodtracks.app.adapters.PerfilUsuarioAdapter;
 import com.foodtracks.app.models.Usuario;
 import com.foodtracks.app.models.UsuarioAdmin;
@@ -70,7 +74,6 @@ public class BusquedaFragment extends Fragment {
         rootView = inflater.inflate(R.layout.fragment_busqueda, container, false);
 
         inicializar();
-        mostrarInterfazUsuario();
 
         return rootView;
     }
@@ -99,6 +102,18 @@ public class BusquedaFragment extends Fragment {
         btnFiltros = rootView.findViewById(R.id.btnFiltros);
 
         setListeners();
+
+        if (getActivity() instanceof MainLocalActivity) {
+            esLocal = true;
+        } else if (getActivity() instanceof MainClienteActivity) {
+            if (!esInvitado) {
+                esCliente = true;
+            }
+        } else if (getActivity() instanceof MainAdminActivity) {
+            esAdmin = true;
+        }
+
+        configTheme();
     }
 
     private void setListeners() {
@@ -190,44 +205,6 @@ public class BusquedaFragment extends Fragment {
         }
     }
 
-    private void mostrarInterfazUsuario() {
-        if (uidUsuarioActual == null) {
-            return;
-        }
-        usuarioService
-                .getPerfil(uidUsuarioActual)
-                .addOnSuccessListener(
-                        usuario -> {
-                            if (!isAdded()) return; // Red de seguridad
-
-                            switch (usuario) {
-                                case UsuarioAdmin ignored -> {
-                                    esAdmin = true;
-                                    configTheme();
-                                }
-                                case UsuarioCliente ignored -> {
-                                    esCliente = true;
-                                    configTheme();
-                                }
-                                case UsuarioLocal ignored -> {
-                                    esLocal = true;
-                                    configTheme();
-                                }
-                                default -> {}
-                            }
-                        })
-                .addOnFailureListener(
-                        e -> {
-                            if (!isAdded()) return; // Red de seguridad
-                            Toast.makeText(
-                                            requireContext(),
-                                            getString(R.string.loading_profile_error_message)
-                                                    + e.getMessage(),
-                                            Toast.LENGTH_SHORT)
-                                    .show();
-                        });
-    }
-
     private void cargarPerfiles(String username) {
         usuarioService
                 .buscarUsuarios(username)
@@ -310,7 +287,7 @@ public class BusquedaFragment extends Fragment {
                 getActivity()
                         .getWindow()
                         .setStatusBarColor(
-                                androidx.core.content.ContextCompat.getColor(
+                                ContextCompat.getColor(
                                         requireContext(), R.color.admin_bottom_nav));
                 rootView.setBackgroundColor(getResources().getColor(R.color.black, null));
                 topBarBusqueda.setBackgroundColor(
@@ -321,14 +298,22 @@ public class BusquedaFragment extends Fragment {
                 getActivity()
                         .getWindow()
                         .setStatusBarColor(
-                                androidx.core.content.ContextCompat.getColor(
-                                        requireContext(), R.color.fondo));
-                // TODO -> Interfaz de cliente/invitado (colores, etc)
+                                ContextCompat.getColor(
+                                        requireContext(), R.color.secondary_perfil_cliente));
+                rootView.setBackgroundColor(getResources().getColor(R.color.fondo_perfil_cliente, null));
+                topBarBusqueda.setBackgroundColor(
+                        getResources().getColor(R.color.secondary_perfil_cliente, null));
             }
 
             if (esLocal) {
-                // TODO -> Interfaz de local (colores, etc)
-            }
+                getActivity()
+                        .getWindow()
+                        .setStatusBarColor(
+                                ContextCompat.getColor(
+                                        requireContext(), R.color.tertiary));
+                rootView.setBackgroundColor(getResources().getColor(R.color.fondo_perfil_local, null));
+                topBarBusqueda.setBackgroundColor(
+                        getResources().getColor(R.color.tertiary, null));            }
         }
     }
 }

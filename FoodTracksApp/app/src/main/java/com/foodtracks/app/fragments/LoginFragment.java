@@ -26,6 +26,7 @@ import com.foodtracks.app.services.ServiceFactory;
 import com.foodtracks.app.services.interfaces.IUsuarioService;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
 
 /**
  * @author Robert
@@ -115,29 +116,33 @@ public class LoginFragment extends DialogFragment {
                                         .addOnFailureListener(
                                                 e -> {
                                                     Toast.makeText(
-                                                                    getContext(),
+                                                                    requireContext(),
                                                                     getString(
                                                                             R.string
                                                                                     .loading_profile_error_message),
                                                                     Toast.LENGTH_SHORT)
                                                             .show();
-                                                    Log.d(
-                                                            "ERROR",
-                                                            getString(
-                                                                            R.string
-                                                                                    .loading_profile_error_message)
-                                                                    + e.getMessage());
+                                                    Log.e("Carga de perfil", e.getMessage(), e);
                                                     btnLogin.setEnabled(true);
                                                 });
                             }
                         })
                 .addOnFailureListener(
                         e -> {
-                            Toast.makeText(
-                                            getContext(),
-                                            R.string.login_error_message,
-                                            Toast.LENGTH_SHORT)
-                                    .show();
+                            if (e instanceof FirebaseAuthInvalidCredentialsException) {
+                                // El usuario o la contraseña no coinciden
+                                Toast.makeText(
+                                                getContext(),
+                                                R.string.credenciales_incorrectas,
+                                                Toast.LENGTH_SHORT)
+                                        .show();
+                            } else {
+                                Toast.makeText(
+                                                getContext(),
+                                                R.string.login_error_message,
+                                                Toast.LENGTH_SHORT)
+                                        .show();
+                            }
                             btnLogin.setEnabled(true);
                         });
     }

@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -180,8 +181,9 @@ public class PerfilClienteFragment extends Fragment {
         chip.setText(texto);
         chip.setCheckable(false);
         chip.setClickable(false);
-        chip.setChipBackgroundColorResource(R.color.tertiary);
+        chip.setChipBackgroundColorResource(R.color.secondary_perfil_cliente);
         chip.setTextColor(getResources().getColor(R.color.white, null));
+        chip.setChipStrokeColorResource(R.color.secondary_perfil_cliente);
         chipGroupPreferencias.addView(chip);
     }
 
@@ -231,8 +233,8 @@ public class PerfilClienteFragment extends Fragment {
             getActivity()
                     .getWindow()
                     .setStatusBarColor(
-                            androidx.core.content.ContextCompat.getColor(
-                                    requireContext(), R.color.fondo));
+                            ContextCompat.getColor(
+                                    requireContext(), R.color.secondary_perfil_cliente));
         }
     }
 }

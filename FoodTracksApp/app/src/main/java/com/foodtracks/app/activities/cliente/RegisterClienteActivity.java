@@ -5,6 +5,7 @@ package com.foodtracks.app.activities.cliente;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -13,6 +14,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.PickVisualMediaRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import com.foodtracks.app.R;
 import com.foodtracks.app.models.UsuarioCliente;
@@ -55,8 +57,34 @@ public class RegisterClienteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_cliente);
 
+        configTheme();
         inicializar();
         mostrarOtraPreferencia();
+    }
+
+    /**
+     * Inicializa los elementos y componentes
+     */
+    private void inicializar() {
+        mAuth = FirebaseAuth.getInstance();
+        usuarioService = ServiceFactory.provideUsuarioService(this);
+
+        // Campos del usuario
+        fotoPerfil = findViewById(R.id.imgPerfilCliente);
+        nombre = findViewById(R.id.txtNombre);
+        username = findViewById(R.id.txtUsername);
+        email = findViewById(R.id.txtEmail);
+        password = findViewById(R.id.txtPassword);
+        confirmPassword = findViewById(R.id.txtConfirmPassword);
+        ciudad = findViewById(R.id.txtCiudad);
+
+        // Preferencias alimenticias
+        esVegano = findViewById(R.id.cbVegano);
+        esVegetariano = findViewById(R.id.cbVegetariano);
+        sinLactosa = findViewById(R.id.cbLactosa);
+        esCeliaco = findViewById(R.id.cbCeliaco);
+        otraPreferencia = findViewById(R.id.cbOtro);
+        especifiqueOtro = findViewById(R.id.txtEspecifiqueOtro);
     }
 
     /**
@@ -100,11 +128,10 @@ public class RegisterClienteActivity extends AppCompatActivity {
                                                 Toast.LENGTH_SHORT)
                                         .show();
                             } else {
+                                Log.e("Creación cuenta cliente", e.getMessage(), e);
                                 Toast.makeText(
                                                 this,
-                                                getString(R.string.create_account_error_message)
-                                                        + ": "
-                                                        + e.getMessage(),
+                                                getString(R.string.create_account_error_message),
                                                 Toast.LENGTH_SHORT)
                                         .show();
                             }
@@ -168,44 +195,18 @@ public class RegisterClienteActivity extends AppCompatActivity {
                                                                         Toast.LENGTH_SHORT)
                                                                 .show();
                                                     } else {
+                                                        Log.e("Creación cuenta cliente", e.getMessage(), e);
                                                         Toast.makeText(
                                                                         this,
                                                                         getString(
                                                                                         R.string
-                                                                                                .register_critic_error_message)
-                                                                                + ": "
-                                                                                + e.getMessage(),
+                                                                                                .register_critic_error_message),
                                                                         Toast.LENGTH_SHORT)
                                                                 .show();
                                                     }
                                                 });
                             }
                         });
-    }
-
-    /**
-     * Inicializa los elementos y componentes
-     */
-    private void inicializar() {
-        mAuth = FirebaseAuth.getInstance();
-        usuarioService = ServiceFactory.provideUsuarioService(this);
-
-        // Campos del usuario
-        fotoPerfil = findViewById(R.id.imgPerfilCliente);
-        nombre = findViewById(R.id.txtNombre);
-        username = findViewById(R.id.txtUsername);
-        email = findViewById(R.id.txtEmail);
-        password = findViewById(R.id.txtPassword);
-        confirmPassword = findViewById(R.id.txtConfirmPassword);
-        ciudad = findViewById(R.id.txtCiudad);
-
-        // Preferencias alimenticias
-        esVegano = findViewById(R.id.cbVegano);
-        esVegetariano = findViewById(R.id.cbVegetariano);
-        sinLactosa = findViewById(R.id.cbLactosa);
-        esCeliaco = findViewById(R.id.cbCeliaco);
-        otraPreferencia = findViewById(R.id.cbOtro);
-        especifiqueOtro = findViewById(R.id.txtEspecifiqueOtro);
     }
 
     /**
@@ -231,5 +232,17 @@ public class RegisterClienteActivity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
+    }
+
+    /**
+     * Configura el tema de la pantalla.
+     */
+    private void configTheme() {
+        getWindow()
+                .setStatusBarColor(
+                        ContextCompat.getColor(this, R.color.secondary_perfil_cliente));
+        getWindow()
+                .setNavigationBarColor(
+                        ContextCompat.getColor(this, R.color.secondary_perfil_cliente));
     }
 }

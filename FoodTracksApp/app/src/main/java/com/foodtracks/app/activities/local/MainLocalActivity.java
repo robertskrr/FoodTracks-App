@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.foodtracks.app.R;
@@ -108,21 +109,12 @@ public class MainLocalActivity extends AppCompatActivity {
                 });
     }
 
-    private void logOut() {
-        mAuth.signOut();
-        Intent intent = new Intent(MainLocalActivity.this, MainActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        Toast.makeText(getApplicationContext(), R.string.despedida_app, Toast.LENGTH_SHORT).show();
-        startActivity(intent);
-        finish();
-    }
-
     private void configTheme() {
         getWindow()
                 .setStatusBarColor(
-                        androidx.core.content.ContextCompat.getColor(this, R.color.tertiary));
+                        ContextCompat.getColor(this, R.color.tertiary));
         getWindow()
                 .setNavigationBarColor(
-                        androidx.core.content.ContextCompat.getColor(this, R.color.primary));
+                        ContextCompat.getColor(this, R.color.tertiary));
     }
 }
