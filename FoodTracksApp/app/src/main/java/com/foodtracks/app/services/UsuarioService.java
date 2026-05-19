@@ -515,6 +515,9 @@ public class UsuarioService implements IUsuarioService {
         }
 
         if (usuario instanceof UsuarioLocal local) {
+            if (local.getNombre() != null){
+                local.setNombre(StringUtils.capitalize(local.getNombre()));
+            }
             if (local.getTelefono() != null) {
                 local.setTelefono(local.getTelefono().trim());
             }
