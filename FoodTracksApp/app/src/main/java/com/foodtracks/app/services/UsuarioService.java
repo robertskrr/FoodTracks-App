@@ -519,6 +519,10 @@ public class UsuarioService implements IUsuarioService {
                 local.setTelefono(local.getTelefono().trim());
             }
 
+            if (local.getDireccion() != null){
+                local.setDireccion(StringUtils.capitalizePrimeraLetra(local.getDireccion()));
+            }
+
             if (local.getSitioWeb() != null) {
                 String web = local.getSitioWeb().trim();
                 // Si no hay nada escrito lo guarda como NULL real en BBDD
