@@ -47,6 +47,29 @@ public class LoginFragment extends DialogFragment {
         View v = inflater.inflate(R.layout.fragment_login, container, false);
         inicializar(v);
 
+
+
+        return v;
+    }
+
+    /**
+     * Asigna los componentes a la interfaz
+     *
+     * @param v Vista del fragmento
+     */
+    private void inicializar(View v) {
+        btnLogin = v.findViewById(R.id.btnAcceder);
+        email = v.findViewById(R.id.txtLoginEmail);
+        password = v.findViewById(R.id.txtLoginPassword);
+        irARegistro = v.findViewById(R.id.txtVolverARegistro);
+
+        mAuth = FirebaseAuth.getInstance();
+        usuarioService = ServiceFactory.provideUsuarioService(requireContext());
+
+        configurarListeners();
+    }
+
+    private void configurarListeners(){
         irARegistro.setOnClickListener(
                 v1 -> {
                     dismiss();
@@ -70,25 +93,9 @@ public class LoginFragment extends DialogFragment {
 
                     // Evitamos dobles clicks
                     btnLogin.setEnabled(false);
+                    setCancelable(false); // Bloquea el fragment para evitar crasheos
                     loginUser(emailLogin, passwordLogin);
                 });
-
-        return v;
-    }
-
-    /**
-     * Asigna los componentes a la interfaz
-     *
-     * @param v Vista del fragmento
-     */
-    private void inicializar(View v) {
-        btnLogin = v.findViewById(R.id.btnAcceder);
-        email = v.findViewById(R.id.txtLoginEmail);
-        password = v.findViewById(R.id.txtLoginPassword);
-        irARegistro = v.findViewById(R.id.txtVolverARegistro);
-
-        mAuth = FirebaseAuth.getInstance();
-        usuarioService = ServiceFactory.provideUsuarioService(requireContext());
     }
 
     /**
@@ -112,9 +119,13 @@ public class LoginFragment extends DialogFragment {
 
                                 usuarioService
                                         .getPerfil(uid)
-                                        .addOnSuccessListener(this::cambiarActivity)
+                                        .addOnSuccessListener(usuario -> {
+                                            if (!isAdded()) return;
+                                            cambiarActivity(usuario);
+                                        })
                                         .addOnFailureListener(
                                                 e -> {
+                                                    if (!isAdded()) return;
                                                     Toast.makeText(
                                                                     requireContext(),
                                                                     getString(
@@ -124,11 +135,13 @@ public class LoginFragment extends DialogFragment {
                                                             .show();
                                                     Log.e("Carga de perfil", e.getMessage(), e);
                                                     btnLogin.setEnabled(true);
+                                                    setCancelable(true);
                                                 });
                             }
                         })
                 .addOnFailureListener(
                         e -> {
+                            if (!isAdded()) return;
                             if (e instanceof FirebaseAuthInvalidCredentialsException) {
                                 // El usuario o la contraseña no coinciden
                                 Toast.makeText(
@@ -144,6 +157,7 @@ public class LoginFragment extends DialogFragment {
                                         .show();
                             }
                             btnLogin.setEnabled(true);
+                            setCancelable(true);
                         });
     }
 
