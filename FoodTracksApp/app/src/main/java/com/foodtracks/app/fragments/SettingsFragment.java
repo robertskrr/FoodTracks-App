@@ -25,8 +25,11 @@ import androidx.fragment.app.Fragment;
 import com.foodtracks.app.R;
 import com.foodtracks.app.activities.MainActivity;
 import com.foodtracks.app.activities.VideoPlayerActivity;
+import com.foodtracks.app.activities.admin.MainAdminActivity;
 import com.foodtracks.app.activities.cliente.EditarPerfilClienteActivity;
+import com.foodtracks.app.activities.cliente.MainClienteActivity;
 import com.foodtracks.app.activities.local.EditarPerfilLocalActivity;
+import com.foodtracks.app.activities.local.MainLocalActivity;
 import com.foodtracks.app.services.ServiceFactory;
 import com.foodtracks.app.services.interfaces.IUsuarioService;
 
@@ -75,12 +78,15 @@ public class SettingsFragment extends Fragment {
 
         configTheme();
         inicializar();
-        cargarPreferenciasLocales();
+        cargarPreferencias();
         configurarListeners();
 
         return rootView;
     }
 
+    /**
+     * Asigna los componentes de la interfaz.
+     */
     private void inicializar() {
         mAuth = FirebaseAuth.getInstance();
         usuarioService = ServiceFactory.provideUsuarioService(requireContext());
@@ -88,7 +94,6 @@ public class SettingsFragment extends Fragment {
 
         if (mAuth.getCurrentUser() != null) {
             uidUsuario = mAuth.getCurrentUser().getUid();
-            comprobarRol();
         } else {
             esInvitado = true;
         }
@@ -103,6 +108,18 @@ public class SettingsFragment extends Fragment {
         btnPremium = rootView.findViewById(R.id.btnPlanPremium);
         overlayCarga = rootView.findViewById(R.id.overlayCargaSettings);
 
+        if (getActivity() instanceof MainLocalActivity) {
+            esLocal = true;
+            btnPremium.setVisibility(View.VISIBLE);
+        } else if (getActivity() instanceof MainClienteActivity) {
+            if (!esInvitado) {
+                esCliente = true;
+                btnPremium.setVisibility(View.VISIBLE);
+            }
+        } else if (getActivity() instanceof MainAdminActivity) {
+            esAdmin = true;
+        }
+
         if (esInvitado) {
             btnEditarPerfil.setVisibility(View.GONE);
             btnCambiarPassword.setVisibility(View.GONE);
@@ -112,7 +129,10 @@ public class SettingsFragment extends Fragment {
         }
     }
 
-    private void cargarPreferenciasLocales() {
+    /**
+     * Carga las preferencias guardadas del usuario.
+     */
+    private void cargarPreferencias() {
         boolean notifActivas = sharedPreferences.getBoolean(KEY_NOTIF, true);
         boolean sonidosSilenciados = sharedPreferences.getBoolean(KEY_SOUNDS, false);
 
@@ -120,6 +140,9 @@ public class SettingsFragment extends Fragment {
         switchSonidos.setChecked(sonidosSilenciados);
     }
 
+    /**
+     * Configura los listeners de los componentes.
+     */
     private void configurarListeners() {
         // Guardar cambios en switches
         switchNotificaciones.setOnCheckedChangeListener(
@@ -174,8 +197,11 @@ public class SettingsFragment extends Fragment {
                 });
     }
 
+    /**
+     * Redirección a la activity de Editar Perfil según el rol.
+     */
     private void redirigirAEditarPerfil() {
-        if (uidUsuario == null) return;
+        if (esInvitado) return;
 
         Intent intent;
         if (esLocal) {
@@ -187,6 +213,9 @@ public class SettingsFragment extends Fragment {
         startActivity(intent);
     }
 
+    /**
+     * Muestra el diálogo de confirmación de cierre de sesión.
+     */
     private void mostrarDialogoCerrarSesion() {
         AlertDialog dialog =
                 new MaterialAlertDialogBuilder(requireContext())
@@ -206,6 +235,9 @@ public class SettingsFragment extends Fragment {
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
     }
 
+    /**
+     * Muestra el diálogo de confirmación de eliminación de cuenta.
+     */
     private void mostrarDialogoEliminarCuenta() {
         AlertDialog dialog =
                 new MaterialAlertDialogBuilder(requireContext())
@@ -256,6 +288,9 @@ public class SettingsFragment extends Fragment {
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
     }
 
+    /**
+     * Muestra el diálogo de cambio de contraseña.
+     */
     private void mostrarDialogoCambiarPassword() {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user == null) return;
@@ -349,32 +384,6 @@ public class SettingsFragment extends Fragment {
     }
 
     /**
-     * Consulta el rol del usuario.
-     */
-    private void comprobarRol() {
-        if (uidUsuario == null) return;
-
-        usuarioService
-                .getPerfil(uidUsuario)
-                .addOnSuccessListener(
-                        usuario -> {
-                            if (!isAdded()) return;
-
-                            String rol = usuario.getRol();
-                            if ("local".equals(rol)) {
-                                esLocal = true;
-                                btnPremium.setVisibility(View.VISIBLE);
-                            } else if ("admin".equals(rol)) {
-                                esAdmin = true;
-                            } else {
-                                esCliente = true;
-                                btnPremium.setVisibility(View.VISIBLE);
-                            }
-                        })
-                .addOnFailureListener(e -> Log.e("Settings", "Error al obtener rol", e));
-    }
-
-    /**
      * Cierra la sesión del usuario y lo devuelve a la pantalla de inicio.
      */
     private void logOut() {
@@ -389,6 +398,9 @@ public class SettingsFragment extends Fragment {
         startActivity(intent);
     }
 
+    /**
+     * Configura el tema de la interfaz.
+     */
     private void configTheme() {
         if (getActivity() != null) {
             getActivity()
