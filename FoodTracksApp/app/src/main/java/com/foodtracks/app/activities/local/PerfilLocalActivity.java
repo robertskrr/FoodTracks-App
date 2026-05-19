@@ -184,6 +184,9 @@ public class PerfilLocalActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Configura el mapa del perfil.
+     */
     @SuppressLint("ClickableViewAccessibility")
     private void configMapa() {
         Configuration.getInstance().setUserAgentValue(getPackageName());
@@ -204,6 +207,11 @@ public class PerfilLocalActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Obtiene el UID del perfil.
+     * @param mAuth Firebase Auth
+     * @return UID del dueño del perfil.
+     */
     private String getUidPerfil(FirebaseAuth mAuth) {
         String uidOtroUsuarioLocal = getIntent().getStringExtra("UID_USUARIO");
 
@@ -220,6 +228,9 @@ public class PerfilLocalActivity extends AppCompatActivity {
         return null;
     }
 
+    /**
+     * Muestra los datos del local visitado.
+     */
     private void mostrarDatosLocal() {
         // Reiniciamos temporalmente los textos para que se note la actualización en tiempo real
         tvPuntuacion.setText("...");
@@ -312,7 +323,7 @@ public class PerfilLocalActivity extends AppCompatActivity {
                         });
     }
 
-    /** Carga las publicaciones publicadas por este local */
+    /** Carga las publicaciones publicadas por este local. */
     private void cargarPublicaciones() {
         publicacionService
                 .getPublicacionesByUsuario(uidLocalVisitado)
@@ -376,7 +387,10 @@ public class PerfilLocalActivity extends AppCompatActivity {
                         });
     }
 
-    /** Sincroniza las tareas de red para mostrar la pantalla solo cuando todo esté listo */
+    /**
+     * Comprueba la carga de los procesos para ocultar la barra de progreso
+     * y mostrar la interfaz con los datos.
+     */
     private synchronized void comprobarCargaCompleta() {
         if (tareasCompletadas < 2) {
             tareasCompletadas++;
@@ -551,7 +565,7 @@ public class PerfilLocalActivity extends AppCompatActivity {
     }
 
     /**
-     * Reproducción del sonido de valoración enviada
+     * Reproducción del sonido de valoración enviada.
      */
     private void sonidoValoracion() {
         // Comprueba las preferencias de "Sonidos silenciados"
@@ -569,6 +583,10 @@ public class PerfilLocalActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Muestra el diálogo de proceso de borrado de
+     * usuario por un administrador.
+     */
     private void mostrarDialogoEliminarPerfilAdmin() {
         EditText inputMotivo = new EditText(this);
         inputMotivo.setHint(R.string.motivo_eliminacion);
@@ -638,6 +656,9 @@ public class PerfilLocalActivity extends AppCompatActivity {
                 .setTextColor(android.graphics.Color.BLACK);
     }
 
+    /**
+     * Actualiza la chincheta en el mapa con la ubicación del local.
+     */
     private void actualizarChinchetaMapa() {
         if (mapOsm != null && latitudLocal != 0.0 && longitudLocal != 0.0) {
             GeoPoint startPoint = new GeoPoint(latitudLocal, longitudLocal);
@@ -658,6 +679,9 @@ public class PerfilLocalActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Inyecta los chips de preferencias basados en los datos del usuario.
+     */
     private void cargarChipsOpciones(UsuarioLocal local) {
         chipGroupOpciones.removeAllViews();
 
@@ -675,6 +699,10 @@ public class PerfilLocalActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Crea un Chip visual y lo añade al ChipGroup de la interfaz.
+     * @param texto Texto de la preferencia.
+     */
     private void addChip(String texto) {
         Chip chip = new Chip(this);
         chip.setText(texto);
@@ -686,6 +714,9 @@ public class PerfilLocalActivity extends AppCompatActivity {
         chipGroupOpciones.addView(chip);
     }
 
+    /**
+     * Configura el tema de la interfaz.
+     */
     private void configTheme() {
         getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.tertiary));
         getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.fondo_perfil_local));

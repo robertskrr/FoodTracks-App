@@ -25,9 +25,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Muestra el fragment con los datos de inicio de sesión
-     *
-     * @param view
+     * Muestra el fragment con los datos de inicio de sesión.
      */
     public void login(View view) {
         LoginFragment fm = new LoginFragment();
@@ -36,8 +34,6 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Muestra las opciones de registro en un fragment
-     *
-     * @param view
      */
     public void register(View view) {
         TipoRegistroFragment fm = new TipoRegistroFragment();
@@ -45,9 +41,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Acceso como invitado
-     *
-     * @param view
+     * Acceso como invitado.
      */
     public void invitado(View view) {
         startActivity(new Intent(getApplicationContext(), MainClienteActivity.class));

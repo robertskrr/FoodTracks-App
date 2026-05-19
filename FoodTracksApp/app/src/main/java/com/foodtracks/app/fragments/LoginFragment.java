@@ -47,8 +47,6 @@ public class LoginFragment extends DialogFragment {
         View v = inflater.inflate(R.layout.fragment_login, container, false);
         inicializar(v);
 
-
-
         return v;
     }
 
@@ -69,7 +67,10 @@ public class LoginFragment extends DialogFragment {
         configurarListeners();
     }
 
-    private void configurarListeners(){
+    /**
+     * Configura los listeners de los componentes.
+     */
+    private void configurarListeners() {
         irARegistro.setOnClickListener(
                 v1 -> {
                     dismiss();
@@ -119,10 +120,11 @@ public class LoginFragment extends DialogFragment {
 
                                 usuarioService
                                         .getPerfil(uid)
-                                        .addOnSuccessListener(usuario -> {
-                                            if (!isAdded()) return;
-                                            cambiarActivity(usuario);
-                                        })
+                                        .addOnSuccessListener(
+                                                usuario -> {
+                                                    if (!isAdded()) return;
+                                                    cambiarActivity(usuario);
+                                                })
                                         .addOnFailureListener(
                                                 e -> {
                                                     if (!isAdded()) return;

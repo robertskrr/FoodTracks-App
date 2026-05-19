@@ -68,6 +68,9 @@ public class AdminPanelFragment extends Fragment {
         return rootView;
     }
 
+    /**
+     * Asigna los componentes a la interfaz.
+     */
     private void inicializar() {
         usuarioService = ServiceFactory.provideUsuarioService(requireContext());
         publicacionService = ServiceFactory.providePublicacionService(requireContext());
@@ -81,6 +84,9 @@ public class AdminPanelFragment extends Fragment {
         recyclerRegistros.setLayoutManager(new LinearLayoutManager(requireContext()));
     }
 
+    /**
+     * Carga los datos y registros de borrado.
+     */
     private void cargarDatosYRegistros() {
         // Descargamos la lista de Usuarios borrados
         usuarioService
@@ -112,7 +118,7 @@ public class AdminPanelFragment extends Fragment {
     }
 
     /**
-     * Configura que botón está seleccionado del toggle
+     * Configura que botón está seleccionado del toggle.
      */
     private void configurarToggle() {
         toggleGroup.addOnButtonCheckedListener(
@@ -159,6 +165,9 @@ public class AdminPanelFragment extends Fragment {
         }
     }
 
+    /**
+     * Configura el tema de la interfaz.
+     */
     private void configTheme() {
         if (getActivity() != null) {
             getActivity()

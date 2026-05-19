@@ -19,11 +19,12 @@ import retrofit2.http.Path;
  * @since 03/04
  */
 public interface ImageKitApi {
+
     /**
      * Sube un archivo de imagen al servidor de ImageKit.
      *
      * @param file El archivo binario de la imagen envuelto en un MultipartBody.
-     * @param fileName El nombre que se le asignará al archivo en la nube.
+     * @param fileName El nombre que se le asignará al archivo.
      * @param useUnique El flag para que ImageKit añada un sufijo único al nombre.
      * @param folder La carpeta de destino para organizar el almacenamiento (ej: /perfiles).
      * @return {@link Call} que contiene la respuesta con los datos de la subida.
@@ -40,10 +41,9 @@ public interface ImageKitApi {
 
     /**
      * Elimina un archivo permanentemente del almacenamiento de ImageKit.
-     * Utiliza la Management API v1.
      *
-     * @param fileId Identificador único del archivo (proporcionado en la subida).
-     * @return {@link Call} de tipo Void.
+     * @param fileId Identificador único del archivo.
+     * @return {@link Call}.
      */
     @DELETE("https://api.imagekit.io/v1/files/{fileId}") // URL de gestión
     Call<Void> deleteImage(@Path("fileId") String fileId);

@@ -131,6 +131,9 @@ public class MainClienteActivity extends AppCompatActivity {
         return mAuth.getCurrentUser() == null;
     }
 
+    /**
+     * Configura el tema de la interfaz.
+     */
     private void configTheme() {
         getWindow()
                 .setStatusBarColor(ContextCompat.getColor(this, R.color.secondary_perfil_cliente));

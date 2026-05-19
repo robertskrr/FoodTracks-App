@@ -249,7 +249,7 @@ public class PublicacionAdapter
     }
 
     /**
-     * Método auxiliar para cambiar el color y el estado del botón Like
+     * Método auxiliar para cambiar el color y el estado del botón Like.
      */
     private void marcarComoLike(PublicacionViewHolder holder, boolean isLiked) {
         holder.imgLike.setTag(isLiked);
@@ -279,6 +279,9 @@ public class PublicacionAdapter
         }
     }
 
+    /**
+     * Comprueba si el usuario que ve la publicación es administrador.
+     */
     private void comprobarAdmin() {
         usuarioService
                 .getPerfil(currentUid)
@@ -299,7 +302,7 @@ public class PublicacionAdapter
     }
 
     /**
-     * Consulta Firestore para obtener el username y la foto del autor de una publicación.
+     * Carga los datos del autor de una publicación.
      */
     private void cargarDatosAutor(PublicacionViewHolder holder, String uidAutor) {
         // Si tenemos los datos en la memoria caché
@@ -336,7 +339,7 @@ public class PublicacionAdapter
     }
 
     /**
-     * Método auxiliar para pintar el nombre y la foto del usuario
+     * Método auxiliar para pintar el nombre y la foto del usuario.
      */
     private void pintarDatosAutor(PublicacionViewHolder holder, Usuario usuario, String uidAutor) {
         holder.tvUsernameAutor.setText("@" + usuario.getUsername());
@@ -345,6 +348,7 @@ public class PublicacionAdapter
             Glide.with(context).load(usuario.getFotoPerfil()).into(holder.imgAvatarAutor);
         }
 
+        // Redirige a la activity según el rol
         View.OnClickListener irAlPerfilListener =
                 v -> {
                     Intent intent;
@@ -400,7 +404,7 @@ public class PublicacionAdapter
     }
 
     /**
-     * Método auxiliar para pintar el username del local y configurar su click
+     * Método auxiliar para pintar el username del local y configurar su click.
      */
     private void pintarDatosLocalMencionado(
             PublicacionViewHolder holder, Usuario local, String uidLocal) {

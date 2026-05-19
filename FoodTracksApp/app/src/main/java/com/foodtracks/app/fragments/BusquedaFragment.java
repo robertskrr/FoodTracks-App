@@ -75,6 +75,9 @@ public class BusquedaFragment extends Fragment {
         return rootView;
     }
 
+    /**
+     * Asigna los componentes a la interfaz.
+     */
     private void inicializar() {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         usuarioService = ServiceFactory.provideUsuarioService(requireContext());
@@ -98,7 +101,7 @@ public class BusquedaFragment extends Fragment {
         layoutContenido = rootView.findViewById(R.id.layoutContenidoBusqueda);
         btnFiltros = rootView.findViewById(R.id.btnFiltros);
 
-        setListeners();
+        configurarListeners();
 
         if (getActivity() instanceof MainLocalActivity) {
             esLocal = true;
@@ -113,7 +116,10 @@ public class BusquedaFragment extends Fragment {
         configTheme();
     }
 
-    private void setListeners() {
+    /**
+     * Configura los listeners de los componentes.
+     */
+    private void configurarListeners() {
         // Al pulsar Enter en el teclado
         etBuscador.setOnEditorActionListener(
                 (v, actionId, event) -> {
@@ -181,16 +187,21 @@ public class BusquedaFragment extends Fragment {
                         });
     }
 
+    /**
+     * Muestra los resultados de la búsqueda.
+     */
     private void procesoBusquedaInterfaz() {
         String usernameBusqueda = etBuscador.getText().toString().trim();
+        // Quitamos el @ por si el usuario lo ha puesto
+        String usernameClean = usernameBusqueda.replace("@", "");
 
-        if (!usernameBusqueda.isEmpty()) {
+        if (!usernameClean.isEmpty()) {
             layoutContenido.setVisibility(View.VISIBLE);
             progressBar.setVisibility(View.VISIBLE);
             recyclerPerfiles.setVisibility(View.GONE);
             tvSinResultados.setVisibility(View.GONE);
 
-            cargarPerfiles(usernameBusqueda);
+            cargarPerfiles(usernameClean);
 
             // Oculta el teclado al buscar
             InputMethodManager imm =
@@ -202,6 +213,10 @@ public class BusquedaFragment extends Fragment {
         }
     }
 
+    /**
+     * Carga los perfiles resultantes.
+     * @param username Username a buscar.
+     */
     private void cargarPerfiles(String username) {
         usuarioService
                 .buscarUsuarios(username)
@@ -234,7 +249,7 @@ public class BusquedaFragment extends Fragment {
     }
 
     /**
-     * Procesa la lista de usuarios devuelta por Firebase
+     * Procesa la lista de usuarios devuelta por la base de datos.
      */
     private void ejecutarBusquedaFiltros(Task<List<Usuario>> taskBusqueda) {
         taskBusqueda
@@ -275,7 +290,7 @@ public class BusquedaFragment extends Fragment {
     }
 
     /**
-     * Configura la barra de navegación y de estado
+     * Configura la barra de navegación y de estado.
      */
     private void configTheme() {
         if (getActivity() != null) {

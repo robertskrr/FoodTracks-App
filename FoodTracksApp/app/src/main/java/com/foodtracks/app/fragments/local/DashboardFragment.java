@@ -70,6 +70,9 @@ public class DashboardFragment extends Fragment {
         return rootView;
     }
 
+    /**
+     * Asigna los componentes a la interfaz.
+     */
     private void inicializar() {
         mAuth = FirebaseAuth.getInstance();
         usuarioService = ServiceFactory.provideUsuarioService(requireContext());
@@ -99,6 +102,9 @@ public class DashboardFragment extends Fragment {
         setStatLabel(cardMenciones, getString(R.string.menciones_de_usuarios));
     }
 
+    /**
+     * Carga las estadísticas del local.
+     */
     private void cargarEstadisticas() {
         if (uidUsuario == null) {
             return;
@@ -185,7 +191,7 @@ public class DashboardFragment extends Fragment {
     }
 
     /**
-     * Configura la barra de navegación y de estado
+     * Configura la barra de navegación y de estado.
      */
     private void configTheme() {
         if (getActivity() != null) {

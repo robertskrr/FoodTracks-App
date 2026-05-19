@@ -28,9 +28,7 @@ import com.foodtracks.app.activities.local.MainLocalActivity;
 import com.foodtracks.app.activities.local.PerfilLocalActivity;
 import com.foodtracks.app.adapters.PublicacionAdapter;
 import com.foodtracks.app.models.UsuarioLocal;
-import com.foodtracks.app.models.ValoracionLocal;
 import com.foodtracks.app.services.ServiceFactory;
-import com.foodtracks.app.services.exceptions.FoodTracksValidationException;
 import com.foodtracks.app.services.interfaces.IPublicacionService;
 import com.foodtracks.app.services.interfaces.IUsuarioService;
 import com.foodtracks.app.services.interfaces.IValoracionLocalService;
@@ -49,10 +47,11 @@ import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 
 /**
- * Fragment de perfil del cliente.
+ * Fragment de perfil del local.
  * Mismo comportamiento que {@link PerfilLocalActivity} pero se ve desde
  * {@link MainLocalActivity} para mantener la barra de navegación y
  * no saturar el rendimiento de la app.
+ * Usado por el usuario logueado para ver su perfil.
  * @author Robert
  * @since 08/05
  */
@@ -107,11 +106,13 @@ public class PerfilLocalFragment extends Fragment {
         inicializar();
         mostrarDatosLocal();
         cargarPublicaciones();
-        verificarRolYMostrarValoracion();
 
         return rootView;
     }
 
+    /**
+     * Asigna los compnentes a la interfaz.
+     */
     private void inicializar() {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         usuarioService = ServiceFactory.provideUsuarioService(requireContext());
@@ -162,6 +163,9 @@ public class PerfilLocalFragment extends Fragment {
         configMapa();
     }
 
+    /**
+     * Configuración de los botones de visualización de tipo de publicaciones.
+     */
     private void configBotonTipoPublicaciones() {
         toggleGroupPublicaciones.addOnButtonCheckedListener(
                 (group, checkedId, isChecked) -> {
@@ -179,6 +183,9 @@ public class PerfilLocalFragment extends Fragment {
                 });
     }
 
+    /**
+     * Configura el mapa del perfil.
+     */
     @SuppressLint("ClickableViewAccessibility")
     private void configMapa() {
         Configuration.getInstance().setUserAgentValue(requireContext().getPackageName());
@@ -195,6 +202,11 @@ public class PerfilLocalFragment extends Fragment {
                 });
     }
 
+    /**
+     * Obtiene el UID del perfil.
+     * @param mAuth Firebase Auth
+     * @return UID del dueño del perfil.
+     */
     private String getUidPerfil(FirebaseAuth mAuth) {
         if (getArguments() != null && getArguments().containsKey("UID_USUARIO")) {
             String uidOtroUsuarioLocal = getArguments().getString("UID_USUARIO");
@@ -208,6 +220,9 @@ public class PerfilLocalFragment extends Fragment {
         return null;
     }
 
+    /**
+     * Muestra los datos del local visitado.
+     */
     private void mostrarDatosLocal() {
         tvPuntuacion.setText("...");
 
@@ -288,6 +303,7 @@ public class PerfilLocalFragment extends Fragment {
                         });
     }
 
+    /** Carga las publicaciones publicadas por este local. */
     private void cargarPublicaciones() {
         publicacionService
                 .getPublicacionesByUsuario(uidLocalVisitado)
@@ -319,6 +335,9 @@ public class PerfilLocalFragment extends Fragment {
                         });
     }
 
+    /**
+     * Carga las publicaciones que mencionan al local visitado.
+     */
     private void cargarMenciones() {
         publicacionService
                 .getPublicacionesByLocalMencionado(uidLocalVisitado)
@@ -353,6 +372,10 @@ public class PerfilLocalFragment extends Fragment {
                         });
     }
 
+    /**
+     * Comprueba la carga de los procesos para ocultar la barra de progreso
+     * y mostrar la interfaz con los datos.
+     */
     private synchronized void comprobarCargaCompleta() {
         if (tareasCompletadas < 2) {
             tareasCompletadas++;
@@ -363,142 +386,9 @@ public class PerfilLocalFragment extends Fragment {
         }
     }
 
-    private void verificarRolYMostrarValoracion() {
-        if (uidUsuarioActual == null) return;
-
-        usuarioService
-                .getPerfil(uidUsuarioActual)
-                .addOnSuccessListener(
-                        usuarioActual -> {
-                            if (!isAdded()) return;
-
-                            if ("cliente".equals(usuarioActual.getRol())
-                                    && !uidUsuarioActual.equals(uidLocalVisitado)) {
-                                layoutValoracion.setVisibility(View.VISIBLE);
-
-                                valoracionLocalService
-                                        .getValoracionUsuario(uidUsuarioActual, uidLocalVisitado)
-                                        .addOnSuccessListener(
-                                                valoracion -> {
-                                                    if (!isAdded()) return;
-                                                    if (valoracion != null) {
-                                                        ratingBarLocal.setRating(
-                                                                (float) valoracion.getPuntuacion());
-                                                        btnBorrarValoracion.setVisibility(
-                                                                View.VISIBLE);
-                                                    }
-                                                })
-                                        .addOnFailureListener(
-                                                e -> {
-                                                    if (!isAdded()) return;
-                                                    ratingBarLocal.setRating(0f);
-                                                    btnBorrarValoracion.setVisibility(View.GONE);
-                                                });
-
-                                btnEnviarValoracion.setOnClickListener(
-                                        v -> {
-                                            btnEnviarValoracion.setEnabled(false);
-                                            float puntuacionElegida = ratingBarLocal.getRating();
-
-                                            ValoracionLocal nuevaValoracion =
-                                                    ValoracionLocal.builder()
-                                                            .uidCliente(uidUsuarioActual)
-                                                            .uidLocal(uidLocalVisitado)
-                                                            .puntuacion(puntuacionElegida)
-                                                            .build();
-
-                                            valoracionLocalService
-                                                    .valorarLocal(nuevaValoracion)
-                                                    .addOnSuccessListener(
-                                                            unused -> {
-                                                                if (!isAdded()) return;
-                                                                Toast.makeText(
-                                                                                requireContext(),
-                                                                                R.string
-                                                                                        .valoracion_enviada,
-                                                                                Toast.LENGTH_SHORT)
-                                                                        .show();
-                                                                mostrarDatosLocal();
-                                                                btnBorrarValoracion.setVisibility(
-                                                                        View.VISIBLE);
-                                                                btnEnviarValoracion.setEnabled(
-                                                                        true);
-                                                            })
-                                                    .addOnFailureListener(
-                                                            e -> {
-                                                                if (!isAdded()) return;
-                                                                if (e
-                                                                        instanceof
-                                                                        FoodTracksValidationException
-                                                                        ex) {
-                                                                    Toast.makeText(
-                                                                                    requireContext(),
-                                                                                    ex
-                                                                                            .getErrorResId(),
-                                                                                    Toast
-                                                                                            .LENGTH_SHORT)
-                                                                            .show();
-                                                                } else {
-                                                                    Toast.makeText(
-                                                                                    requireContext(),
-                                                                                    getString(
-                                                                                                    R
-                                                                                                            .string
-                                                                                                            .send_valoracion_error_mensaje)
-                                                                                            + e
-                                                                                                    .getMessage(),
-                                                                                    Toast
-                                                                                            .LENGTH_SHORT)
-                                                                            .show();
-                                                                }
-                                                                btnEnviarValoracion.setEnabled(
-                                                                        true);
-                                                            });
-                                        });
-
-                                btnBorrarValoracion.setOnClickListener(
-                                        v -> {
-                                            btnBorrarValoracion.setEnabled(false);
-                                            valoracionLocalService
-                                                    .eliminarValoracion(
-                                                            uidUsuarioActual, uidLocalVisitado)
-                                                    .addOnSuccessListener(
-                                                            unused -> {
-                                                                if (!isAdded()) return;
-                                                                Toast.makeText(
-                                                                                requireContext(),
-                                                                                R.string
-                                                                                        .valoracion_eliminada,
-                                                                                Toast.LENGTH_SHORT)
-                                                                        .show();
-                                                                ratingBarLocal.setRating(0f);
-                                                                btnBorrarValoracion.setVisibility(
-                                                                        View.GONE);
-                                                                mostrarDatosLocal();
-                                                                btnBorrarValoracion.setEnabled(
-                                                                        true);
-                                                            })
-                                                    .addOnFailureListener(
-                                                            e -> {
-                                                                if (!isAdded()) return;
-                                                                Toast.makeText(
-                                                                                requireContext(),
-                                                                                getString(
-                                                                                                R
-                                                                                                        .string
-                                                                                                        .delete_valoracion_error_mensaje)
-                                                                                        + e
-                                                                                                .getMessage(),
-                                                                                Toast.LENGTH_SHORT)
-                                                                        .show();
-                                                                btnBorrarValoracion.setEnabled(
-                                                                        true);
-                                                            });
-                                        });
-                            }
-                        });
-    }
-
+    /**
+     * Actualiza la chincheta en el mapa con la ubicación del local.
+     */
     private void actualizarChinchetaMapa() {
         if (mapOsm != null && latitudLocal != 0.0 && longitudLocal != 0.0) {
             GeoPoint startPoint = new GeoPoint(latitudLocal, longitudLocal);
@@ -516,6 +406,9 @@ public class PerfilLocalFragment extends Fragment {
         }
     }
 
+    /**
+     * Inyecta los chips de preferencias basados en los datos del usuario.
+     */
     private void cargarChipsOpciones(UsuarioLocal local) {
         chipGroupOpciones.removeAllViews();
 
@@ -533,6 +426,10 @@ public class PerfilLocalFragment extends Fragment {
         }
     }
 
+    /**
+     * Crea un Chip visual y lo añade al ChipGroup de la interfaz.
+     * @param texto Texto de la preferencia.
+     */
     private void addChip(String texto) {
         Chip chip = new Chip(requireContext());
         chip.setText(texto);
@@ -558,7 +455,7 @@ public class PerfilLocalFragment extends Fragment {
     }
 
     /**
-     * Configura la barra de navegación y de estado
+     * Configura la barra de navegación y de estado.
      */
     private void configTheme() {
         if (getActivity() != null) {

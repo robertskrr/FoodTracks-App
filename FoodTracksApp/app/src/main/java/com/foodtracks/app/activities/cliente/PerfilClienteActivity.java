@@ -115,6 +115,11 @@ public class PerfilClienteActivity extends AppCompatActivity {
         comprobarSiEsAdmin();
     }
 
+    /**
+     * Obtiene el UID del perfil.
+     * @param mAuth Firebase Auth
+     * @return UID del dueño del perfil.
+     */
     private String getUidPerfil(FirebaseAuth mAuth) {
         String uidOtroUsuario = getIntent().getStringExtra("UID_USUARIO");
 
@@ -132,7 +137,7 @@ public class PerfilClienteActivity extends AppCompatActivity {
     }
 
     /**
-     * Muestra los datos del cliente
+     * Muestra los datos del cliente.
      */
     private void mostrarDatosCliente() {
         usuarioService
@@ -254,7 +259,8 @@ public class PerfilClienteActivity extends AppCompatActivity {
     }
 
     /**
-     * Aumenta el contador y, si ambas peticiones han terminado, muestra la pantalla.
+     * Comprueba la carga de los procesos para ocultar la barra de progreso
+     * y mostrar la interfaz con los datos.
      */
     private synchronized void comprobarCargaCompleta() {
         tareasCompletadas++;
@@ -266,6 +272,9 @@ public class PerfilClienteActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Comprueba si el usuario que visita el perfil es administrador.
+     */
     private void comprobarSiEsAdmin() {
         if (esInvitado || uidUsuarioActual == null) return;
 
@@ -298,6 +307,10 @@ public class PerfilClienteActivity extends AppCompatActivity {
                         });
     }
 
+    /**
+     * Muestra el diálogo de proceso de borrado de
+     * usuario por un administrador.
+     */
     private void mostrarDialogoEliminarPerfilAdmin() {
         EditText inputMotivo = new EditText(this);
         inputMotivo.setHint(R.string.motivo_eliminacion);

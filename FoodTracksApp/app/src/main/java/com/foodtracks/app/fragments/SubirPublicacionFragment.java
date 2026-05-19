@@ -54,52 +54,6 @@ public class SubirPublicacionFragment extends DialogFragment {
     private Uri uriFotoSeleccionada = null;
     private Uri uriFotoCamaraTemporal = null;
 
-    /**
-     * Lanzador para abrir la galería
-     */
-    private final ActivityResultLauncher<String> galleryLauncher =
-            registerForActivityResult(
-                    new ActivityResultContracts.GetContent(),
-                    uri -> {
-                        if (uri != null) {
-                            uriFotoSeleccionada = uri;
-                            imgVistaPreviaFoto.setImageURI(uri);
-                            imgVistaPreviaFoto.setVisibility(View.VISIBLE);
-                        }
-                    });
-
-    /**
-     * Lanzador para abrir la cámara
-     */
-    private final ActivityResultLauncher<Uri> cameraLauncher =
-            registerForActivityResult(
-                    new ActivityResultContracts.TakePicture(),
-                    success -> {
-                        if (success && uriFotoCamaraTemporal != null) {
-                            uriFotoSeleccionada = uriFotoCamaraTemporal;
-                            imgVistaPreviaFoto.setImageURI(uriFotoSeleccionada);
-                            imgVistaPreviaFoto.setVisibility(View.VISIBLE);
-                        }
-                    });
-
-    /**
-     * Lanzador para pedir el permiso de la cámara
-     */
-    private final ActivityResultLauncher<String> requestCameraPermissionLauncher =
-            registerForActivityResult(
-                    new ActivityResultContracts.RequestPermission(),
-                    isGranted -> {
-                        if (isGranted) {
-                            abrirCamara();
-                        } else {
-                            Toast.makeText(
-                                            getContext(),
-                                            R.string.camera_permissions_error,
-                                            Toast.LENGTH_SHORT)
-                                    .show();
-                        }
-                    });
-
     @Override
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -157,7 +111,54 @@ public class SubirPublicacionFragment extends DialogFragment {
     }
 
     /**
-     * Configura los botones de la interfaz
+     * Lanzador para abrir la galería.
+     * Muestra la imagen seleccionada.
+     */
+    private final ActivityResultLauncher<String> galleryLauncher =
+            registerForActivityResult(
+                    new ActivityResultContracts.GetContent(),
+                    uri -> {
+                        if (uri != null) {
+                            uriFotoSeleccionada = uri;
+                            imgVistaPreviaFoto.setImageURI(uri);
+                            imgVistaPreviaFoto.setVisibility(View.VISIBLE);
+                        }
+                    });
+
+    /**
+     * Lanzador para abrir la cámara.
+     */
+    private final ActivityResultLauncher<Uri> cameraLauncher =
+            registerForActivityResult(
+                    new ActivityResultContracts.TakePicture(),
+                    success -> {
+                        if (success && uriFotoCamaraTemporal != null) {
+                            uriFotoSeleccionada = uriFotoCamaraTemporal;
+                            imgVistaPreviaFoto.setImageURI(uriFotoSeleccionada);
+                            imgVistaPreviaFoto.setVisibility(View.VISIBLE);
+                        }
+                    });
+
+    /**
+     * Lanzador para pedir el permiso de la cámara.
+     */
+    private final ActivityResultLauncher<String> requestCameraPermissionLauncher =
+            registerForActivityResult(
+                    new ActivityResultContracts.RequestPermission(),
+                    isGranted -> {
+                        if (isGranted) {
+                            abrirCamara();
+                        } else {
+                            Toast.makeText(
+                                            getContext(),
+                                            R.string.camera_permissions_error,
+                                            Toast.LENGTH_SHORT)
+                                    .show();
+                        }
+                    });
+
+    /**
+     * Configura los botones de la interfaz.
      */
     private void configurarBotones() {
         btnAdjuntarFoto.setOnClickListener(v -> mostrarOpcionesImagen());
