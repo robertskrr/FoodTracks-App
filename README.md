@@ -58,6 +58,9 @@ La aplicación sigue una arquitectura en capas limpia, organizada por paquetes p
 ```text
 com.foodtracks.app
 ├── activities/             # Activities principales y controladores por rol
+│   ├── admin/         
+│   ├── cliente/
+│   └── local/            
 ├── adapters/               # Adaptadores para la gestión de listas (RecyclerView)
 ├── api/                    # Configuración de clientes API externos
 │   └── imagekit/           # Configuración de Retrofit para ImageKit
