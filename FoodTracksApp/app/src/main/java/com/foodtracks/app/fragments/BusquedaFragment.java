@@ -209,7 +209,7 @@ public class BusquedaFragment extends Fragment {
             return;
         }
 
-        usuarioService.getUltimosUsuariosRegistrados(30)
+        usuarioService.getUltimosUsuariosRegistrados(20)
                 .addOnSuccessListener(usuarios -> {
                     if (!isAdded()) return;
                     progressBar.setVisibility(View.GONE);
