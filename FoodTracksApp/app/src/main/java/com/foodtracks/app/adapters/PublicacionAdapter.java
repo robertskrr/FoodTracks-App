@@ -315,7 +315,7 @@ public class PublicacionAdapter
 
         // Si no los tenemos, ponemos los valores por defecto y hacemos la consulta
         holder.tvUsernameAutor.setText(R.string.cargando);
-        holder.imgAvatarAutor.setImageResource(R.drawable.avatar_default);
+        //holder.imgAvatarAutor.setImageResource(R.drawable.avatar_default);
 
         // Desactivamos los clicks temporalmente para que el usuario no pulse antes de cargar
         holder.imgAvatarAutor.setOnClickListener(null);
@@ -346,6 +346,8 @@ public class PublicacionAdapter
 
         if (usuario.getFotoPerfil() != null && !usuario.getFotoPerfil().isEmpty()) {
             Glide.with(context).load(usuario.getFotoPerfil()).into(holder.imgAvatarAutor);
+        } else{
+            Glide.with(context).load(R.drawable.avatar_default).into(holder.imgAvatarAutor);
         }
 
         // Redirige a la activity según el rol
