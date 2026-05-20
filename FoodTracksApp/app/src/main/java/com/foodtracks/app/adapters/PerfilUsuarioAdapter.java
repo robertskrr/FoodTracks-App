@@ -66,8 +66,11 @@ public class PerfilUsuarioAdapter
         // Icono del tipo de usuario
         if ("local".equals(usuario.getRol())) {
             holder.imgTipoPerfil.setImageResource(R.drawable.ic_local);
+            holder.tvCiudadBusqueda.setVisibility(View.VISIBLE);
+            holder.tvCiudadBusqueda.setText(usuario.getCiudad());
         } else {
             holder.imgTipoPerfil.setImageResource(R.drawable.ic_person);
+            holder.tvCiudadBusqueda.setVisibility(View.GONE);
         }
 
         // Listener para ir al perfil
@@ -94,7 +97,7 @@ public class PerfilUsuarioAdapter
     }
 
     public static class PerfilUsuarioViewHolder extends RecyclerView.ViewHolder {
-        TextView tvUsernameBusqueda, tvNombreBusqueda;
+        TextView tvUsernameBusqueda, tvNombreBusqueda, tvCiudadBusqueda;
         ShapeableImageView imgAvatarBusqueda;
         ImageView imgTipoPerfil;
 
@@ -104,6 +107,7 @@ public class PerfilUsuarioAdapter
             imgAvatarBusqueda = itemView.findViewById(R.id.imgAvatarBusqueda);
             tvNombreBusqueda = itemView.findViewById(R.id.tvNombreBusqueda);
             imgTipoPerfil = itemView.findViewById(R.id.imgTipoPerfil);
+            tvCiudadBusqueda = itemView.findViewById(R.id.tvCiudadBusqueda);
         }
     }
 }
