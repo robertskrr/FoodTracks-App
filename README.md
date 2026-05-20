@@ -53,8 +53,6 @@ El proyecto se ha desarrollado siguiendo una **arquitectura en capas**, respetan
 
 ### 📂 Estructura del Proyecto
 
-La aplicación sigue una arquitectura en capas limpia, organizada por paquetes para asegurar la separación de responsabilidades:
-
 ```text
 com.foodtracks.app
 ├── activities/             # Activities principales y controladores por rol
