@@ -5,6 +5,29 @@
 ## 🎯 Propósito del Proyecto
 En la actualidad, encontrar opciones gastronómicas seguras para personas con restricciones alimentarias puede ser una tarea frustrante debido a la falta de filtros precisos en plataformas generalistas y a la fragmentación de aplicaciones específicas. **FoodTracks** unifica estas necesidades, permitiendo cruzar múltiples preferencias en una sola búsqueda y aportando una capa de validación de la misma comunidad.
 
+### 📂 Estructura del Proyecto
+
+La aplicación sigue una arquitectura en capas limpia, organizada por paquetes para asegurar la separación de responsabilidades:
+
+```text
+com.foodtracks.app
+├── activities/             # Activities principales y controladores por rol
+├── adapters/               # Adaptadores para la gestión de listas (RecyclerView)
+├── api/                    # Configuración de clientes API externos
+│   └── imagekit/           # Configuración de Retrofit para ImageKit
+├── fragments/              # Vistas modulares de la interfaz (UI)
+│   ├── admin/              # Fragmentos exclusivos del administrador
+│   ├── cliente/            # Fragmentos específicos del cliente
+│   └── local/              # Fragmentos específicos del local
+├── models/                 # Entidades de datos
+├── repositories/           # Capa de acceso a datos (Firestore)
+│   └── interfaces/         # Contratos de acceso a datos (Patrón Repository)
+├── services/               # Lógica de negocio (Capa de servicios)
+│   ├── exceptions/         # Excepciones personalizadas del dominio
+│   └── interfaces/         # Contratos de servicios (Patrón Service)
+└── utils/                  # Clases de utilidad (String, Fecha, Geolocalización)
+```
+
 ## 👥 Roles de Usuario
 La plataforma implementa un sistema de gestión multiperfil con 4 niveles de acceso, cada uno con permisos definidos:
 
