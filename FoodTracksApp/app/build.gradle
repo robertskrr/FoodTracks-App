@@ -142,3 +142,35 @@ dependencies {
 	 */
 	implementation 'com.github.chrisbanes:PhotoView:2.3.0'
 }
+
+// Genera un javadoc que soporte las clases y herramientas de Google, Lombok, etc.
+project.afterEvaluate {
+	tasks.register('generateJavadoc', Javadoc) {
+		dependsOn("compileDebugJavaWithJavac")
+
+		source = android.sourceSets.main.java.srcDirs
+
+		exclude '**/models/**'
+		exclude '**/api/**'
+
+		classpath += files(tasks.getByName("compileDebugJavaWithJavac").classpath)
+
+		classpath += files(tasks.getByName("compileDebugJavaWithJavac").destinationDirectory)
+
+		Properties properties = new Properties()
+		properties.load(project.rootProject.file('local.properties').newDataInputStream())
+		def sdkDir = properties.getProperty('sdk.dir')
+		classpath += project.files(new File(sdkDir, "platforms/android-36/android.jar"))
+
+		destinationDir = new File(project.projectDir, "doc")
+
+		failOnError = false
+		options {
+			encoding = "UTF-8"
+			docEncoding = "UTF-8"
+			charSet = "UTF-8"
+			addStringOption('Xdoclint:none', '-quiet')
+			memberLevel = JavadocMemberLevel.PRIVATE
+		}
+	}
+}
