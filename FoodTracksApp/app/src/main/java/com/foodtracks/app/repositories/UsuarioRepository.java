@@ -95,6 +95,17 @@ public class UsuarioRepository implements IUsuarioRepository {
     }
 
     @Override
+    public Task<QuerySnapshot> searchLocalesByUsername(String username) {
+        return usersCollection
+                .whereEqualTo("rol", "local")
+                .orderBy("username")
+                .startAt(username)
+                .endAt(username + "\uf8ff")
+                .limit(10)
+                .get();
+    }
+
+    @Override
     public Task<Void> incrementarVisitasPerfil(String uidLocal) {
         return usersCollection.document(uidLocal).update("visitas_perfil", FieldValue.increment(1));
     }

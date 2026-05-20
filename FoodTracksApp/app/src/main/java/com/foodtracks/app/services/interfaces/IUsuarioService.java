@@ -119,6 +119,14 @@ public interface IUsuarioService {
             String uidUsuario, String ciudadOpcional);
 
     /**
+     * Realiza una búsqueda de locales por username.
+     *
+     * @param username Nombre de usuario.
+     * @return {@link Task} que contiene una lista de {@link Usuario} que coinciden con la búsqueda.
+     */
+    public Task<List<Usuario>> buscarLocalesPorUsername(String username);
+
+    /**
      * Registra una visita en el perfil de un usuario local.
      * La lógica ignora la visita si el usuario que visita es el propio dueño del local.
      *

@@ -70,6 +70,14 @@ public interface IUsuarioRepository {
             String otraPreferencia);
 
     /**
+     * Busca locales cuyo nombre de usuario comience por una cadena específica.
+     *
+     * @param username Nombre de usuario.
+     * @return {@link Task} con el {@link QuerySnapshot} con la lista de posibles coincidencias.
+     */
+    public Task<QuerySnapshot> searchLocalesByUsername(String username);
+
+    /**
      * Incrementa atómicamente el contador de visitas del perfil de un local.
      *
      * @param uidLocal Identificador del local visitado.

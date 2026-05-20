@@ -3,15 +3,21 @@
 package com.foodtracks.app.fragments;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Filter;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
@@ -23,6 +29,7 @@ import androidx.fragment.app.DialogFragment;
 
 import com.foodtracks.app.R;
 import com.foodtracks.app.models.Publicacion;
+import com.foodtracks.app.models.Usuario;
 import com.foodtracks.app.services.ServiceFactory;
 import com.foodtracks.app.services.exceptions.FoodTracksValidationException;
 import com.foodtracks.app.services.interfaces.IPublicacionService;
@@ -30,6 +37,7 @@ import com.foodtracks.app.services.interfaces.IUsuarioService;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -41,8 +49,11 @@ import com.google.firebase.auth.FirebaseAuth;
 public class SubirPublicacionFragment extends DialogFragment {
 
     private TextView tvUsernameAutor;
-    private TextInputEditText txtTextoPublicacion, txtMencionarLocal;
+    private TextInputEditText txtTextoPublicacion;
+    private MaterialAutoCompleteTextView txtMencionarLocal;
     private TextInputLayout layoutMencionarLocal;
+    private ArrayAdapter<String> adapterLocales;
+    private final List<String> sugerenciasLocales = new ArrayList<>();
     private ShapeableImageView imgVistaPreviaFoto;
     private Button btnAdjuntarFoto, btnPublicar;
 
@@ -60,7 +71,7 @@ public class SubirPublicacionFragment extends DialogFragment {
         View v = inflater.inflate(R.layout.fragment_subir_publicacion, container, false);
         inicializar(v);
         cargarDatosAutor();
-        configurarBotones();
+        configurarListeners();
         return v;
     }
 
@@ -76,6 +87,27 @@ public class SubirPublicacionFragment extends DialogFragment {
         imgVistaPreviaFoto = v.findViewById(R.id.imgVistaPreviaFoto);
         btnAdjuntarFoto = v.findViewById(R.id.btnAdjuntarFoto);
         btnPublicar = v.findViewById(R.id.btnPublicar);
+        // Configuramos el adaptador para que muestre exactamente lo que traemos
+        adapterLocales = new ArrayAdapter<String>(requireContext(), android.R.layout.simple_dropdown_item_1line, sugerenciasLocales) {
+            @NonNull
+            @Override
+            public Filter getFilter() {
+                return new Filter() {
+                    @Override
+                    protected FilterResults performFiltering(CharSequence constraint) {
+                        FilterResults results = new FilterResults();
+                        results.values = sugerenciasLocales;
+                        results.count = sugerenciasLocales.size();
+                        return results;
+                    }
+                    @Override
+                    protected void publishResults(CharSequence constraint, FilterResults results) {
+                        notifyDataSetChanged();
+                    }
+                };
+            }
+        };
+        txtMencionarLocal.setAdapter(adapterLocales);
 
         mAuth = FirebaseAuth.getInstance();
         uidUsuarioActual = mAuth.getCurrentUser() != null ? mAuth.getCurrentUser().getUid() : null;
@@ -158,10 +190,50 @@ public class SubirPublicacionFragment extends DialogFragment {
                     });
 
     /**
-     * Configura los botones de la interfaz.
+     * Configura los listeners de los componentes de la interfaz.
      */
-    private void configurarBotones() {
+    private void configurarListeners() {
         btnAdjuntarFoto.setOnClickListener(v -> mostrarOpcionesImagen());
+
+        // Muestra una lista desplegable con las coincidencias de locales
+        txtMencionarLocal.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (txtMencionarLocal.isPerformingCompletion()) return;
+
+                String query = s.toString().trim();
+                String cleanQuery = query.replace("@", "");
+
+                // A partir de 2 caracteres limpios busca
+                if (!cleanQuery.isEmpty()) {
+                    usuarioService.buscarLocalesPorUsername(cleanQuery).addOnSuccessListener(locales -> {
+                        if (!isAdded()) return;
+                        sugerenciasLocales.clear();
+                        for (Usuario local : locales) {
+                            sugerenciasLocales.add("@" + local.getUsername());
+                        }
+
+                        // Actualizamos la lista
+                        adapterLocales.notifyDataSetChanged();
+
+                        // Forzamos a abrir el menú cuando lleguen los datos
+                        if (!sugerenciasLocales.isEmpty()) {
+                            txtMencionarLocal.showDropDown();
+                        }
+                    });
+                } else {
+                    // Si borra vaciamos la lista
+                    sugerenciasLocales.clear();
+                    adapterLocales.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
 
         btnPublicar.setOnClickListener(
                 v -> {

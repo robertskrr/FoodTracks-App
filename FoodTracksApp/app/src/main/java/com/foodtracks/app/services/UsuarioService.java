@@ -436,6 +436,22 @@ public class UsuarioService implements IUsuarioService {
     }
 
     @Override
+    public Task<List<Usuario>> buscarLocalesPorUsername(String username) {
+        String cleanUsername = (username != null) ? username.toLowerCase().trim() : "";
+
+        return usuarioRepository.searchLocalesByUsername(cleanUsername)
+                .continueWith(task -> {
+                    List<Usuario> listaLocales = new ArrayList<>();
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        for (DocumentSnapshot doc : task.getResult()) {
+                            listaLocales.add(doc.toObject(UsuarioLocal.class));
+                        }
+                    }
+                    return listaLocales;
+                });
+    }
+
+    @Override
     public Task<Void> registrarVisitaPerfil(String uidVisitante, String uidLocal) {
         if (uidVisitante != null && uidVisitante.equals(uidLocal)) {
             return Tasks.forResult(
