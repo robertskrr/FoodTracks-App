@@ -21,6 +21,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import android.widget.LinearLayout;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 
 import com.foodtracks.app.R;
 import com.foodtracks.app.activities.MainActivity;
@@ -36,7 +39,6 @@ import com.foodtracks.app.services.interfaces.IUsuarioService;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException;
 import com.google.firebase.auth.FirebaseUser;
 
 /**
@@ -289,89 +291,79 @@ public class SettingsFragment extends Fragment {
     }
 
     /**
-     * Muestra el diálogo de cambio de contraseña.
+     * Muestra el diálogo de cambio de contraseña con reautenticación.
      */
     private void mostrarDialogoCambiarPassword() {
         FirebaseUser user = mAuth.getCurrentUser();
-        if (user == null) return;
+        if (user == null || user.getEmail() == null) return;
 
-        // Creamos el campo de texto para la contraseña oculta
-        EditText inputPassword = new android.widget.EditText(requireContext());
-        inputPassword.setHint(R.string.nueva_contrasenia);
-        inputPassword.setInputType(
-                InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        // Layout vertical para los dos campos de texto
+        LinearLayout layout = new LinearLayout(requireContext());
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setPadding(50, 50, 50, 50);
 
-        // Lo envolvemos para darle márgenes
-        FrameLayout container = new FrameLayout(requireContext());
-        FrameLayout.LayoutParams params =
-                new FrameLayout.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.leftMargin = 50;
-        params.rightMargin = 50;
-        inputPassword.setLayoutParams(params);
-        container.addView(inputPassword);
+        // Contraseña actual
+        EditText inputPassActual = new EditText(requireContext());
+        inputPassActual.setHint(R.string.contrasenia_actual);
+        inputPassActual.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        layout.addView(inputPassActual);
+
+        // Nueva contraseña
+        EditText inputPassNueva = new EditText(requireContext());
+        inputPassNueva.setHint(R.string.nueva_contrasenia);
+        inputPassNueva.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+
+        // Margen superior al campo de nueva contraseña
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        params.topMargin = 30;
+        inputPassNueva.setLayoutParams(params);
+        layout.addView(inputPassNueva);
 
         AlertDialog dialog =
                 new MaterialAlertDialogBuilder(requireContext())
                         .setTitle(R.string.cambiar_contrasenia)
-                        .setMessage(R.string.introduce_nueva_contrasenia)
-                        .setView(container)
+                        .setMessage(R.string.confirma_contrasenia_actual)
+                        .setView(layout)
                         .setPositiveButton(
                                 R.string.actualizar,
                                 (dialogInterface, which) -> {
-                                    String nuevaPass = inputPassword.getText().toString().trim();
+                                    String actualPass = inputPassActual.getText().toString().trim();
+                                    String nuevaPass = inputPassNueva.getText().toString().trim();
 
-                                    if (nuevaPass.length() < 8) {
-                                        Toast.makeText(
-                                                        requireContext(),
-                                                        R.string.password_length_error_message,
-                                                        Toast.LENGTH_SHORT)
-                                                .show();
+                                    if (actualPass.isEmpty()) {
+                                        Toast.makeText(requireContext(), R.string.debes_introducir_contrasenia_actual, Toast.LENGTH_SHORT).show();
                                         return;
                                     }
 
-                                    // Pantalla de carga
+                                    if (nuevaPass.length() < 8) {
+                                        Toast.makeText(requireContext(), R.string.password_length_error_message, Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
+
                                     overlayCarga.setVisibility(View.VISIBLE);
 
-                                    // Cambia la contraseña desde Firebase
-                                    user.updatePassword(nuevaPass)
-                                            .addOnSuccessListener(
-                                                    unused -> {
-                                                        overlayCarga.setVisibility(View.GONE);
-                                                        Toast.makeText(
-                                                                        requireContext(),
-                                                                        R.string
-                                                                                .contrasenia_actualizada,
-                                                                        Toast.LENGTH_SHORT)
-                                                                .show();
-                                                    })
-                                            .addOnFailureListener(
-                                                    e -> {
-                                                        overlayCarga.setVisibility(View.GONE);
+                                    // Reautenticar al usuario con la contraseña actual
+                                    AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), actualPass);
 
-                                                        // Excepción de protección de sesión antigua
-                                                        if (e
-                                                                instanceof
-                                                                FirebaseAuthRecentLoginRequiredException) {
-                                                            Toast.makeText(
-                                                                            requireContext(),
-                                                                            R.string
-                                                                                    .contrasenia_proteccion_sesion_antigua,
-                                                                            Toast.LENGTH_LONG)
-                                                                    .show();
-                                                        } else {
-                                                            Log.e(
-                                                                    "Actualizar contraseña",
-                                                                    e.getMessage(),
-                                                                    e);
-                                                            Toast.makeText(
-                                                                            requireContext(),
-                                                                            R.string
-                                                                                    .error_al_actualizar,
-                                                                            Toast.LENGTH_SHORT)
-                                                                    .show();
-                                                        }
-                                                    });
+                                    user.reauthenticate(credential)
+                                            .addOnSuccessListener(unused -> {
+                                                // Si la contraseña actual es correcta, actualizamos a la nueva
+                                                user.updatePassword(nuevaPass)
+                                                        .addOnSuccessListener(aVoid -> {
+                                                            overlayCarga.setVisibility(View.GONE);
+                                                            Toast.makeText(requireContext(), R.string.contrasenia_actualizada, Toast.LENGTH_SHORT).show();
+                                                        })
+                                                        .addOnFailureListener(e -> {
+                                                            overlayCarga.setVisibility(View.GONE);
+                                                            Log.e("Actualizar contraseña", e.getMessage(), e);
+                                                            Toast.makeText(requireContext(), R.string.error_al_actualizar, Toast.LENGTH_SHORT).show();
+                                                        });
+                                            })
+                                            .addOnFailureListener(e -> {
+                                                overlayCarga.setVisibility(View.GONE);
+                                                Toast.makeText(requireContext(), R.string.contrasenia_actual_incorrecta, Toast.LENGTH_LONG).show();
+                                            });
                                 })
                         .setNegativeButton(
                                 R.string.cancelar,
