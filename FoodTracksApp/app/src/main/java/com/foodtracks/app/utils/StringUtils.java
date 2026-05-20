@@ -62,4 +62,18 @@ public class StringUtils {
         String t = texto.trim();
         return Character.toUpperCase(t.charAt(0)) + t.substring(1);
     }
+
+    /**
+     * Elimina todos los espacios de un texto. (ej: user name -> username)
+     * @param texto Texto a formatear.
+     * @return Texto sin espacios.
+     */
+    public static String quitarAllEspacios(String texto){
+        if (texto == null || texto.trim().isEmpty()) {
+            return texto;
+        }
+
+        String t = texto.trim();
+        return t.replaceAll("\\s", "");
+    }
 }
