@@ -2,7 +2,9 @@
 
 package com.foodtracks.app.fragments;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -61,6 +63,8 @@ public class BusquedaFragment extends Fragment {
     private String uidUsuarioActual;
     private IUsuarioService usuarioService;
     private boolean esAdmin, esCliente, esLocal, esInvitado;
+    // Memoria caché para la lista inicial
+    private List<Usuario> cacheUltimosUsuarios = null;
 
     @Nullable
     @Override
@@ -114,6 +118,7 @@ public class BusquedaFragment extends Fragment {
         }
 
         configTheme();
+        cargarUltimosUsuarios();
     }
 
     /**
@@ -188,6 +193,47 @@ public class BusquedaFragment extends Fragment {
     }
 
     /**
+     * Carga los últimos usuarios registrados en la aplicación.
+     */
+    private void cargarUltimosUsuarios() {
+        layoutContenido.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.VISIBLE);
+        recyclerPerfiles.setVisibility(View.GONE);
+        tvSinResultados.setVisibility(View.GONE);
+
+        if (cacheUltimosUsuarios != null && !cacheUltimosUsuarios.isEmpty()) {
+            progressBar.setVisibility(View.GONE);
+            recyclerPerfiles.setVisibility(View.VISIBLE);
+            adapter = new PerfilUsuarioAdapter(cacheUltimosUsuarios, requireContext());
+            recyclerPerfiles.setAdapter(adapter);
+            return;
+        }
+
+        usuarioService.getUltimosUsuariosRegistrados(30)
+                .addOnSuccessListener(usuarios -> {
+                    if (!isAdded()) return;
+                    progressBar.setVisibility(View.GONE);
+
+                    if (usuarios == null || usuarios.isEmpty()) {
+                        tvSinResultados.setVisibility(View.VISIBLE);
+                        recyclerPerfiles.setVisibility(View.GONE);
+                    } else {
+                        cacheUltimosUsuarios = usuarios;
+
+                        tvSinResultados.setVisibility(View.GONE);
+                        recyclerPerfiles.setVisibility(View.VISIBLE);
+                        adapter = new PerfilUsuarioAdapter(usuarios, requireContext());
+                        recyclerPerfiles.setAdapter(adapter);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    if (!isAdded()) return;
+                    progressBar.setVisibility(View.GONE);
+                    Log.e("BusquedaFragment", "Error cargando últimos usuarios: " + e.getMessage());
+                });
+    }
+
+    /**
      * Muestra los resultados de la búsqueda.
      */
     private void procesoBusquedaInterfaz() {
@@ -202,15 +248,15 @@ public class BusquedaFragment extends Fragment {
             tvSinResultados.setVisibility(View.GONE);
 
             cargarPerfiles(usernameClean);
-
-            // Oculta el teclado al buscar
-            InputMethodManager imm =
-                    (InputMethodManager)
-                            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(etBuscador.getWindowToken(), 0);
         } else {
-            layoutContenido.setVisibility(View.GONE);
+            cargarUltimosUsuarios();
         }
+
+        // Oculta el teclado al buscar
+        InputMethodManager imm =
+                (InputMethodManager)
+                        requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(etBuscador.getWindowToken(), 0);
     }
 
     /**

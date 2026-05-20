@@ -458,6 +458,38 @@ public class UsuarioService implements IUsuarioService {
                         });
     }
 
+    @Override
+    public Task<List<Usuario>> getUltimosUsuariosRegistrados(int limite) {
+        return usuarioRepository
+                .getUltimosUsuariosRegistrados(limite)
+                .continueWith(
+                        task -> {
+                            List<Usuario> listaUsuarios = new ArrayList<>();
+
+                            if (task.isSuccessful() && task.getResult() != null) {
+                                for (DocumentSnapshot doc : task.getResult()) {
+                                    String rol = doc.getString("rol");
+
+                                    if (rol != null) {
+                                        switch (rol) {
+                                            case "local":
+                                                listaUsuarios.add(doc.toObject(UsuarioLocal.class));
+                                                break;
+                                            case "admin":
+                                                listaUsuarios.add(doc.toObject(UsuarioAdmin.class));
+                                                break;
+                                            case "cliente":
+                                            default:
+                                                listaUsuarios.add(doc.toObject(UsuarioCliente.class));
+                                                break;
+                                        }
+                                    }
+                                }
+                            }
+                            return listaUsuarios;
+                        });
+    }
+
     /*
      * ================================================================
      * ==================== Private helpers ===========================

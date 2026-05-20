@@ -133,4 +133,11 @@ public interface IUsuarioService {
      * @return @return {@link Task} que contiene una lista de registros {@link RegistroBorradoUsuario}.
      */
     Task<List<RegistroBorradoUsuario>> getAllRegistrosBorradoUsuarios();
+
+    /**
+     * Recupera los últimos usuarios registrados.
+     * @param limite Número límite de usuarios.
+     * @return @return {@link Task} que contiene una lista de usuarios {@link Usuario}.
+     */
+    Task<List<Usuario>> getUltimosUsuariosRegistrados(int limite);
 }
