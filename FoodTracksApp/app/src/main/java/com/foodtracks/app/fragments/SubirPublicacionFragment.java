@@ -175,6 +175,7 @@ public class SubirPublicacionFragment extends DialogFragment {
                                     : "";
 
                     btnPublicar.setEnabled(false);
+                    setCancelable(false);
                     btnPublicar.setText(R.string.subiendo);
 
                     // Si ha intentado mencionar a un local
@@ -260,6 +261,7 @@ public class SubirPublicacionFragment extends DialogFragment {
      */
     private void restaurarBotonPublicar() {
         btnPublicar.setEnabled(true);
+        setCancelable(true);
         btnPublicar.setText(R.string.publicar);
     }
 
