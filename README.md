@@ -62,12 +62,12 @@ com.foodtracks.app
 ├── adapters/               # Adaptadores para la gestión de listas (RecyclerView)
 ├── api/                    # Configuración de clientes API externos
 │   └── imagekit/           # Configuración de Retrofit para ImageKit
-├── fragments/              # Vistas modulares de la interfaz (UI)
-│   ├── admin/              # Fragmentos exclusivos del administrador
-│   ├── cliente/            # Fragmentos específicos del cliente
-│   └── local/              # Fragmentos específicos del local
+├── fragments/
+│   ├── admin/
+│   ├── cliente/
+│   └── local/
 ├── models/                 # Entidades de datos
-├── repositories/           # Capa de acceso a datos (Firestore)
+├── repositories/           # Capa de acceso a datos
 │   └── interfaces/         # Contratos de acceso a datos (Patrón Repository)
 ├── services/               # Lógica de negocio (Capa de servicios)
 │   ├── exceptions/         # Excepciones personalizadas del dominio
