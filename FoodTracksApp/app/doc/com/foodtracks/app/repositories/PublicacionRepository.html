@@ -157,30 +157,36 @@ implements <a href="interfaces/IPublicacionRepository.html" title="interface in 
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Elimina físicamente el documento de una publicacion de la colección.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>com.google.android.gms.tasks.Task<wbr>&lt;com.google.firebase.firestore.QuerySnapshot&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getAllPublicaciones(com.google.firebase.firestore.DocumentSnapshot)" class="member-name-link">getAllPublicaciones</a><wbr>(com.google.firebase.firestore.DocumentSnapshot&nbsp;lastVisible)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>com.google.android.gms.tasks.Task<wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Void.html" title="class or interface in java.lang" class="external-link">Void</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#editPublicacion(java.lang.String,java.lang.String)" class="member-name-link">editPublicacion</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;uid,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;nuevoTexto)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Recupera una página de publicaciones.</div>
-</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>com.google.android.gms.tasks.Task<wbr>&lt;com.google.firebase.firestore.DocumentSnapshot&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getPublicacionById(java.lang.String)" class="member-name-link">getPublicacionById</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;uid)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Recupera un documento de publicación específica mediante UID.</div>
-</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>com.google.android.gms.tasks.Task<wbr>&lt;com.google.firebase.firestore.QuerySnapshot&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getPublicacionesByLocal(java.lang.String)" class="member-name-link">getPublicacionesByLocal</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;uidLocal)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Recupera todas las publicaciones asociadas a un local específico.</div>
+<div class="block">Edita el texto de una publicación.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>com.google.android.gms.tasks.Task<wbr>&lt;com.google.firebase.firestore.QuerySnapshot&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getPublicacionesByUsuario(java.lang.String)" class="member-name-link">getPublicacionesByUsuario</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;uidUsuario)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getAllPublicaciones(com.google.firebase.firestore.DocumentSnapshot)" class="member-name-link">getAllPublicaciones</a><wbr>(com.google.firebase.firestore.DocumentSnapshot&nbsp;lastVisible)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Recupera una página de publicaciones.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>com.google.android.gms.tasks.Task<wbr>&lt;com.google.firebase.firestore.DocumentSnapshot&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getPublicacionById(java.lang.String)" class="member-name-link">getPublicacionById</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;uid)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Recupera un documento de publicación específica mediante UID.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>com.google.android.gms.tasks.Task<wbr>&lt;com.google.firebase.firestore.QuerySnapshot&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getPublicacionesByLocal(java.lang.String)" class="member-name-link">getPublicacionesByLocal</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;uidLocal)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Recupera todas las publicaciones asociadas a un local específico.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>com.google.android.gms.tasks.Task<wbr>&lt;com.google.firebase.firestore.QuerySnapshot&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getPublicacionesByUsuario(java.lang.String)" class="member-name-link">getPublicacionesByUsuario</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;uidUsuario)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Recupera todas las publicaciones de un usuario específico,
  ordenadas de más reciente a más antigua.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>com.google.android.gms.tasks.Task<wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Void.html" title="class or interface in java.lang" class="external-link">Void</a>&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#savePublicacion(com.foodtracks.app.models.Publicacion)" class="member-name-link">savePublicacion</a><wbr>(com.foodtracks.app.models.Publicacion&nbsp;publicacion)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>com.google.android.gms.tasks.Task<wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Void.html" title="class or interface in java.lang" class="external-link">Void</a>&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#savePublicacion(com.foodtracks.app.models.Publicacion)" class="member-name-link">savePublicacion</a><wbr>(com.foodtracks.app.models.Publicacion&nbsp;publicacion)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Guarda una nueva publicación.</div>
 </div>
 </div>
@@ -242,6 +248,24 @@ implements <a href="interfaces/IPublicacionRepository.html" title="interface in 
 <dd><code>publicacion</code> - Objeto Publicación.</dd>
 <dt>Returns:</dt>
 <dd><code>Task</code> que representa el estado de la operación de escritura.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="editPublicacion(java.lang.String,java.lang.String)">
+<h3>editPublicacion</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">com.google.android.gms.tasks.Task&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Void.html" title="class or interface in java.lang" class="external-link">Void</a>&gt;</span>&nbsp;<span class="element-name">editPublicacion</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;uid,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;nuevoTexto)</span></div>
+<div class="block"><span class="description-from-type-label">Description copied from interface:&nbsp;<code><a href="interfaces/IPublicacionRepository.html#editPublicacion(java.lang.String,java.lang.String)">IPublicacionRepository</a></code></span></div>
+<div class="block">Edita el texto de una publicación.</div>
+<dl class="notes">
+<dt>Specified by:</dt>
+<dd><code><a href="interfaces/IPublicacionRepository.html#editPublicacion(java.lang.String,java.lang.String)">editPublicacion</a></code>&nbsp;in interface&nbsp;<code><a href="interfaces/IPublicacionRepository.html" title="interface in com.foodtracks.app.repositories.interfaces">IPublicacionRepository</a></code></dd>
+<dt>Parameters:</dt>
+<dd><code>uid</code> - Identificador de la publicación.</dd>
+<dd><code>nuevoTexto</code> - Nuevo texto.</dd>
+<dt>Returns:</dt>
+<dd><code>Task</code> que representa el estado de la operación de actualización.</dd>
 </dl>
 </section>
 </li>
