@@ -53,4 +53,7 @@ public class Publicacion {
     @Setter(onMethod_ = {@PropertyName("num_likes")})
     @Builder.Default
     private long numLikes = 0;
+
+    @Builder.Default
+    private boolean editada = false;
 }

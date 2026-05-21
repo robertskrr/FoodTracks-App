@@ -69,6 +69,14 @@ public interface IPublicacionService {
     Task<Void> subirPublicacion(Publicacion publicacion, Uri fotoUri);
 
     /**
+     * Edita el texto de una publicación ya subida.
+     * @param uid Identificador de la publicación.
+     * @param nuevoTexto Nuevo texto.
+     * @return {@link Task} que representa el estado de la operación.
+     */
+    public Task<Void> editarPublicacion(String uid, String nuevoTexto);
+
+    /**
      * Gestiona la eliminación de una publicación por parte del usuario dueño.
      *
      * @param uid ID de la publicación a eliminar.

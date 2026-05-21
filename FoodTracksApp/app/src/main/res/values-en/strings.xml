@@ -171,4 +171,8 @@
     <string name="plan_premium">Premium Plan (Coming soon…)</string>
     <string name="cliente">Customer</string>
     <string name="local">Business</string>
+    <string name="editar_publicacion">Edit post</string>
+    <string name="guardando">Saving…</string>
+    <string name="pubicacion_editada">Post edited</string>
+    <string name="editado">(Edited)</string>
 </resources>

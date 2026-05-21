@@ -25,6 +25,14 @@ public interface IPublicacionRepository {
     Task<Void> savePublicacion(Publicacion publicacion);
 
     /**
+     * Edita el texto de una publicación.
+     * @param uid Identificador de la publicación.
+     * @param nuevoTexto Nuevo texto.
+     * @return {@link Task} que representa el estado de la operación de actualización.
+     */
+    public Task<Void> editPublicacion(String uid, String nuevoTexto);
+
+    /**
      * Recupera un documento de publicación específica mediante UID.
      *
      * @param uid Identificador de la publicación.

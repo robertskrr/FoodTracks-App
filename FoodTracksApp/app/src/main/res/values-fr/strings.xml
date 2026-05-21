@@ -170,4 +170,8 @@
     <string name="plan_premium">Plan Premium (Bientôt disponible…)</string>
     <string name="cliente">Client</string>
     <string name="local">Établissement</string>
+    <string name="editar_publicacion">Modifier la publication</string>
+    <string name="guardando">Enregistrement…</string>
+    <string name="pubicacion_editada">Publication modifiée</string>
+    <string name="editado">(Modifié)</string>
 </resources>

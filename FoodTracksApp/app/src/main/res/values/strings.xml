@@ -173,4 +173,8 @@
     <string name="plan_premium">Plan Premium (Próximamente…)</string>
     <string name="cliente">Cliente</string>
     <string name="local">Local</string>
+    <string name="editar_publicacion">Editar publicación</string>
+    <string name="guardando">Guardando…</string>
+    <string name="pubicacion_editada">Publicación editada</string>
+    <string name="editado">(Editado)</string>
 </resources>

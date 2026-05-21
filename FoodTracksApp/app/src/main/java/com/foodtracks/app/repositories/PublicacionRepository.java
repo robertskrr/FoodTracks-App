@@ -39,6 +39,14 @@ public class PublicacionRepository implements IPublicacionRepository {
     }
 
     @Override
+    public Task<Void> editPublicacion(String uid, String nuevoTexto) {
+        return postsCollection.document(uid).update(
+                "texto", nuevoTexto,
+                "editada", true
+        );
+    }
+
+    @Override
     public Task<DocumentSnapshot> getPublicacionById(String uid) {
         return postsCollection.document(uid).get();
     }

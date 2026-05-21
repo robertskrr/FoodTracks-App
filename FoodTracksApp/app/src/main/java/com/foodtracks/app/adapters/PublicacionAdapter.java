@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.foodtracks.app.R;
 import com.foodtracks.app.activities.cliente.PerfilClienteActivity;
 import com.foodtracks.app.activities.local.PerfilLocalActivity;
+import com.foodtracks.app.fragments.SubirPublicacionFragment;
 import com.foodtracks.app.fragments.VisorImagenDialogFragment;
 import com.foodtracks.app.models.LikePublicacion;
 import com.foodtracks.app.models.Publicacion;
@@ -104,6 +105,10 @@ public class PublicacionAdapter
 
         holder.tvContadorLikes.setText(String.valueOf(publicacion.getNumLikes()));
 
+        if (publicacion.isEditada()) {
+            holder.tvFecha.setText(holder.tvFecha.getText().toString() + " " +  context.getString(R.string.editado));
+        }
+
         // Cargamos la imagen de la publicación (si existe)
         if (publicacion.getImagen() != null && !publicacion.getImagen().isEmpty()) {
             holder.imgPublicacion.setVisibility(View.VISIBLE);
@@ -129,9 +134,11 @@ public class PublicacionAdapter
         cargarDatosLocalMencionado(holder, publicacion.getUidLocal());
         comprobarLikeInicial(holder, publicacion.getUid());
 
-        // La papelera solo es visible si el usuario actual es el autor
+        // La papelera y edición solo es visible si el usuario actual es el autor
         if (esLogueado && currentUid.equals(publicacion.getUidUsuario())) {
             holder.imgEliminarPublicacion.setVisibility(View.VISIBLE);
+            holder.imgEditarPublicacion.setVisibility(View.VISIBLE);
+
             holder.imgEliminarPublicacion.setOnClickListener(
                     v -> {
                         int adapterPosition = holder.getBindingAdapterPosition();
@@ -139,6 +146,14 @@ public class PublicacionAdapter
                             mostrarDialogoEliminar(publicacion, adapterPosition);
                         }
                     });
+
+            holder.imgEditarPublicacion.setOnClickListener(v -> {
+                if (context instanceof AppCompatActivity) {
+                    SubirPublicacionFragment editFragment = SubirPublicacionFragment.newInstance(publicacion.getUid(), publicacion.getTexto());
+                    editFragment.show(((AppCompatActivity) context).getSupportFragmentManager(), "EditFragment");
+                }
+            });
+
         } else if (esAdmin) { // Si es administrador puede borrarla
             // Oculta el botón para hacer la siguiente comprobación: Que no sea de otro admin
             holder.imgEliminarPublicacion.setVisibility(View.GONE);
@@ -600,7 +615,7 @@ public class PublicacionAdapter
     public static class PublicacionViewHolder extends RecyclerView.ViewHolder {
         TextView tvUsernameAutor, tvFecha, tvTexto, tvContadorLikes, tvLocalMencionado;
         ShapeableImageView imgAvatarAutor, imgPublicacion;
-        ImageView imgLike, imgEliminarPublicacion;
+        ImageView imgLike, imgEliminarPublicacion, imgEditarPublicacion;
 
         public PublicacionViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -613,6 +628,7 @@ public class PublicacionAdapter
             tvContadorLikes = itemView.findViewById(R.id.tvContadorLikes);
             tvLocalMencionado = itemView.findViewById(R.id.tvLocalMencionado);
             imgEliminarPublicacion = itemView.findViewById(R.id.imgEliminarPublicacion);
+            imgEditarPublicacion = itemView.findViewById(R.id.imgEditarPublicacion);
         }
     }
 }
