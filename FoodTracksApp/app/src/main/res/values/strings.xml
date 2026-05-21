@@ -45,6 +45,8 @@
     <string name="credenciales_incorrectas">El correo o la contraseña son incorrectos</string>
     <string name="debes_introducir_contrasenia_actual">Debes introducir tu contraseña actual</string>
     <string name="contrasenia_actual_incorrecta">La contraseña actual es incorrecta</string>
+    <string name="debes_introducir_contrasenia">Debes introducir tu contraseña</string>
+    <string name="contrasenia_incorrecta">Contraseña incorrecta</string>
 
 
     <!-- LAYOUTS STRINGS -->
@@ -177,4 +179,5 @@
     <string name="guardando">Guardando…</string>
     <string name="pubicacion_editada">Publicación editada</string>
     <string name="editado">(Editado)</string>
+    <string name="reautenticacion_para_eliminar">Por seguridad, introduce tu contraseña actual para confirmar la eliminación:</string>
 </resources>

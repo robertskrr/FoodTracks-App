@@ -11,6 +11,10 @@ import com.foodtracks.app.models.Usuario;
 import com.foodtracks.app.models.UsuarioLocal;
 
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 /**
  * Lógica de negocio para la gestión de usuarios.
@@ -148,4 +152,17 @@ public interface IUsuarioService {
      * @return @return {@link Task} que contiene una lista de usuarios {@link Usuario}.
      */
     Task<List<Usuario>> getUltimosUsuariosRegistrados(int limite);
+
+    /**
+     * Reautentica el usuario de Firebase para llevar a cabo diferentes operaciones críticas.
+     * Ej: Cambiar contraseña, eliminar cuenta
+     * @param passwordActual Contraseña del usuario.
+     * @param listener Listener de los casos.
+     */
+    public void reautenticarUsuario(String passwordActual, OnReauthListener listener);
+
+    public interface OnReauthListener {
+        void onSuccess();
+        void onFailure(Exception e);
+    }
 }

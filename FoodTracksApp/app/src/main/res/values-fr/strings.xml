@@ -44,6 +44,8 @@
     <string name="credenciales_incorrectas">E-mail ou mot de passe incorrect</string>
     <string name="debes_introducir_contrasenia_actual">Vous devez entrer votre mot de passe actuel</string>
     <string name="contrasenia_actual_incorrecta">Le mot de passe actuel est incorrect</string>
+    <string name="debes_introducir_contrasenia">Vous devez saisir votre mot de passe</string>
+    <string name="contrasenia_incorrecta">Mot de passe incorrect</string>
 
     <string name="action_settings">Paramètres</string>
     <string name="iniciar_sesion">Se connecter</string>
@@ -174,4 +176,6 @@
     <string name="guardando">Enregistrement…</string>
     <string name="pubicacion_editada">Publication modifiée</string>
     <string name="editado">(Modifié)</string>
+    <string name="reautenticacion_para_eliminar">Pour des raisons de sécurité, saisissez votre mot de passe actuel pour confirmer la suppression :</string>
+
 </resources>

@@ -238,56 +238,71 @@ public class SettingsFragment extends Fragment {
     }
 
     /**
-     * Muestra el diálogo de confirmación de eliminación de cuenta.
+     * Muestra el diálogo de confirmación de eliminación de cuenta con reautenticación.
      */
     private void mostrarDialogoEliminarCuenta() {
-        AlertDialog dialog =
-                new MaterialAlertDialogBuilder(requireContext())
-                        .setTitle(R.string.eliminar_cuenta_warning)
-                        .setMessage(R.string.confirm_eliminar_cuenta)
-                        .setPositiveButton(
-                                R.string.eliminar_para_siempre,
-                                (dialogInterface, which) -> {
-                                    if (!esInvitado) {
+        final EditText inputPass = new EditText(requireContext());
+        inputPass.setHint(R.string.contrasenia_actual);
+        inputPass.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
-                                        // Bloqueamos la pantalla y aparece la animación de borrado
-                                        overlayCarga.setVisibility(View.VISIBLE);
+        LinearLayout container = new LinearLayout(requireContext());
+        container.setOrientation(LinearLayout.VERTICAL);
+        container.setPadding(50, 20, 50, 20);
+        container.addView(inputPass);
 
-                                        usuarioService
-                                                .eliminarCuenta(uidUsuario)
-                                                .addOnSuccessListener(
-                                                        unused -> {
-                                                            logOut();
-                                                            Toast.makeText(
-                                                                            requireContext(),
-                                                                            R.string
-                                                                                    .cuenta_eliminada,
-                                                                            Toast.LENGTH_LONG)
-                                                                    .show();
-                                                        })
-                                                .addOnFailureListener(
-                                                        e -> {
-                                                            overlayCarga.setVisibility(View.GONE);
-                                                            Log.e(
-                                                                    "Error al eliminar cuenta",
-                                                                    e.getMessage(),
-                                                                    e);
-                                                            Toast.makeText(
-                                                                            requireContext(),
-                                                                            R.string
-                                                                                    .error_al_eliminar,
-                                                                            Toast.LENGTH_SHORT)
-                                                                    .show();
-                                                        });
-                                    }
-                                })
-                        .setNegativeButton(
-                                R.string.cancelar,
-                                (dialogInterface, which) -> dialogInterface.dismiss())
-                        .show();
+        AlertDialog dialog = new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.eliminar_cuenta_warning)
+                .setMessage(R.string.reautenticacion_para_eliminar)
+                .setView(container)
+                .setPositiveButton(R.string.eliminar_para_siempre, (dialogInterface, which) -> {
+                    String password = inputPass.getText().toString().trim();
+                    if (password.isEmpty()) {
+                        Toast.makeText(requireContext(), R.string.debes_introducir_contrasenia, Toast.LENGTH_SHORT).show();
+                        return;
+                    }
 
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.RED);
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
+                    overlayCarga.setVisibility(View.VISIBLE);
+
+                    // Reautenticamos
+                    usuarioService.reautenticarUsuario(password, new IUsuarioService.OnReauthListener() {
+                        @Override
+                        public void onSuccess() {
+                            // Borrar datos en base de datos
+                            usuarioService.eliminarCuenta(uidUsuario)
+                                    .addOnSuccessListener(unused -> {
+                                        // Borrar el usuario de Firebase Auth
+                                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                        if (user != null) {
+                                            user.delete().addOnSuccessListener(aVoid -> {
+                                                logOut();
+                                                Toast.makeText(requireContext(), R.string.cuenta_eliminada, Toast.LENGTH_LONG).show();
+                                            }).addOnFailureListener(e -> {
+                                                overlayCarga.setVisibility(View.GONE);
+                                                Log.e("Eliminar usuario", e.getMessage(), e);
+                                                Toast.makeText(requireContext(), R.string.error_al_eliminar + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                            });
+                                        }
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        overlayCarga.setVisibility(View.GONE);
+                                        Log.e("Error al borrar datos", e.getMessage(), e);
+                                        Toast.makeText(requireContext(), R.string.error_al_eliminar, Toast.LENGTH_SHORT).show();
+                                    });
+                        }
+
+                        @Override
+                        public void onFailure(Exception e) {
+                            overlayCarga.setVisibility(View.GONE);
+                            Toast.makeText(requireContext(), R.string.contrasenia_incorrecta, Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                })
+                .setNegativeButton(R.string.cancelar, null)
+                .show();
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                .setTextColor(ContextCompat.getColor(requireContext(), R.color.eliminar));
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.GRAY);
     }
 
     /**

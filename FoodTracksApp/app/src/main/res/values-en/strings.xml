@@ -44,7 +44,8 @@
     <string name="credenciales_incorrectas">Incorrect email or password</string>
     <string name="debes_introducir_contrasenia_actual">You must enter your current password</string>
     <string name="contrasenia_actual_incorrecta">Current password is incorrect</string>
-
+    <string name="debes_introducir_contrasenia">You must enter your password</string>
+    <string name="contrasenia_incorrecta">Incorrect password</string>
 
     <string name="action_settings">Settings</string>
     <string name="iniciar_sesion">Log In</string>
@@ -175,4 +176,6 @@
     <string name="guardando">Saving…</string>
     <string name="pubicacion_editada">Post edited</string>
     <string name="editado">(Edited)</string>
+    <string name="reautenticacion_para_eliminar">For security, enter your current password to confirm deletion:</string>
+
 </resources>
