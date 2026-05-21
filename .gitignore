@@ -21,6 +21,7 @@ captures/
 # Output
 *.aab
 *.apk
+*.dm
 output-metadata.json
 
 # Keystore & Secrets
