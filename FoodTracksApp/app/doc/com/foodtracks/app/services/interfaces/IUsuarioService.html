@@ -37,7 +37,7 @@ loadScripts(document, 'script');</script>
 <li>
 <p>Summary:</p>
 <ul>
-<li>Nested</li>
+<li><a href="#nested-class-summary">Nested</a></li>
 <li>Field</li>
 <li>Constr</li>
 <li><a href="#method-summary">Method</a></li>
@@ -57,7 +57,7 @@ loadScripts(document, 'script');</script>
 <div id="navbar-sub-list">
 <ul class="sub-nav-list">
 <li>Summary:&nbsp;</li>
-<li>Nested&nbsp;|&nbsp;</li>
+<li><a href="#nested-class-summary">Nested</a>&nbsp;|&nbsp;</li>
 <li>Field&nbsp;|&nbsp;</li>
 <li>Constr&nbsp;|&nbsp;</li>
 <li><a href="#method-summary">Method</a></li>
@@ -100,6 +100,21 @@ loadScripts(document, 'script');</script>
 </section>
 <section class="summary">
 <ul class="summary-list">
+<!-- ======== NESTED CLASS SUMMARY ======== -->
+<li>
+<section class="nested-class-summary" id="nested-class-summary">
+<h2>Nested Class Summary</h2>
+<div class="caption"><span>Nested Classes</span></div>
+<div class="summary-table three-column-summary">
+<div class="table-header col-first">Modifier and Type</div>
+<div class="table-header col-second">Interface</div>
+<div class="table-header col-last">Description</div>
+<div class="col-first even-row-color"><code>static interface&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="IUsuarioService.OnReauthListener.html" class="type-name-link" title="interface in com.foodtracks.app.services.interfaces">IUsuarioService.OnReauthListener</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+</div>
+</section>
+</li>
 <!-- ========== METHOD SUMMARY =========== -->
 <li>
 <section class="method-summary" id="method-summary">
@@ -180,23 +195,29 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Realia una búsqueda basada en el username exacto del usuario.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>com.google.android.gms.tasks.Task<wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Void.html" title="class or interface in java.lang" class="external-link">Void</a>&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#registrarUsuario(com.foodtracks.app.models.Usuario,android.net.Uri)" class="member-name-link">registrarUsuario</a><wbr>(com.foodtracks.app.models.Usuario&nbsp;usuario,
- android.net.Uri&nbsp;fotoUri)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#reautenticarUsuario(java.lang.String,com.foodtracks.app.services.interfaces.IUsuarioService.OnReauthListener)" class="member-name-link">reautenticarUsuario</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;passwordActual,
+ <a href="IUsuarioService.OnReauthListener.html" title="interface in com.foodtracks.app.services.interfaces">IUsuarioService.OnReauthListener</a>&nbsp;listener)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
-<div class="block">Registra un nuevo usuario.</div>
+<div class="block">Reautentica el usuario de Firebase para llevar a cabo diferentes operaciones críticas.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>com.google.android.gms.tasks.Task<wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Void.html" title="class or interface in java.lang" class="external-link">Void</a>&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#registrarVisitaPerfil(java.lang.String,java.lang.String)" class="member-name-link">registrarVisitaPerfil</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;uidVisitante,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;uidLocal)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#registrarUsuario(com.foodtracks.app.models.Usuario,android.net.Uri)" class="member-name-link">registrarUsuario</a><wbr>(com.foodtracks.app.models.Usuario&nbsp;usuario,
+ android.net.Uri&nbsp;fotoUri)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="block">Registra un nuevo usuario.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>com.google.android.gms.tasks.Task<wbr>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Void.html" title="class or interface in java.lang" class="external-link">Void</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#registrarVisitaPerfil(java.lang.String,java.lang.String)" class="member-name-link">registrarVisitaPerfil</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;uidVisitante,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;uidLocal)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Registra una visita en el perfil de un usuario local.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>int</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#validarCredenciales(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">validarCredenciales</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;email,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code>int</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3"><code><a href="#validarCredenciales(java.lang.String,java.lang.String,java.lang.String)" class="member-name-link">validarCredenciales</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;email,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;pass,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;confirmPass)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab3">
 <div class="block">Valida las credenciales de registro de un usuario.</div>
 </div>
 </div>
@@ -421,6 +442,20 @@ loadScripts(document, 'script');</script>
 <dd><code>limite</code> - Número límite de usuarios.</dd>
 <dt>Returns:</dt>
 <dd>@return <code>Task</code> que contiene una lista de usuarios <code>Usuario</code>.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="reautenticarUsuario(java.lang.String,com.foodtracks.app.services.interfaces.IUsuarioService.OnReauthListener)">
+<h3>reautenticarUsuario</h3>
+<div class="member-signature"><span class="return-type">void</span>&nbsp;<span class="element-name">reautenticarUsuario</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;passwordActual,
+ <a href="IUsuarioService.OnReauthListener.html" title="interface in com.foodtracks.app.services.interfaces">IUsuarioService.OnReauthListener</a>&nbsp;listener)</span></div>
+<div class="block">Reautentica el usuario de Firebase para llevar a cabo diferentes operaciones críticas.
+ Ej: Cambiar contraseña, eliminar cuenta</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>passwordActual</code> - Contraseña del usuario.</dd>
+<dd><code>listener</code> - Listener de los casos.</dd>
 </dl>
 </section>
 </li>
