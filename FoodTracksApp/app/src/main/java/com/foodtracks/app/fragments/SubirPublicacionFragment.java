@@ -303,7 +303,17 @@ public class SubirPublicacionFragment extends DialogFragment {
                                                     .show();
                                             dismiss();
                                         })
-                                .addOnFailureListener(e -> restaurarBotonPublicar());
+                                .addOnFailureListener(
+                                        e -> {
+                                            if (e instanceof FoodTracksValidationException ex) {
+                                                Toast.makeText(
+                                                                requireContext(),
+                                                                ex.getErrorResId(),
+                                                                Toast.LENGTH_SHORT)
+                                                        .show();
+                                            }
+                                            restaurarBotonPublicar();
+                                        });
                     } else {
                         // SUBIR PUBLICACIÓN NUEVA
                         btnPublicar.setText(R.string.subiendo);
