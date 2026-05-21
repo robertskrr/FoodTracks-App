@@ -92,7 +92,7 @@ Si deseas clonar el proyecto y ejecutarlo en tu propio entorno de desarrollo loc
 #### Paso 2.1: Clonar el repositorio
 Abre tu terminal o consola de comandos y clona el proyecto en tu máquina local:
 ```bash
-git clone [https://github.com/robertskrr/FoodTracks-App.git](https://github.com/robertskrr/FoodTracks-App.git)
+git clone https://github.com/robertskrr/FoodTracks-App.git
 ```
 
 #### Paso 2.2: Configurar el JDK a la versión 21
