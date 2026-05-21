@@ -88,25 +88,31 @@ public class SubirPublicacionFragment extends DialogFragment {
         btnAdjuntarFoto = v.findViewById(R.id.btnAdjuntarFoto);
         btnPublicar = v.findViewById(R.id.btnPublicar);
         // Configuramos el adaptador para que muestre exactamente lo que traemos
-        adapterLocales = new ArrayAdapter<String>(requireContext(), android.R.layout.simple_dropdown_item_1line, sugerenciasLocales) {
-            @NonNull
-            @Override
-            public Filter getFilter() {
-                return new Filter() {
+        adapterLocales =
+                new ArrayAdapter<String>(
+                        requireContext(),
+                        android.R.layout.simple_dropdown_item_1line,
+                        sugerenciasLocales) {
+                    @NonNull
                     @Override
-                    protected FilterResults performFiltering(CharSequence constraint) {
-                        FilterResults results = new FilterResults();
-                        results.values = sugerenciasLocales;
-                        results.count = sugerenciasLocales.size();
-                        return results;
-                    }
-                    @Override
-                    protected void publishResults(CharSequence constraint, FilterResults results) {
-                        notifyDataSetChanged();
+                    public Filter getFilter() {
+                        return new Filter() {
+                            @Override
+                            protected FilterResults performFiltering(CharSequence constraint) {
+                                FilterResults results = new FilterResults();
+                                results.values = sugerenciasLocales;
+                                results.count = sugerenciasLocales.size();
+                                return results;
+                            }
+
+                            @Override
+                            protected void publishResults(
+                                    CharSequence constraint, FilterResults results) {
+                                notifyDataSetChanged();
+                            }
+                        };
                     }
                 };
-            }
-        };
         txtMencionarLocal.setAdapter(adapterLocales);
 
         mAuth = FirebaseAuth.getInstance();
@@ -196,44 +202,50 @@ public class SubirPublicacionFragment extends DialogFragment {
         btnAdjuntarFoto.setOnClickListener(v -> mostrarOpcionesImagen());
 
         // Muestra una lista desplegable con las coincidencias de locales
-        txtMencionarLocal.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+        txtMencionarLocal.addTextChangedListener(
+                new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(
+                            CharSequence s, int start, int count, int after) {}
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (txtMencionarLocal.isPerformingCompletion()) return;
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        if (txtMencionarLocal.isPerformingCompletion()) return;
 
-                String query = s.toString().trim();
-                String cleanQuery = query.replace("@", "");
+                        String query = s.toString().trim();
+                        String cleanQuery = query.replace("@", "");
 
-                // A partir de 2 caracteres limpios busca
-                if (!cleanQuery.isEmpty()) {
-                    usuarioService.buscarLocalesPorUsername(cleanQuery).addOnSuccessListener(locales -> {
-                        if (!isAdded()) return;
-                        sugerenciasLocales.clear();
-                        for (Usuario local : locales) {
-                            sugerenciasLocales.add("@" + local.getUsername());
+                        // A partir de 2 caracteres limpios busca
+                        if (!cleanQuery.isEmpty()) {
+                            usuarioService
+                                    .buscarLocalesPorUsername(cleanQuery)
+                                    .addOnSuccessListener(
+                                            locales -> {
+                                                if (!isAdded()) return;
+                                                sugerenciasLocales.clear();
+                                                for (Usuario local : locales) {
+                                                    sugerenciasLocales.add(
+                                                            "@" + local.getUsername());
+                                                }
+
+                                                // Actualizamos la lista
+                                                adapterLocales.notifyDataSetChanged();
+
+                                                // Forzamos a abrir el menú cuando lleguen los datos
+                                                if (!sugerenciasLocales.isEmpty()) {
+                                                    txtMencionarLocal.showDropDown();
+                                                }
+                                            });
+                        } else {
+                            // Si borra vaciamos la lista
+                            sugerenciasLocales.clear();
+                            adapterLocales.notifyDataSetChanged();
                         }
+                    }
 
-                        // Actualizamos la lista
-                        adapterLocales.notifyDataSetChanged();
-
-                        // Forzamos a abrir el menú cuando lleguen los datos
-                        if (!sugerenciasLocales.isEmpty()) {
-                            txtMencionarLocal.showDropDown();
-                        }
-                    });
-                } else {
-                    // Si borra vaciamos la lista
-                    sugerenciasLocales.clear();
-                    adapterLocales.notifyDataSetChanged();
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });
+                    @Override
+                    public void afterTextChanged(Editable s) {}
+                });
 
         btnPublicar.setOnClickListener(
                 v -> {

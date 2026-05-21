@@ -12,7 +12,6 @@ import com.foodtracks.app.repositories.interfaces.IValoracionLocalRepository;
 import com.foodtracks.app.services.exceptions.FoodTracksValidationException;
 
 import com.google.android.gms.tasks.Task;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -20,11 +19,9 @@ import org.mockito.MockitoAnnotations;
 
 public class ValoracionLocalServiceTest {
 
-    @Mock
-    private IValoracionLocalRepository mockValoracionRepo;
+    @Mock private IValoracionLocalRepository mockValoracionRepo;
 
-    @Mock
-    private IUsuarioRepository mockUsuarioRepo;
+    @Mock private IUsuarioRepository mockUsuarioRepo;
 
     private ValoracionLocalService valoracionService;
 

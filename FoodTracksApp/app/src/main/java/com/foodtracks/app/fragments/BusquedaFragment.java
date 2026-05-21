@@ -2,9 +2,7 @@
 
 package com.foodtracks.app.fragments;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -209,28 +207,33 @@ public class BusquedaFragment extends Fragment {
             return;
         }
 
-        usuarioService.getUltimosUsuariosRegistrados(20)
-                .addOnSuccessListener(usuarios -> {
-                    if (!isAdded()) return;
-                    progressBar.setVisibility(View.GONE);
+        usuarioService
+                .getUltimosUsuariosRegistrados(20)
+                .addOnSuccessListener(
+                        usuarios -> {
+                            if (!isAdded()) return;
+                            progressBar.setVisibility(View.GONE);
 
-                    if (usuarios == null || usuarios.isEmpty()) {
-                        tvSinResultados.setVisibility(View.VISIBLE);
-                        recyclerPerfiles.setVisibility(View.GONE);
-                    } else {
-                        cacheUltimosUsuarios = usuarios;
+                            if (usuarios == null || usuarios.isEmpty()) {
+                                tvSinResultados.setVisibility(View.VISIBLE);
+                                recyclerPerfiles.setVisibility(View.GONE);
+                            } else {
+                                cacheUltimosUsuarios = usuarios;
 
-                        tvSinResultados.setVisibility(View.GONE);
-                        recyclerPerfiles.setVisibility(View.VISIBLE);
-                        adapter = new PerfilUsuarioAdapter(usuarios, requireContext());
-                        recyclerPerfiles.setAdapter(adapter);
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    if (!isAdded()) return;
-                    progressBar.setVisibility(View.GONE);
-                    Log.e("BusquedaFragment", "Error cargando últimos usuarios: " + e.getMessage());
-                });
+                                tvSinResultados.setVisibility(View.GONE);
+                                recyclerPerfiles.setVisibility(View.VISIBLE);
+                                adapter = new PerfilUsuarioAdapter(usuarios, requireContext());
+                                recyclerPerfiles.setAdapter(adapter);
+                            }
+                        })
+                .addOnFailureListener(
+                        e -> {
+                            if (!isAdded()) return;
+                            progressBar.setVisibility(View.GONE);
+                            Log.e(
+                                    "BusquedaFragment",
+                                    "Error cargando últimos usuarios: " + e.getMessage());
+                        });
     }
 
     /**

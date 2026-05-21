@@ -15,15 +15,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import android.widget.LinearLayout;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.EmailAuthProvider;
 
 import com.foodtracks.app.R;
 import com.foodtracks.app.activities.MainActivity;
@@ -38,6 +36,8 @@ import com.foodtracks.app.services.interfaces.IUsuarioService;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -305,17 +305,20 @@ public class SettingsFragment extends Fragment {
         // Contraseña actual
         EditText inputPassActual = new EditText(requireContext());
         inputPassActual.setHint(R.string.contrasenia_actual);
-        inputPassActual.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        inputPassActual.setInputType(
+                InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         layout.addView(inputPassActual);
 
         // Nueva contraseña
         EditText inputPassNueva = new EditText(requireContext());
         inputPassNueva.setHint(R.string.nueva_contrasenia);
-        inputPassNueva.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        inputPassNueva.setInputType(
+                InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
         // Margen superior al campo de nueva contraseña
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params =
+                new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         params.topMargin = 30;
         inputPassNueva.setLayoutParams(params);
         layout.addView(inputPassNueva);
@@ -332,38 +335,80 @@ public class SettingsFragment extends Fragment {
                                     String nuevaPass = inputPassNueva.getText().toString().trim();
 
                                     if (actualPass.isEmpty()) {
-                                        Toast.makeText(requireContext(), R.string.debes_introducir_contrasenia_actual, Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(
+                                                        requireContext(),
+                                                        R.string
+                                                                .debes_introducir_contrasenia_actual,
+                                                        Toast.LENGTH_SHORT)
+                                                .show();
                                         return;
                                     }
 
                                     if (nuevaPass.length() < 8) {
-                                        Toast.makeText(requireContext(), R.string.password_length_error_message, Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(
+                                                        requireContext(),
+                                                        R.string.password_length_error_message,
+                                                        Toast.LENGTH_SHORT)
+                                                .show();
                                         return;
                                     }
 
                                     overlayCarga.setVisibility(View.VISIBLE);
 
                                     // Reautenticar al usuario con la contraseña actual
-                                    AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), actualPass);
+                                    AuthCredential credential =
+                                            EmailAuthProvider.getCredential(
+                                                    user.getEmail(), actualPass);
 
                                     user.reauthenticate(credential)
-                                            .addOnSuccessListener(unused -> {
-                                                // Si la contraseña actual es correcta, actualizamos a la nueva
-                                                user.updatePassword(nuevaPass)
-                                                        .addOnSuccessListener(aVoid -> {
-                                                            overlayCarga.setVisibility(View.GONE);
-                                                            Toast.makeText(requireContext(), R.string.contrasenia_actualizada, Toast.LENGTH_SHORT).show();
-                                                        })
-                                                        .addOnFailureListener(e -> {
-                                                            overlayCarga.setVisibility(View.GONE);
-                                                            Log.e("Actualizar contraseña", e.getMessage(), e);
-                                                            Toast.makeText(requireContext(), R.string.error_al_actualizar, Toast.LENGTH_SHORT).show();
-                                                        });
-                                            })
-                                            .addOnFailureListener(e -> {
-                                                overlayCarga.setVisibility(View.GONE);
-                                                Toast.makeText(requireContext(), R.string.contrasenia_actual_incorrecta, Toast.LENGTH_LONG).show();
-                                            });
+                                            .addOnSuccessListener(
+                                                    unused -> {
+                                                        // Si la contraseña actual es correcta,
+                                                        // actualizamos a la nueva
+                                                        user.updatePassword(nuevaPass)
+                                                                .addOnSuccessListener(
+                                                                        aVoid -> {
+                                                                            overlayCarga
+                                                                                    .setVisibility(
+                                                                                            View
+                                                                                                    .GONE);
+                                                                            Toast.makeText(
+                                                                                            requireContext(),
+                                                                                            R.string
+                                                                                                    .contrasenia_actualizada,
+                                                                                            Toast
+                                                                                                    .LENGTH_SHORT)
+                                                                                    .show();
+                                                                        })
+                                                                .addOnFailureListener(
+                                                                        e -> {
+                                                                            overlayCarga
+                                                                                    .setVisibility(
+                                                                                            View
+                                                                                                    .GONE);
+                                                                            Log.e(
+                                                                                    "Actualizar contraseña",
+                                                                                    e.getMessage(),
+                                                                                    e);
+                                                                            Toast.makeText(
+                                                                                            requireContext(),
+                                                                                            R.string
+                                                                                                    .error_al_actualizar,
+                                                                                            Toast
+                                                                                                    .LENGTH_SHORT)
+                                                                                    .show();
+                                                                        });
+                                                    })
+                                            .addOnFailureListener(
+                                                    e -> {
+                                                        overlayCarga.setVisibility(View.GONE);
+                                                        Toast.makeText(
+                                                                        requireContext(),
+                                                                        R.string
+                                                                                .contrasenia_actual_incorrecta,
+                                                                        Toast.LENGTH_LONG)
+                                                                .show();
+                                                    });
                                 })
                         .setNegativeButton(
                                 R.string.cancelar,

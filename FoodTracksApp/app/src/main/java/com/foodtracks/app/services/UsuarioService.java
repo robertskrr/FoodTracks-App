@@ -439,16 +439,18 @@ public class UsuarioService implements IUsuarioService {
     public Task<List<Usuario>> buscarLocalesPorUsername(String username) {
         String cleanUsername = (username != null) ? username.toLowerCase().trim() : "";
 
-        return usuarioRepository.searchLocalesByUsername(cleanUsername)
-                .continueWith(task -> {
-                    List<Usuario> listaLocales = new ArrayList<>();
-                    if (task.isSuccessful() && task.getResult() != null) {
-                        for (DocumentSnapshot doc : task.getResult()) {
-                            listaLocales.add(doc.toObject(UsuarioLocal.class));
-                        }
-                    }
-                    return listaLocales;
-                });
+        return usuarioRepository
+                .searchLocalesByUsername(cleanUsername)
+                .continueWith(
+                        task -> {
+                            List<Usuario> listaLocales = new ArrayList<>();
+                            if (task.isSuccessful() && task.getResult() != null) {
+                                for (DocumentSnapshot doc : task.getResult()) {
+                                    listaLocales.add(doc.toObject(UsuarioLocal.class));
+                                }
+                            }
+                            return listaLocales;
+                        });
     }
 
     @Override
@@ -496,7 +498,8 @@ public class UsuarioService implements IUsuarioService {
                                                 break;
                                             case "cliente":
                                             default:
-                                                listaUsuarios.add(doc.toObject(UsuarioCliente.class));
+                                                listaUsuarios.add(
+                                                        doc.toObject(UsuarioCliente.class));
                                                 break;
                                         }
                                     }
@@ -563,14 +566,14 @@ public class UsuarioService implements IUsuarioService {
         }
 
         if (usuario instanceof UsuarioLocal local) {
-            if (local.getNombre() != null){
+            if (local.getNombre() != null) {
                 local.setNombre(StringUtils.capitalize(local.getNombre()));
             }
             if (local.getTelefono() != null) {
                 local.setTelefono(local.getTelefono().trim());
             }
 
-            if (local.getDireccion() != null){
+            if (local.getDireccion() != null) {
                 local.setDireccion(StringUtils.capitalizePrimeraLetra(local.getDireccion()));
             }
 

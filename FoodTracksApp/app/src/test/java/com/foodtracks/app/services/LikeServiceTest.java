@@ -1,3 +1,5 @@
+/** © FoodTracks Project ===robertskrr=== */
+
 package com.foodtracks.app.services;
 
 import static org.junit.Assert.assertEquals;
@@ -9,13 +11,11 @@ import static org.mockito.Mockito.when;
 import com.foodtracks.app.R;
 import com.foodtracks.app.repositories.interfaces.ILikeRepository;
 import com.foodtracks.app.repositories.interfaces.IPublicacionRepository;
-import com.foodtracks.app.services.LikeService;
 import com.foodtracks.app.services.exceptions.FoodTracksNotFoundException;
 
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.DocumentSnapshot;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -23,11 +23,9 @@ import org.mockito.MockitoAnnotations;
 
 public class LikeServiceTest {
 
-    @Mock
-    private ILikeRepository mockLikeRepository;
+    @Mock private ILikeRepository mockLikeRepository;
 
-    @Mock
-    private IPublicacionRepository mockPublicacionRepository;
+    @Mock private IPublicacionRepository mockPublicacionRepository;
 
     private LikeService likeService;
 

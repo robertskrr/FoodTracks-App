@@ -68,7 +68,7 @@ public class StringUtils {
      * @param texto Texto a formatear.
      * @return Texto sin espacios.
      */
-    public static String quitarAllEspacios(String texto){
+    public static String quitarAllEspacios(String texto) {
         if (texto == null || texto.trim().isEmpty()) {
             return texto;
         }

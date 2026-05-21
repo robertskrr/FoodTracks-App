@@ -1,3 +1,5 @@
+/** © FoodTracks Project ===robertskrr=== */
+
 package com.foodtracks.app.services;
 
 import static org.junit.Assert.assertEquals;
@@ -13,7 +15,6 @@ import com.foodtracks.app.repositories.interfaces.IUsuarioRepository;
 import com.foodtracks.app.services.exceptions.FoodTracksValidationException;
 
 import com.google.android.gms.tasks.Task;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -32,8 +33,9 @@ public class PublicacionServiceTest {
     @Before
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        publicacionService = new PublicacionService(
-                mockPubRepo, mockUsuarioRepo, mockRegRepo, mockStorageRepo, mockLikeRepo);
+        publicacionService =
+                new PublicacionService(
+                        mockPubRepo, mockUsuarioRepo, mockRegRepo, mockStorageRepo, mockLikeRepo);
     }
 
     @Test

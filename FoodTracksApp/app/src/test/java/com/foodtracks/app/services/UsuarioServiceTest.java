@@ -1,3 +1,5 @@
+/** © FoodTracks Project ===robertskrr=== */
+
 package com.foodtracks.app.services;
 
 import static org.junit.Assert.assertEquals;
@@ -29,8 +31,14 @@ public class UsuarioServiceTest {
     @Before
     public void setUp() {
         MockitoAnnotations.openMocks(this);
-        usuarioService = new UsuarioService(
-                mockUsuRepo, mockRegRepo, mockStorageRepo, mockPubRepo, mockLikeRepo, mockValRepo);
+        usuarioService =
+                new UsuarioService(
+                        mockUsuRepo,
+                        mockRegRepo,
+                        mockStorageRepo,
+                        mockPubRepo,
+                        mockLikeRepo,
+                        mockValRepo);
     }
 
     @Test
@@ -53,7 +61,9 @@ public class UsuarioServiceTest {
 
     @Test
     public void validarCredenciales_DatosCorrectos_DevuelveCero() {
-        int error = usuarioService.validarCredenciales("correo@valido.com", "PasswordSegura1", "PasswordSegura1");
+        int error =
+                usuarioService.validarCredenciales(
+                        "correo@valido.com", "PasswordSegura1", "PasswordSegura1");
         assertEquals(0, error);
     }
 }
