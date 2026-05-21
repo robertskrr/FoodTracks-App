@@ -54,6 +54,5 @@ public class Publicacion {
     @Builder.Default
     private long numLikes = 0;
 
-    @Builder.Default
-    private boolean editada = false;
+    @Builder.Default private boolean editada = false;
 }

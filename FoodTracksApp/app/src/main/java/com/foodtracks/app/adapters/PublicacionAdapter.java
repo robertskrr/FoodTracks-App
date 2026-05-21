@@ -106,7 +106,10 @@ public class PublicacionAdapter
         holder.tvContadorLikes.setText(String.valueOf(publicacion.getNumLikes()));
 
         if (publicacion.isEditada()) {
-            holder.tvFecha.setText(holder.tvFecha.getText().toString() + " " +  context.getString(R.string.editado));
+            holder.tvFecha.setText(
+                    holder.tvFecha.getText().toString()
+                            + " "
+                            + context.getString(R.string.editado));
         }
 
         // Cargamos la imagen de la publicación (si existe)
@@ -147,12 +150,17 @@ public class PublicacionAdapter
                         }
                     });
 
-            holder.imgEditarPublicacion.setOnClickListener(v -> {
-                if (context instanceof AppCompatActivity) {
-                    SubirPublicacionFragment editFragment = SubirPublicacionFragment.newInstance(publicacion.getUid(), publicacion.getTexto());
-                    editFragment.show(((AppCompatActivity) context).getSupportFragmentManager(), "EditFragment");
-                }
-            });
+            holder.imgEditarPublicacion.setOnClickListener(
+                    v -> {
+                        if (context instanceof AppCompatActivity) {
+                            SubirPublicacionFragment editFragment =
+                                    SubirPublicacionFragment.newInstance(
+                                            publicacion.getUid(), publicacion.getTexto());
+                            editFragment.show(
+                                    ((AppCompatActivity) context).getSupportFragmentManager(),
+                                    "EditFragment");
+                        }
+                    });
 
         } else if (esAdmin) { // Si es administrador puede borrarla
             // Oculta el botón para hacer la siguiente comprobación: Que no sea de otro admin

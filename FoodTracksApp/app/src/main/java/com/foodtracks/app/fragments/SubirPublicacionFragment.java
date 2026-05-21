@@ -1,6 +1,4 @@
-/**
- * © FoodTracks Project ===robertskrr===
- */
+/** © FoodTracks Project ===robertskrr=== */
 
 package com.foodtracks.app.fragments;
 
@@ -22,7 +20,6 @@ import android.widget.Button;
 import android.widget.Filter;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -145,7 +142,6 @@ public class SubirPublicacionFragment extends DialogFragment {
             layoutMencionarLocal.setVisibility(View.GONE);
         }
 
-
         mAuth = FirebaseAuth.getInstance();
         uidUsuarioActual = mAuth.getCurrentUser() != null ? mAuth.getCurrentUser().getUid() : null;
 
@@ -168,7 +164,8 @@ public class SubirPublicacionFragment extends DialogFragment {
                         usuario -> {
                             tvUsernameAutor.setText("@" + usuario.getUsername());
 
-                            // Solo muestra el layout de mención si no es un local y no estamos editando
+                            // Solo muestra el layout de mención si no es un local y no estamos
+                            // editando
                             if (!"local".equals(usuario.getRol()) && uidPublicacionEdit == null) {
                                 layoutMencionarLocal.setVisibility(View.VISIBLE);
                             }
@@ -237,8 +234,7 @@ public class SubirPublicacionFragment extends DialogFragment {
                 new TextWatcher() {
                     @Override
                     public void beforeTextChanged(
-                            CharSequence s, int start, int count, int after) {
-                    }
+                            CharSequence s, int start, int count, int after) {}
 
                     @Override
                     public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -276,8 +272,7 @@ public class SubirPublicacionFragment extends DialogFragment {
                     }
 
                     @Override
-                    public void afterTextChanged(Editable s) {
-                    }
+                    public void afterTextChanged(Editable s) {}
                 });
 
         btnPublicar.setOnClickListener(
@@ -297,11 +292,17 @@ public class SubirPublicacionFragment extends DialogFragment {
                     // EDITAR PUBLICACIÓN EXISTENTE
                     if (uidPublicacionEdit != null) {
                         btnPublicar.setText(R.string.guardando);
-                        publicacionService.editarPublicacion(uidPublicacionEdit, texto)
-                                .addOnSuccessListener(unused -> {
-                                    Toast.makeText(getContext(), R.string.pubicacion_editada, Toast.LENGTH_SHORT).show();
-                                    dismiss();
-                                })
+                        publicacionService
+                                .editarPublicacion(uidPublicacionEdit, texto)
+                                .addOnSuccessListener(
+                                        unused -> {
+                                            Toast.makeText(
+                                                            getContext(),
+                                                            R.string.pubicacion_editada,
+                                                            Toast.LENGTH_SHORT)
+                                                    .show();
+                                            dismiss();
+                                        })
                                 .addOnFailureListener(e -> restaurarBotonPublicar());
                     } else {
                         // SUBIR PUBLICACIÓN NUEVA
@@ -400,7 +401,7 @@ public class SubirPublicacionFragment extends DialogFragment {
      */
     private void mostrarOpcionesImagen() {
         String[] opciones = {
-                getString(R.string.hacer_foto), getString(R.string.elegir_de_la_galeria)
+            getString(R.string.hacer_foto), getString(R.string.elegir_de_la_galeria)
         };
 
         new MaterialAlertDialogBuilder(requireContext())
