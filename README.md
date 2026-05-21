@@ -90,13 +90,13 @@ La documentación técnica del código fuente (Javadoc) ha sido generada automá
 Si deseas clonar el proyecto y ejecutarlo en tu propio entorno de desarrollo local, debes seguir los siguientes pasos:
 
 #### Paso 2.1: Clonar el repositorio
-Abre tu terminal o consola de comandos y clona el proyecto en tu máquina local:
+Abre tu terminal y clona el proyecto en tu máquina local:
 ```bash
 git clone https://github.com/robertskrr/FoodTracks-App.git
 ```
 
 #### Paso 2.2: Configurar el JDK a la versión 21
-La lógica del backend local y los scripts de automatización de Gradle requieren Java 21 para compilar las dependencias.
+La lógica del backend y los scripts de Gradle requieren Java 21 para compilar las dependencias.
 1. Abre **Android Studio** e importa el proyecto desde la carpeta raíz `foodTracksApp`.
 2. Ve al menú superior: `File` > `Settings`.
 3. Navega a `Build, Execution, Deployment` > `Build Tools` > `Gradle`.
