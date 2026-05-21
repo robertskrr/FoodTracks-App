@@ -11,10 +11,6 @@ import com.foodtracks.app.models.Usuario;
 import com.foodtracks.app.models.UsuarioLocal;
 
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.EmailAuthProvider;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 /**
  * Lógica de negocio para la gestión de usuarios.
@@ -163,6 +159,7 @@ public interface IUsuarioService {
 
     public interface OnReauthListener {
         void onSuccess();
+
         void onFailure(Exception e);
     }
 }

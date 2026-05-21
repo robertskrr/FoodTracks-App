@@ -518,16 +518,18 @@ public class UsuarioService implements IUsuarioService {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         if (user != null && user.getEmail() != null) {
-            AuthCredential credential = EmailAuthProvider.getCredential(user.getEmail(), passwordActual);
+            AuthCredential credential =
+                    EmailAuthProvider.getCredential(user.getEmail(), passwordActual);
 
             user.reauthenticate(credential)
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            listener.onSuccess();
-                        } else {
-                            listener.onFailure(task.getException());
-                        }
-                    });
+                    .addOnCompleteListener(
+                            task -> {
+                                if (task.isSuccessful()) {
+                                    listener.onSuccess();
+                                } else {
+                                    listener.onFailure(task.getException());
+                                }
+                            });
         }
     }
 
