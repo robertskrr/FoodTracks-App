@@ -63,7 +63,9 @@ public class PublicacionRepository implements IPublicacionRepository {
 
     @Override
     public Task<QuerySnapshot> getPublicacionesByLocal(String uidLocal) {
-        return postsCollection.whereEqualTo("uid_local", uidLocal).get();
+        return postsCollection.whereEqualTo("uid_local", uidLocal)
+                .orderBy("fecha_hora", Query.Direction.DESCENDING)
+                .get();
     }
 
     @Override
