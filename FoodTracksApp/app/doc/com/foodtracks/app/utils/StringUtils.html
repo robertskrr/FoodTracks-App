@@ -139,9 +139,9 @@ loadScripts(document, 'script');</script>
 <div class="block">Capitaliza la primera letra de un texto largo respetando el resto del formato original.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#quitarAllEspacios(java.lang.String)" class="member-name-link">quitarAllEspacios</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;texto)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#normalizarUsername(java.lang.String)" class="member-name-link">normalizarUsername</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;texto)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
-<div class="block">Elimina todos los espacios de un texto.</div>
+<div class="block">Normaliza el texto de un username.</div>
 </div>
 </div>
 </div>
@@ -214,10 +214,10 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="quitarAllEspacios(java.lang.String)">
-<h3>quitarAllEspacios</h3>
-<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">quitarAllEspacios</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;texto)</span></div>
-<div class="block">Elimina todos los espacios de un texto. (ej: user name -&gt; username)</div>
+<section class="detail" id="normalizarUsername(java.lang.String)">
+<h3>normalizarUsername</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">normalizarUsername</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;texto)</span></div>
+<div class="block">Normaliza el texto de un username. (ej: @user name -&gt; username)</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>texto</code> - Texto a formatear.</dd>
