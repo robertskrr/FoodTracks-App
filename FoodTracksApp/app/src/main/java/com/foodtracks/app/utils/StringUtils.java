@@ -73,9 +73,6 @@ public class StringUtils {
             return texto;
         }
 
-        String t = texto.trim();
-        return texto.trim()
-                .replace("@", "")
-                .replaceAll("\\s+", "");
+        return texto.replaceAll("[^a-zA-Z0-9]", "");
     }
 }
