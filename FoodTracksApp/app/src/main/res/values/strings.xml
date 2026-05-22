@@ -23,7 +23,7 @@
     <string name="valoracion_invalid_puntuation_error_message">Error al asignar la puntuación</string>
     <string name="valoracion_not_found_error_message">La valoración no existe</string>
     <string name="like_not_found_error_message">El "Me gusta" no existe</string>
-    <string name="like_duplicated_error_message">El "Me gusta" no existe</string>
+    <string name="like_duplicated_error_message">El "Me gusta" ya existe.</string>
     <string name="address_not_found_error_message">No hemos podido localizar la dirección</string>
     <string name="publicaciones_loading_error_message">Error al cargar las publicaciones</string>
     <string name="menciones_loading_error_message">Error al cargar las menciones</string>
