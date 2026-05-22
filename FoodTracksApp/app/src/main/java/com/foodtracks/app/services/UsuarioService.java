@@ -565,7 +565,7 @@ public class UsuarioService implements IUsuarioService {
      */
     private void normalizarDatos(Usuario usuario) {
         if (usuario.getUsername() != null) {
-            usuario.setUsername(StringUtils.quitarAllEspacios(usuario.getUsername().toLowerCase()));
+            usuario.setUsername(StringUtils.normalizarUsername(usuario.getUsername().toLowerCase()));
         }
 
         if (usuario.getEmail() != null) {

@@ -64,16 +64,18 @@ public class StringUtils {
     }
 
     /**
-     * Elimina todos los espacios de un texto. (ej: user name -> username)
+     * Normaliza el texto de un username. (ej: @user name -> username)
      * @param texto Texto a formatear.
      * @return Texto sin espacios.
      */
-    public static String quitarAllEspacios(String texto) {
+    public static String normalizarUsername(String texto) {
         if (texto == null || texto.trim().isEmpty()) {
             return texto;
         }
 
         String t = texto.trim();
-        return t.replaceAll("\\s", "");
+        return texto.trim()
+                .replace("@", "")
+                .replaceAll("\\s+", "");
     }
 }
