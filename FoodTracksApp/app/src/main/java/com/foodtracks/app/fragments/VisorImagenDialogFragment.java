@@ -77,25 +77,27 @@ public class VisorImagenDialogFragment extends DialogFragment {
         }
 
         // Listener para detectar el deslizamiento hacia abajo o a los lados
-        imgCompleta.setOnSingleFlingListener((e1, e2, velocityX, velocityY) -> {
-            if (e1 != null && e2 != null) {
-                float distanciaY = e2.getY() - e1.getY();
-                float distanciaX = e2.getX() - e1.getX();
+        imgCompleta.setOnSingleFlingListener(
+                (e1, e2, velocityX, velocityY) -> {
+                    if (e1 != null && e2 != null) {
+                        float distanciaY = e2.getY() - e1.getY();
+                        float distanciaX = e2.getX() - e1.getX();
 
-                // Si el deslizamiento es hacia abajo y con suficiente velocidad
-                if (distanciaY > 150 && velocityY > 500) {
-                    dismiss();
-                    return true;
-                }
+                        // Si el deslizamiento es hacia abajo y con suficiente velocidad
+                        if (distanciaY > 150 && velocityY > 500) {
+                            dismiss();
+                            return true;
+                        }
 
-                // Si el deslizamiento es lateral (izquierda a derecha) y con suficiente velocidad
-                if (distanciaX > 150 && velocityX > 500) {
-                    dismiss();
-                    return true;
-                }
-            }
-            return false;
-        });
+                        // Si el deslizamiento es lateral (izquierda a derecha) y con suficiente
+                        // velocidad
+                        if (distanciaX > 150 && velocityX > 500) {
+                            dismiss();
+                            return true;
+                        }
+                    }
+                    return false;
+                });
 
         view.findViewById(R.id.btnCerrarVisor).setOnClickListener(v -> dismiss());
         return view;
