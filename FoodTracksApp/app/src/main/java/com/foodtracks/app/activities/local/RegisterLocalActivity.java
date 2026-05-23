@@ -212,7 +212,7 @@ public class RegisterLocalActivity extends AppCompatActivity {
                 .registrarUsuario(newUsuario, uriFotoSeleccionada)
                 .addOnSuccessListener(
                         unused -> {
-                            irADashboard();
+                            irAMainLocal();
                         })
                 .addOnFailureListener(
                         e -> {
@@ -263,9 +263,9 @@ public class RegisterLocalActivity extends AppCompatActivity {
     }
 
     /**
-     * Navega a la activity Dashboard.
+     * Navega a la activity MainLocal.
      */
-    private void irADashboard() {
+    private void irAMainLocal() {
         Intent intent = new Intent(this, MainLocalActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
