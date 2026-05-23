@@ -115,8 +115,7 @@ public interface IUsuarioService {
      * @param ciudadOpcional Ciudad en la que quiere buscar el usuario
      * @return
      */
-    Task<List<Usuario>> buscarLocalesPorMisPreferencias(
-            String uidUsuario, String ciudadOpcional);
+    Task<List<Usuario>> buscarLocalesPorMisPreferencias(String uidUsuario, String ciudadOpcional);
 
     /**
      * Realiza una búsqueda de locales por username.

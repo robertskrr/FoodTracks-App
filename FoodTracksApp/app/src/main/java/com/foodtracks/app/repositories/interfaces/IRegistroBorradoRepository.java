@@ -31,8 +31,7 @@ public interface IRegistroBorradoRepository {
      * @param registro Objeto con los datos de la publicación, autor, administrador y motivo del borrado.
      * @return {@link Task} con la referencia al documento creado.
      */
-    Task<DocumentReference> saveRegistroBorradoPublicacion(
-            RegistroBorradoPublicacion registro);
+    Task<DocumentReference> saveRegistroBorradoPublicacion(RegistroBorradoPublicacion registro);
 
     /**
      * Obtiene todos los registros de borrado de usuarios.
