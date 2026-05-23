@@ -2,9 +2,9 @@
 
 **FoodTracks** es una aplicación móvil nativa para Android diseñada para conectar de manera eficiente a personas con limitaciones alimenticias (dietas vegetarianas, veganas, celiaquía u otras intolerancias) con los establecimientos gastronómicos que satisfacen sus necesidades.
 
-| Inicio | Feed Principal | Panel de búsqueda | Filtros inteligentes |
-| :---: | :---: | :---: | :---: |
-| <img src="screenshots/01_Inicio/01_inicio.jpeg" width="200" /> | <img src="screenshots/02_Main_Cliente/01_main_cliente.jpeg" width="200" /> | <img src="screenshots/07_Busqueda/01_busqueda_desde_cliente.jpeg" width="200" /> | <img src="screenshots/07_Busqueda/05_busqueda_locales_por_filtros.jpeg" width="200" /> |
+| Inicio | Feed Principal | Panel de búsqueda | Filtros inteligentes | Locales |
+| :---: | :---: | :---: | :---: | :---: |
+| <img src="screenshots/01_Inicio/01_inicio.jpeg" width="200" /> | <img src="screenshots/02_Main_Cliente/01_main_cliente.jpeg" width="200" /> | <img src="screenshots/07_Busqueda/01_busqueda_desde_cliente.jpeg" width="200" /> | <img src="screenshots/07_Busqueda/05_busqueda_locales_por_filtros.jpeg" width="200" /> | <img src="screenshots/06_Perfiles/06_perfiles_perfil_local_desde_cliente.jpeg" width="200" /> |
 
 ## 🎯 Propósito del Proyecto
 En la actualidad, encontrar opciones gastronómicas seguras para personas con restricciones alimentarias puede ser una tarea frustrante debido a la falta de filtros precisos en plataformas generalistas y a la fragmentación de aplicaciones específicas. **FoodTracks** unifica estas necesidades, permitiendo cruzar múltiples preferencias en una sola búsqueda y aportando una capa de validación de la misma comunidad.
