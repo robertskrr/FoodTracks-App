@@ -42,7 +42,7 @@ public interface ILikeRepository {
      * @param uidUsuario Identificador del usuario.
      * @return {@link Task} con el {@link QuerySnapshot} que contiene los resultados (lista) de la búsqueda.
      */
-    public Task<QuerySnapshot> getLikesByUsuario(String uidUsuario);
+    Task<QuerySnapshot> getLikesByUsuario(String uidUsuario);
 
     /**
      * Elimina todos los likes asociados a una publicación específica.

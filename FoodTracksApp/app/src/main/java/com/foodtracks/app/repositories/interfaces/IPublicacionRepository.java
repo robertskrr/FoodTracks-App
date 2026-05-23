@@ -30,7 +30,7 @@ public interface IPublicacionRepository {
      * @param nuevoTexto Nuevo texto.
      * @return {@link Task} que representa el estado de la operación de actualización.
      */
-    public Task<Void> editPublicacion(String uid, String nuevoTexto);
+    Task<Void> editPublicacion(String uid, String nuevoTexto);
 
     /**
      * Recupera un documento de publicación específica mediante UID.
@@ -79,5 +79,5 @@ public interface IPublicacionRepository {
      * @param cantidad +1 o -1 dependiendo de si se añade o se elimina.
      * @return {@link Task} que representa el estado de la actualización.
      */
-    public Task<Void> actualizarContadorLikes(String uidPublicacion, int cantidad);
+    Task<Void> actualizarContadorLikes(String uidPublicacion, int cantidad);
 }

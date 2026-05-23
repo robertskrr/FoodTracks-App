@@ -94,14 +94,14 @@ public interface IUsuarioService {
      * @param username Nombre de usuario.
      * @return {@link Task} que contiene el {@link Usuario} resultante.
      */
-    public Task<Usuario> getUsuarioByUsernameExacto(String username);
+    Task<Usuario> getUsuarioByUsernameExacto(String username);
 
     /**
      * Realiza una búsqueda de usuarios basada en los filtros añadidos.
      *
      * @return {@link Task} que contiene una lista de {@link UsuarioLocal} que coinciden con la búsqueda.
      */
-    public Task<List<Usuario>> buscarLocalesPorFiltros(
+    Task<List<Usuario>> buscarLocalesPorFiltros(
             String ciudad,
             boolean vegano,
             boolean vegetariano,
@@ -115,7 +115,7 @@ public interface IUsuarioService {
      * @param ciudadOpcional Ciudad en la que quiere buscar el usuario
      * @return
      */
-    public Task<List<Usuario>> buscarLocalesPorMisPreferencias(
+    Task<List<Usuario>> buscarLocalesPorMisPreferencias(
             String uidUsuario, String ciudadOpcional);
 
     /**
@@ -124,7 +124,7 @@ public interface IUsuarioService {
      * @param username Nombre de usuario.
      * @return {@link Task} que contiene una lista de {@link Usuario} que coinciden con la búsqueda.
      */
-    public Task<List<Usuario>> buscarLocalesPorUsername(String username);
+    Task<List<Usuario>> buscarLocalesPorUsername(String username);
 
     /**
      * Registra una visita en el perfil de un usuario local.
@@ -155,9 +155,9 @@ public interface IUsuarioService {
      * @param passwordActual Contraseña del usuario.
      * @param listener Listener de los casos.
      */
-    public void reautenticarUsuario(String passwordActual, OnReauthListener listener);
+    void reautenticarUsuario(String passwordActual, OnReauthListener listener);
 
-    public interface OnReauthListener {
+    interface OnReauthListener {
         void onSuccess();
 
         void onFailure(Exception e);
