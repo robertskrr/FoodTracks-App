@@ -23,7 +23,7 @@
     <string name="valoracion_invalid_puntuation_error_message">Error al asignar la puntuación</string>
     <string name="valoracion_not_found_error_message">La valoración no existe</string>
     <string name="like_not_found_error_message">El "Me gusta" no existe</string>
-    <string name="like_duplicated_error_message">El "Me gusta" no existe</string>
+    <string name="like_duplicated_error_message">El "Me gusta" ya existe.</string>
     <string name="address_not_found_error_message">No hemos podido localizar la dirección</string>
     <string name="publicaciones_loading_error_message">Error al cargar las publicaciones</string>
     <string name="menciones_loading_error_message">Error al cargar las menciones</string>
@@ -43,6 +43,10 @@
     <string name="error_al_eliminar">Error al eliminar</string>
     <string name="error_al_actualizar">Error al actualizar</string>
     <string name="credenciales_incorrectas">El correo o la contraseña son incorrectos</string>
+    <string name="debes_introducir_contrasenia_actual">Debes introducir tu contraseña actual</string>
+    <string name="contrasenia_actual_incorrecta">La contraseña actual es incorrecta</string>
+    <string name="debes_introducir_contrasenia">Debes introducir tu contraseña</string>
+    <string name="contrasenia_incorrecta">Contraseña incorrecta</string>
 
 
     <!-- LAYOUTS STRINGS -->
@@ -94,7 +98,7 @@
     <string name="que_te_ha_parecido_este_local">¿Qué te ha parecido este local?</string>
     <string name="enviar_valoracion">Enviar Valoración</string>
     <string name="valoracion_enviada">¡Gracias por tu valoración!</string>
-    <string name="valoracion_eliminada">Valoración eliminada correctamente.</string>
+    <string name="valoracion_eliminada">Valoración eliminada correctamente</string>
     <string name="no_disponible">No disponible.</string>
     <string name="publicacion_subida">¡Publicación subida!</string>
     <string name="adjuntar_imagen">Adjuntar Imagen</string>
@@ -146,11 +150,12 @@
     <string name="cuenta_eliminada">Tu cuenta ha sido eliminada</string>
     <string name="eliminando_datos">Eliminando datos…</string>
     <string name="cambiar_contrasenia">Cambiar Contraseña</string>
+    <string name="contrasenia_actual">Contraseña actual</string>
     <string name="nueva_contrasenia">Nueva contraseña (mín. 8 caracteres)</string>
     <string name="introduce_nueva_contrasenia">Por favor, introduce tu nueva contraseña:</string>
+    <string name="confirma_contrasenia_actual">Confirma tu contraseña actual para establecer una nueva.</string>
     <string name="actualizar">Actualizar</string>
     <string name="contrasenia_actualizada">Contraseña actualizada con éxito</string>
-    <string name="contrasenia_proteccion_sesion_antigua">Por seguridad, debes cerrar sesión y volver a entrar antes de cambiar tu contraseña.</string>
     <string name="panel_de_administrador">PANEL DE ADMINISTRADOR</string>
     <string name="usuarios">Usuarios</string>
     <string name="no_hay_registros_de_este_tipo">No hay registros de este tipo</string>
@@ -170,4 +175,9 @@
     <string name="plan_premium">Plan Premium (Próximamente…)</string>
     <string name="cliente">Cliente</string>
     <string name="local">Local</string>
+    <string name="editar_publicacion">Editar publicación</string>
+    <string name="guardando">Guardando…</string>
+    <string name="pubicacion_editada">Publicación editada</string>
+    <string name="editado">(Editado)</string>
+    <string name="reautenticacion_para_eliminar">Por seguridad, introduce tu contraseña actual para confirmar la eliminación:</string>
 </resources>

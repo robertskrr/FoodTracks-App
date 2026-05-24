@@ -3,14 +3,14 @@
 package com.foodtracks.app.utils;
 
 /**
- * Clase que ayudará al formateo y estilo de textos
+ * Clase que ayudará al formateo y estilo de textos.
  * @author Robert
  * @since 02/04
  */
 public class StringUtils {
 
     /**
-     * Establece el primer carácter en mayúsculas y el resto en minúsculas
+     * Establece el primer carácter de cada palabra en mayúsculas y el resto en minúsculas.
      * @param nombre Nombre a modificar.
      * @return Nombre capitalizado (Nombre y apellidos)
      */
@@ -36,7 +36,7 @@ public class StringUtils {
 
     /**
      * Capitaliza solo la primera letra de un string y pone el resto en minúsculas.
-     * * @param texto Palabra a capitalizar.
+     * @param texto Palabra a capitalizar.
      * @return Texto formateado (Ej: "sevilla" -> "Sevilla")
      */
     public static String capitalize(String texto) {
@@ -61,5 +61,18 @@ public class StringUtils {
 
         String t = texto.trim();
         return Character.toUpperCase(t.charAt(0)) + t.substring(1);
+    }
+
+    /**
+     * Normaliza el texto de un username. (ej: @user name -> username)
+     * @param texto Texto a formatear.
+     * @return Texto sin espacios.
+     */
+    public static String normalizarUsername(String texto) {
+        if (texto == null || texto.trim().isEmpty()) {
+            return texto;
+        }
+
+        return texto.replaceAll("[^a-zA-Z0-9]", "");
     }
 }

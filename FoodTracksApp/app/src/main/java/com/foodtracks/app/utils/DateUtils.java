@@ -17,12 +17,23 @@ import com.google.firebase.Timestamp;
  * @since 03/05
  */
 public class DateUtils {
+
+    /**
+     * Convierte la fecha en un formato largo (Ejemplo: 2 de mayo de 2026).
+     * @param fecha Fecha a transformar.
+     * @return Fecha transformada.
+     */
     public static String getFechaFormateadaLong(Timestamp fecha) {
         Date fechaObjeto = fecha.toDate();
         DateFormat formatoFecha = DateFormat.getDateInstance(DateFormat.LONG, Locale.getDefault());
         return formatoFecha.format(fechaObjeto);
     }
 
+    /**
+     * Convierte la fecha en un formato corto (Ejemplo: 2/5/26 16:15).
+     * @param fecha Fecha a transformar.
+     * @return Fecha transformada.
+     */
     public static String getFechaFormateadaShort(Timestamp fecha) {
         Date fechaObjeto = fecha.toDate();
         DateFormat formatoFecha =

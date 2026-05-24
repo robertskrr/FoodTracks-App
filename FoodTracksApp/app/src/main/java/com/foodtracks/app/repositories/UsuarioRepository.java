@@ -56,7 +56,7 @@ public class UsuarioRepository implements IUsuarioRepository {
                 .orderBy(field)
                 .startAt(query)
                 .endAt(query + "\uf8ff")
-                .limit(20)
+                .limit(30)
                 .get();
     }
 
@@ -95,7 +95,26 @@ public class UsuarioRepository implements IUsuarioRepository {
     }
 
     @Override
+    public Task<QuerySnapshot> searchLocalesByUsername(String username) {
+        return usersCollection
+                .whereEqualTo("rol", "local")
+                .orderBy("username")
+                .startAt(username)
+                .endAt(username + "\uf8ff")
+                .limit(10)
+                .get();
+    }
+
+    @Override
     public Task<Void> incrementarVisitasPerfil(String uidLocal) {
         return usersCollection.document(uidLocal).update("visitas_perfil", FieldValue.increment(1));
+    }
+
+    @Override
+    public Task<QuerySnapshot> getUltimosUsuariosRegistrados(int limite) {
+        return usersCollection
+                .orderBy("fecha_registro", Query.Direction.DESCENDING)
+                .limit(limite)
+                .get();
     }
 }

@@ -25,6 +25,14 @@ public interface IPublicacionRepository {
     Task<Void> savePublicacion(Publicacion publicacion);
 
     /**
+     * Edita el texto de una publicación.
+     * @param uid Identificador de la publicación.
+     * @param nuevoTexto Nuevo texto.
+     * @return {@link Task} que representa el estado de la operación de actualización.
+     */
+    Task<Void> editPublicacion(String uid, String nuevoTexto);
+
+    /**
      * Recupera un documento de publicación específica mediante UID.
      *
      * @param uid Identificador de la publicación.
@@ -45,7 +53,7 @@ public interface IPublicacionRepository {
      * ordenadas de más reciente a más antigua.
      *
      * @param uidUsuario ID del usuario autor.
-     * @return Task con la lista de publicaciones.
+     * @return {@link Task} con {@link QuerySnapshot} con la lista de publicaciones.
      */
     Task<QuerySnapshot> getPublicacionesByUsuario(String uidUsuario);
 
@@ -53,7 +61,7 @@ public interface IPublicacionRepository {
      * Recupera todas las publicaciones asociadas a un local específico.
      *
      * @param uidLocal ID del establecimiento.
-     * @return Task con la lista de publicaciones.
+     * @return {@link Task} con {@link QuerySnapshot} con la lista de publicaciones.
      */
     Task<QuerySnapshot> getPublicacionesByLocal(String uidLocal);
 
@@ -61,7 +69,7 @@ public interface IPublicacionRepository {
      * Recupera una página de publicaciones.
      *
      * @param lastVisible El último documento cargado (null si es la primera página).
-     * @return Task con el siguiente bloque de resultados.
+     * @return {@link Task} con {@link QuerySnapshot} con el siguiente bloque de resultados.
      */
     Task<QuerySnapshot> getAllPublicaciones(DocumentSnapshot lastVisible);
 
@@ -69,7 +77,7 @@ public interface IPublicacionRepository {
      * Actualiza el contador de likes de la publicación.
      * @param uidPublicacion Identificador de la publicación.
      * @param cantidad +1 o -1 dependiendo de si se añade o se elimina.
-     * @return  {@link Task} que representa el estado de la actualización.
+     * @return {@link Task} que representa el estado de la actualización.
      */
-    public Task<Void> actualizarContadorLikes(String uidPublicacion, int cantidad);
+    Task<Void> actualizarContadorLikes(String uidPublicacion, int cantidad);
 }

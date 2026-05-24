@@ -14,7 +14,7 @@ import okhttp3.Response;
 /**
  * Interceptor de OkHttp encargado de la autenticación con la API de ImageKit.
  * Añade una cabecera de "Authorization" de tipo Basic Auth utilizando la clave privada
- * almacenada de forma segura en las propiedades del proyecto.
+ * almacenada en las propiedades del proyecto.
  *
  * @author Robert
  * @since 03/04
@@ -22,7 +22,7 @@ import okhttp3.Response;
 public class AuthInterceptor implements Interceptor {
 
     /**
-     * Intercepta la petición saliente para inyectar las credenciales.
+     * Intercepta la petición para inyectar las credenciales.
      * @param chain Cadena de ejecución de la petición.
      * @return {@link Response} Respuesta de la red tras aplicar la cabecera.
      * @throws IOException Si ocurre un error en la transmisión.

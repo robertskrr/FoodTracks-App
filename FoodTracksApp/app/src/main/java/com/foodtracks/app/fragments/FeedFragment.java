@@ -68,6 +68,9 @@ public class FeedFragment extends Fragment {
         return rootView;
     }
 
+    /**
+     * Asigna los componentes a la interfaz.
+     */
     private void inicializar() {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         usuarioService = ServiceFactory.provideUsuarioService(requireContext());
@@ -102,6 +105,9 @@ public class FeedFragment extends Fragment {
         configTheme();
     }
 
+    /**
+     * Muestra los datos del usuario logueado.
+     */
     private void mostrarDatosUsuario() {
         if (esInvitado) {
             comprobarCargaCompleta();
@@ -130,6 +136,9 @@ public class FeedFragment extends Fragment {
                         });
     }
 
+    /**
+     * Carga las publicaciones en el feed.
+     */
     private void cargarPublicaciones() {
         publicacionService
                 .getAllPublicaciones()
@@ -160,6 +169,10 @@ public class FeedFragment extends Fragment {
                         });
     }
 
+    /**
+     * Comprueba la carga de los procesos para ocultar la barra de progreso
+     * y mostrar la interfaz con los datos.
+     */
     private synchronized void comprobarCargaCompleta() {
         tareasCompletadas++;
         if (tareasCompletadas >= 2) {

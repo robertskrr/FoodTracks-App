@@ -3,15 +3,21 @@
 package com.foodtracks.app.fragments;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Filter;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.activity.result.ActivityResultLauncher;
@@ -23,6 +29,7 @@ import androidx.fragment.app.DialogFragment;
 
 import com.foodtracks.app.R;
 import com.foodtracks.app.models.Publicacion;
+import com.foodtracks.app.models.Usuario;
 import com.foodtracks.app.services.ServiceFactory;
 import com.foodtracks.app.services.exceptions.FoodTracksValidationException;
 import com.foodtracks.app.services.interfaces.IPublicacionService;
@@ -30,6 +37,7 @@ import com.foodtracks.app.services.interfaces.IUsuarioService;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.imageview.ShapeableImageView;
+import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -41,8 +49,11 @@ import com.google.firebase.auth.FirebaseAuth;
 public class SubirPublicacionFragment extends DialogFragment {
 
     private TextView tvUsernameAutor;
-    private TextInputEditText txtTextoPublicacion, txtMencionarLocal;
+    private TextInputEditText txtTextoPublicacion;
+    private MaterialAutoCompleteTextView txtMencionarLocal;
     private TextInputLayout layoutMencionarLocal;
+    private ArrayAdapter<String> adapterLocales;
+    private final List<String> sugerenciasLocales = new ArrayList<>();
     private ShapeableImageView imgVistaPreviaFoto;
     private Button btnAdjuntarFoto, btnPublicar;
 
@@ -54,51 +65,9 @@ public class SubirPublicacionFragment extends DialogFragment {
     private Uri uriFotoSeleccionada = null;
     private Uri uriFotoCamaraTemporal = null;
 
-    /**
-     * Lanzador para abrir la galería
-     */
-    private final ActivityResultLauncher<String> galleryLauncher =
-            registerForActivityResult(
-                    new ActivityResultContracts.GetContent(),
-                    uri -> {
-                        if (uri != null) {
-                            uriFotoSeleccionada = uri;
-                            imgVistaPreviaFoto.setImageURI(uri);
-                            imgVistaPreviaFoto.setVisibility(View.VISIBLE);
-                        }
-                    });
-
-    /**
-     * Lanzador para abrir la cámara
-     */
-    private final ActivityResultLauncher<Uri> cameraLauncher =
-            registerForActivityResult(
-                    new ActivityResultContracts.TakePicture(),
-                    success -> {
-                        if (success && uriFotoCamaraTemporal != null) {
-                            uriFotoSeleccionada = uriFotoCamaraTemporal;
-                            imgVistaPreviaFoto.setImageURI(uriFotoSeleccionada);
-                            imgVistaPreviaFoto.setVisibility(View.VISIBLE);
-                        }
-                    });
-
-    /**
-     * Lanzador para pedir el permiso de la cámara
-     */
-    private final ActivityResultLauncher<String> requestCameraPermissionLauncher =
-            registerForActivityResult(
-                    new ActivityResultContracts.RequestPermission(),
-                    isGranted -> {
-                        if (isGranted) {
-                            abrirCamara();
-                        } else {
-                            Toast.makeText(
-                                            getContext(),
-                                            R.string.camera_permissions_error,
-                                            Toast.LENGTH_SHORT)
-                                    .show();
-                        }
-                    });
+    // Editar publicacion
+    private String uidPublicacionEdit = null;
+    private TextView tvTituloFragment;
 
     @Override
     public View onCreateView(
@@ -106,8 +75,17 @@ public class SubirPublicacionFragment extends DialogFragment {
         View v = inflater.inflate(R.layout.fragment_subir_publicacion, container, false);
         inicializar(v);
         cargarDatosAutor();
-        configurarBotones();
+        configurarListeners();
         return v;
+    }
+
+    public static SubirPublicacionFragment newInstance(String uidPub, String textoActual) {
+        SubirPublicacionFragment fragment = new SubirPublicacionFragment();
+        Bundle args = new Bundle();
+        args.putString("UID_PUB", uidPub);
+        args.putString("TEXTO_PUB", textoActual);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     /**
@@ -122,6 +100,47 @@ public class SubirPublicacionFragment extends DialogFragment {
         imgVistaPreviaFoto = v.findViewById(R.id.imgVistaPreviaFoto);
         btnAdjuntarFoto = v.findViewById(R.id.btnAdjuntarFoto);
         btnPublicar = v.findViewById(R.id.btnPublicar);
+        // Configuramos el adaptador para que muestre exactamente lo que traemos
+        adapterLocales =
+                new ArrayAdapter<String>(
+                        requireContext(),
+                        android.R.layout.simple_dropdown_item_1line,
+                        sugerenciasLocales) {
+                    @NonNull
+                    @Override
+                    public Filter getFilter() {
+                        return new Filter() {
+                            @Override
+                            protected FilterResults performFiltering(CharSequence constraint) {
+                                FilterResults results = new FilterResults();
+                                results.values = sugerenciasLocales;
+                                results.count = sugerenciasLocales.size();
+                                return results;
+                            }
+
+                            @Override
+                            protected void publishResults(
+                                    CharSequence constraint, FilterResults results) {
+                                notifyDataSetChanged();
+                            }
+                        };
+                    }
+                };
+        txtMencionarLocal.setAdapter(adapterLocales);
+
+        // Editar publicación
+        tvTituloFragment = v.findViewById(R.id.tvTituloFragment);
+        if (getArguments() != null) {
+            uidPublicacionEdit = getArguments().getString("UID_PUB");
+            String textoActual = getArguments().getString("TEXTO_PUB");
+
+            txtTextoPublicacion.setText(textoActual);
+            tvTituloFragment.setText(R.string.editar_publicacion);
+            btnPublicar.setText(R.string.guardar_cambios);
+
+            btnAdjuntarFoto.setVisibility(View.GONE);
+            layoutMencionarLocal.setVisibility(View.GONE);
+        }
 
         mAuth = FirebaseAuth.getInstance();
         uidUsuarioActual = mAuth.getCurrentUser() != null ? mAuth.getCurrentUser().getUid() : null;
@@ -145,8 +164,9 @@ public class SubirPublicacionFragment extends DialogFragment {
                         usuario -> {
                             tvUsernameAutor.setText("@" + usuario.getUsername());
 
-                            // Solo muestra el layout de mención si no es un local
-                            if (!"local".equals(usuario.getRol())) {
+                            // Solo muestra el layout de mención si no es un local y no estamos
+                            // editando
+                            if (!"local".equals(usuario.getRol()) && uidPublicacionEdit == null) {
                                 layoutMencionarLocal.setVisibility(View.VISIBLE);
                             }
                         })
@@ -157,10 +177,103 @@ public class SubirPublicacionFragment extends DialogFragment {
     }
 
     /**
-     * Configura los botones de la interfaz
+     * Lanzador para abrir la galería.
+     * Muestra la imagen seleccionada.
      */
-    private void configurarBotones() {
+    private final ActivityResultLauncher<String> galleryLauncher =
+            registerForActivityResult(
+                    new ActivityResultContracts.GetContent(),
+                    uri -> {
+                        if (uri != null) {
+                            uriFotoSeleccionada = uri;
+                            imgVistaPreviaFoto.setImageURI(uri);
+                            imgVistaPreviaFoto.setVisibility(View.VISIBLE);
+                        }
+                    });
+
+    /**
+     * Lanzador para abrir la cámara.
+     */
+    private final ActivityResultLauncher<Uri> cameraLauncher =
+            registerForActivityResult(
+                    new ActivityResultContracts.TakePicture(),
+                    success -> {
+                        if (success && uriFotoCamaraTemporal != null) {
+                            uriFotoSeleccionada = uriFotoCamaraTemporal;
+                            imgVistaPreviaFoto.setImageURI(uriFotoSeleccionada);
+                            imgVistaPreviaFoto.setVisibility(View.VISIBLE);
+                        }
+                    });
+
+    /**
+     * Lanzador para pedir el permiso de la cámara.
+     */
+    private final ActivityResultLauncher<String> requestCameraPermissionLauncher =
+            registerForActivityResult(
+                    new ActivityResultContracts.RequestPermission(),
+                    isGranted -> {
+                        if (isGranted) {
+                            abrirCamara();
+                        } else {
+                            Toast.makeText(
+                                            getContext(),
+                                            R.string.camera_permissions_error,
+                                            Toast.LENGTH_SHORT)
+                                    .show();
+                        }
+                    });
+
+    /**
+     * Configura los listeners de los componentes de la interfaz.
+     */
+    private void configurarListeners() {
         btnAdjuntarFoto.setOnClickListener(v -> mostrarOpcionesImagen());
+
+        // Muestra una lista desplegable con las coincidencias de locales
+        txtMencionarLocal.addTextChangedListener(
+                new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(
+                            CharSequence s, int start, int count, int after) {}
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        if (txtMencionarLocal.isPerformingCompletion()) return;
+
+                        String query = s.toString().trim();
+                        String cleanQuery = query.replace("@", "");
+
+                        // A partir de 2 caracteres limpios busca
+                        if (!cleanQuery.isEmpty()) {
+                            usuarioService
+                                    .buscarLocalesPorUsername(cleanQuery)
+                                    .addOnSuccessListener(
+                                            locales -> {
+                                                if (!isAdded()) return;
+                                                sugerenciasLocales.clear();
+                                                for (Usuario local : locales) {
+                                                    sugerenciasLocales.add(
+                                                            "@" + local.getUsername());
+                                                }
+
+                                                // Actualizamos la lista
+                                                adapterLocales.notifyDataSetChanged();
+
+                                                // Forzamos a abrir el menú cuando lleguen los datos
+                                                if (!sugerenciasLocales.isEmpty()) {
+                                                    txtMencionarLocal.showDropDown();
+                                                }
+                                            });
+                        } else {
+                            // Si borra vaciamos la lista
+                            sugerenciasLocales.clear();
+                            adapterLocales.notifyDataSetChanged();
+                        }
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {}
+                });
 
         btnPublicar.setOnClickListener(
                 v -> {
@@ -174,43 +287,73 @@ public class SubirPublicacionFragment extends DialogFragment {
                                     : "";
 
                     btnPublicar.setEnabled(false);
-                    btnPublicar.setText(R.string.subiendo);
+                    setCancelable(false);
 
-                    // Si ha intentado mencionar a un local
-                    if (!localMencionado.isEmpty()) {
-                        // Quitamos el @ por si el usuario lo ha puesto
-                        String cleanMention = localMencionado.replace("@", "");
-
-                        usuarioService
-                                .getUsuarioByUsernameExacto(cleanMention)
+                    // EDITAR PUBLICACIÓN EXISTENTE
+                    if (uidPublicacionEdit != null) {
+                        btnPublicar.setText(R.string.guardando);
+                        publicacionService
+                                .editarPublicacion(uidPublicacionEdit, texto)
                                 .addOnSuccessListener(
-                                        usuario -> {
-                                            // Comprobamos que el mencionado sea un local
-                                            if ("local".equals(usuario.getRol())) {
-                                                subirPublicacion(texto, usuario.getUid());
-                                            } else {
-                                                Toast.makeText(
-                                                                getContext(),
-                                                                R.string.user_is_not_a_local,
-                                                                Toast.LENGTH_SHORT)
-                                                        .show();
-                                                restaurarBotonPublicar();
-                                            }
+                                        unused -> {
+                                            Toast.makeText(
+                                                            getContext(),
+                                                            R.string.pubicacion_editada,
+                                                            Toast.LENGTH_SHORT)
+                                                    .show();
+                                            dismiss();
                                         })
                                 .addOnFailureListener(
                                         e -> {
-                                            Toast.makeText(
-                                                            getContext(),
-                                                            R.string
-                                                                    .local_not_found_with_exact_username,
-                                                            Toast.LENGTH_SHORT)
-                                                    .show();
+                                            if (e instanceof FoodTracksValidationException ex) {
+                                                Toast.makeText(
+                                                                requireContext(),
+                                                                ex.getErrorResId(),
+                                                                Toast.LENGTH_SHORT)
+                                                        .show();
+                                            }
                                             restaurarBotonPublicar();
                                         });
-
                     } else {
-                        // Si no se menciona se pasa null
-                        subirPublicacion(texto, null);
+                        // SUBIR PUBLICACIÓN NUEVA
+                        btnPublicar.setText(R.string.subiendo);
+
+                        // Si ha intentado mencionar a un local
+                        if (!localMencionado.isEmpty()) {
+                            // Quitamos el @ por si el usuario lo ha puesto
+                            String cleanMention = localMencionado.replace("@", "");
+
+                            usuarioService
+                                    .getUsuarioByUsernameExacto(cleanMention)
+                                    .addOnSuccessListener(
+                                            usuario -> {
+                                                // Comprobamos que el mencionado sea un local
+                                                if ("local".equals(usuario.getRol())) {
+                                                    subirPublicacion(texto, usuario.getUid());
+                                                } else {
+                                                    Toast.makeText(
+                                                                    getContext(),
+                                                                    R.string.user_is_not_a_local,
+                                                                    Toast.LENGTH_SHORT)
+                                                            .show();
+                                                    restaurarBotonPublicar();
+                                                }
+                                            })
+                                    .addOnFailureListener(
+                                            e -> {
+                                                Toast.makeText(
+                                                                getContext(),
+                                                                R.string
+                                                                        .local_not_found_with_exact_username,
+                                                                Toast.LENGTH_SHORT)
+                                                        .show();
+                                                restaurarBotonPublicar();
+                                            });
+
+                        } else {
+                            // Si no se menciona se pasa null
+                            subirPublicacion(texto, null);
+                        }
                     }
                 });
     }
@@ -259,6 +402,7 @@ public class SubirPublicacionFragment extends DialogFragment {
      */
     private void restaurarBotonPublicar() {
         btnPublicar.setEnabled(true);
+        setCancelable(true);
         btnPublicar.setText(R.string.publicar);
     }
 

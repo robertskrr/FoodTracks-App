@@ -45,7 +45,7 @@ public class StartUpActivity extends AppCompatActivity {
     }
 
     /**
-     * Inicializa los elementos y componentes
+     * Inicializa los elementos y componentes.
      */
     private void inicializar() {
         mAuth = FirebaseAuth.getInstance();
@@ -54,7 +54,7 @@ public class StartUpActivity extends AppCompatActivity {
     }
 
     /**
-     * Comprueba si hay una sesión activa para redirigir a su activity principal
+     * Comprueba si hay una sesión activa para redirigir a su activity principal.
      */
     private void comprobarSesion() {
         FirebaseUser user = mAuth.getCurrentUser();
@@ -65,7 +65,7 @@ public class StartUpActivity extends AppCompatActivity {
 
             progressBar.setVisibility(VISIBLE);
 
-            // Consultamos el tipo de usuario en la colección
+            // Consultamos el tipo de usuario en la base de datos
             usuarioService
                     .getPerfil(uid)
                     .addOnSuccessListener(
@@ -112,8 +112,8 @@ public class StartUpActivity extends AppCompatActivity {
     }
 
     /**
-     * Redirige a otra activty
-     * Borra el historial de activities para que no se pueda volver atrás
+     * Redirige a otra activity.
+     * Borra el historial de activities para que no se pueda volver atrás.
      */
     private void cambiarActivity(Intent intent) {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
@@ -122,7 +122,7 @@ public class StartUpActivity extends AppCompatActivity {
     }
 
     /**
-     * Redirige a la pantalla principal de registro/login
+     * Redirige a la pantalla principal de registro/login.
      */
     private void irALogin() {
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
@@ -130,7 +130,7 @@ public class StartUpActivity extends AppCompatActivity {
     }
 
     /**
-     * Configura la barra de navegación y de estado
+     * Configura la barra de navegación y de estado.
      */
     private void configTheme() {
         getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.white));

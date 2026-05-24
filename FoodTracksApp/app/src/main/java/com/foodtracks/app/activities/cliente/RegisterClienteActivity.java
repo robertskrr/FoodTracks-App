@@ -41,17 +41,6 @@ public class RegisterClienteActivity extends AppCompatActivity {
     private ShapeableImageView fotoPerfil;
     private Uri uriFotoSeleccionada;
 
-    // Launcher para abrir la galería y recuperar la imagen
-    private final ActivityResultLauncher<PickVisualMediaRequest> galleryLauncher =
-            registerForActivityResult(
-                    new ActivityResultContracts.PickVisualMedia(),
-                    uri -> {
-                        if (uri != null) {
-                            uriFotoSeleccionada = uri;
-                            fotoPerfil.setImageURI(uri); // Muestra la foto elegida en el círculo
-                        }
-                    });
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -148,6 +137,19 @@ public class RegisterClienteActivity extends AppCompatActivity {
                         .setMediaType(ActivityResultContracts.PickVisualMedia.ImageOnly.INSTANCE)
                         .build());
     }
+
+    /**
+     * Asigna el URI de la foto seleccionada al del usuario.
+     */
+    private final ActivityResultLauncher<PickVisualMediaRequest> galleryLauncher =
+            registerForActivityResult(
+                    new ActivityResultContracts.PickVisualMedia(),
+                    uri -> {
+                        if (uri != null) {
+                            uriFotoSeleccionada = uri;
+                            fotoPerfil.setImageURI(uri); // Muestra la foto elegida en el círculo
+                        }
+                    });
 
     /**
      * Proceso de registro del usuario cliente con el servicio.

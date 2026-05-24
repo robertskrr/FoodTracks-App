@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.foodtracks.app.R;
@@ -66,8 +67,11 @@ public class PerfilUsuarioAdapter
         // Icono del tipo de usuario
         if ("local".equals(usuario.getRol())) {
             holder.imgTipoPerfil.setImageResource(R.drawable.ic_local);
+            holder.tvCiudadBusqueda.setVisibility(View.VISIBLE);
+            holder.tvCiudadBusqueda.setText(usuario.getCiudad());
         } else {
             holder.imgTipoPerfil.setImageResource(R.drawable.ic_person);
+            holder.tvCiudadBusqueda.setVisibility(View.GONE);
         }
 
         // Listener para ir al perfil
@@ -83,9 +87,7 @@ public class PerfilUsuarioAdapter
                     context.startActivity(intent);
                 };
 
-        holder.imgAvatarBusqueda.setOnClickListener(irAlPerfilListener);
-        holder.tvUsernameBusqueda.setOnClickListener(irAlPerfilListener);
-        holder.tvNombreBusqueda.setOnClickListener(irAlPerfilListener);
+        holder.layoutPerfil.setOnClickListener(irAlPerfilListener);
     }
 
     @Override
@@ -94,9 +96,10 @@ public class PerfilUsuarioAdapter
     }
 
     public static class PerfilUsuarioViewHolder extends RecyclerView.ViewHolder {
-        TextView tvUsernameBusqueda, tvNombreBusqueda;
+        TextView tvUsernameBusqueda, tvNombreBusqueda, tvCiudadBusqueda;
         ShapeableImageView imgAvatarBusqueda;
         ImageView imgTipoPerfil;
+        ConstraintLayout layoutPerfil;
 
         public PerfilUsuarioViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -104,6 +107,8 @@ public class PerfilUsuarioAdapter
             imgAvatarBusqueda = itemView.findViewById(R.id.imgAvatarBusqueda);
             tvNombreBusqueda = itemView.findViewById(R.id.tvNombreBusqueda);
             imgTipoPerfil = itemView.findViewById(R.id.imgTipoPerfil);
+            tvCiudadBusqueda = itemView.findViewById(R.id.tvCiudadBusqueda);
+            layoutPerfil = itemView.findViewById(R.id.layoutItemPerfil);
         }
     }
 }

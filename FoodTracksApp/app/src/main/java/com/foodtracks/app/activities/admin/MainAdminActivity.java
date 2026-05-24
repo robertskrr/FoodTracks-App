@@ -5,6 +5,7 @@ package com.foodtracks.app.activities.admin;
 import android.os.Bundle;
 import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.foodtracks.app.R;
@@ -105,13 +106,11 @@ public class MainAdminActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Configura el tema de la interfaz
+     */
     private void configTheme() {
-        getWindow()
-                .setStatusBarColor(
-                        androidx.core.content.ContextCompat.getColor(this, R.color.black));
-        getWindow()
-                .setNavigationBarColor(
-                        androidx.core.content.ContextCompat.getColor(
-                                this, R.color.admin_bottom_nav));
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.black));
+        getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.admin_bottom_nav));
     }
 }

@@ -27,6 +27,9 @@ public class VideoPlayerActivity extends AppCompatActivity {
         configVideo();
     }
 
+    /**
+     * Configuración del Video Player.
+     */
     private void configVideo() {
         getWindow().setStatusBarColor(Color.BLACK);
         getWindow().setNavigationBarColor(Color.BLACK);

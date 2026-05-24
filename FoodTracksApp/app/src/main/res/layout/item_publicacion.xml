@@ -23,8 +23,8 @@
             android:id="@+id/imgAvatarAutor"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:background="@color/admin_bottom_nav"
             android:scaleType="centerCrop"
-            android:src="@drawable/avatar_default"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:shapeAppearanceOverlay="@style/ShapeAppearanceOverlay.App.CornerSize50Percent" />
@@ -131,13 +131,25 @@
                 android:layout_weight="1" />
 
             <ImageView
+                android:id="@+id/imgEditarPublicacion"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="16dp"
+                android:src="@android:drawable/ic_menu_edit"
+                android:visibility="gone"
+                app:tint="@color/ic_launcher_background"
+                tools:ignore="ContentDescription"
+                tools:visibility="visible" />
+
+            <ImageView
                 android:id="@+id/imgEliminarPublicacion"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_delete"
                 android:visibility="gone"
                 app:tint="@color/eliminar"
-                tools:ignore="ContentDescription" />
+                tools:ignore="ContentDescription"
+                tools:visibility="visible" />
 
         </LinearLayout>
 

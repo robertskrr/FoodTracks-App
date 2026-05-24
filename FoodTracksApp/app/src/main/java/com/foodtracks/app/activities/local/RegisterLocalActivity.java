@@ -50,17 +50,6 @@ public class RegisterLocalActivity extends AppCompatActivity {
     private ShapeableImageView fotoPerfil;
     private Uri uriFotoSeleccionada;
 
-    // Launcher para abrir la galería y recuperar la imagen
-    private final ActivityResultLauncher<PickVisualMediaRequest> galleryLauncher =
-            registerForActivityResult(
-                    new ActivityResultContracts.PickVisualMedia(),
-                    uri -> {
-                        if (uri != null) {
-                            uriFotoSeleccionada = uri;
-                            fotoPerfil.setImageURI(uri); // Muestra la foto elegida en el círculo
-                        }
-                    });
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -163,6 +152,19 @@ public class RegisterLocalActivity extends AppCompatActivity {
     }
 
     /**
+     * Asigna el URI de la foto seleccionada al del usuario.
+     */
+    private final ActivityResultLauncher<PickVisualMediaRequest> galleryLauncher =
+            registerForActivityResult(
+                    new ActivityResultContracts.PickVisualMedia(),
+                    uri -> {
+                        if (uri != null) {
+                            uriFotoSeleccionada = uri;
+                            fotoPerfil.setImageURI(uri); // Muestra la foto elegida en el círculo
+                        }
+                    });
+
+    /**
      * Proceso de registro del usuario local con el servicio.
      *
      * @param uid UID del usuario.
@@ -210,7 +212,7 @@ public class RegisterLocalActivity extends AppCompatActivity {
                 .registrarUsuario(newUsuario, uriFotoSeleccionada)
                 .addOnSuccessListener(
                         unused -> {
-                            irADashboard();
+                            irAMainLocal();
                         })
                 .addOnFailureListener(
                         e -> {
@@ -261,9 +263,9 @@ public class RegisterLocalActivity extends AppCompatActivity {
     }
 
     /**
-     * Navega a la activity Dashboard.
+     * Navega a la activity MainLocal.
      */
-    private void irADashboard() {
+    private void irAMainLocal() {
         Intent intent = new Intent(this, MainLocalActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);

@@ -33,6 +33,10 @@ import com.foodtracks.app.utils.StringUtils;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.Timestamp;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.WriteBatch;
@@ -436,6 +440,24 @@ public class UsuarioService implements IUsuarioService {
     }
 
     @Override
+    public Task<List<Usuario>> buscarLocalesPorUsername(String username) {
+        String cleanUsername = (username != null) ? username.toLowerCase().trim() : "";
+
+        return usuarioRepository
+                .searchLocalesByUsername(cleanUsername)
+                .continueWith(
+                        task -> {
+                            List<Usuario> listaLocales = new ArrayList<>();
+                            if (task.isSuccessful() && task.getResult() != null) {
+                                for (DocumentSnapshot doc : task.getResult()) {
+                                    listaLocales.add(doc.toObject(UsuarioLocal.class));
+                                }
+                            }
+                            return listaLocales;
+                        });
+    }
+
+    @Override
     public Task<Void> registrarVisitaPerfil(String uidVisitante, String uidLocal) {
         if (uidVisitante != null && uidVisitante.equals(uidLocal)) {
             return Tasks.forResult(
@@ -456,6 +478,59 @@ public class UsuarioService implements IUsuarioService {
                             }
                             return new java.util.ArrayList<>();
                         });
+    }
+
+    @Override
+    public Task<List<Usuario>> getUltimosUsuariosRegistrados(int limite) {
+        return usuarioRepository
+                .getUltimosUsuariosRegistrados(limite)
+                .continueWith(
+                        task -> {
+                            List<Usuario> listaUsuarios = new ArrayList<>();
+
+                            if (task.isSuccessful() && task.getResult() != null) {
+                                for (DocumentSnapshot doc : task.getResult()) {
+                                    String rol = doc.getString("rol");
+
+                                    if (rol != null) {
+                                        switch (rol) {
+                                            case "local":
+                                                listaUsuarios.add(doc.toObject(UsuarioLocal.class));
+                                                break;
+                                            case "admin":
+                                                listaUsuarios.add(doc.toObject(UsuarioAdmin.class));
+                                                break;
+                                            case "cliente":
+                                            default:
+                                                listaUsuarios.add(
+                                                        doc.toObject(UsuarioCliente.class));
+                                                break;
+                                        }
+                                    }
+                                }
+                            }
+                            return listaUsuarios;
+                        });
+    }
+
+    @Override
+    public void reautenticarUsuario(String passwordActual, OnReauthListener listener) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user != null && user.getEmail() != null) {
+            AuthCredential credential =
+                    EmailAuthProvider.getCredential(user.getEmail(), passwordActual);
+
+            user.reauthenticate(credential)
+                    .addOnCompleteListener(
+                            task -> {
+                                if (task.isSuccessful()) {
+                                    listener.onSuccess();
+                                } else {
+                                    listener.onFailure(task.getException());
+                                }
+                            });
+        }
     }
 
     /*
@@ -490,7 +565,8 @@ public class UsuarioService implements IUsuarioService {
      */
     private void normalizarDatos(Usuario usuario) {
         if (usuario.getUsername() != null) {
-            usuario.setUsername(usuario.getUsername().toLowerCase().trim());
+            usuario.setUsername(
+                    StringUtils.normalizarUsername(usuario.getUsername().toLowerCase()));
         }
 
         if (usuario.getEmail() != null) {
@@ -515,8 +591,15 @@ public class UsuarioService implements IUsuarioService {
         }
 
         if (usuario instanceof UsuarioLocal local) {
+            if (local.getNombre() != null) {
+                local.setNombre(StringUtils.capitalize(local.getNombre()));
+            }
             if (local.getTelefono() != null) {
                 local.setTelefono(local.getTelefono().trim());
+            }
+
+            if (local.getDireccion() != null) {
+                local.setDireccion(StringUtils.capitalizePrimeraLetra(local.getDireccion()));
             }
 
             if (local.getSitioWeb() != null) {

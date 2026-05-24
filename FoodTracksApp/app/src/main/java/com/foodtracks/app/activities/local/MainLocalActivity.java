@@ -106,6 +106,9 @@ public class MainLocalActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Configura el tema de la interfaz.
+     */
     private void configTheme() {
         getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.tertiary));
         getWindow().setNavigationBarColor(ContextCompat.getColor(this, R.color.tertiary));

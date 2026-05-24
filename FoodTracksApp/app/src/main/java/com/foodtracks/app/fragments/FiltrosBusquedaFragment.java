@@ -36,12 +36,29 @@ public class FiltrosBusquedaFragment extends BottomSheetDialogFragment {
         View view = inflater.inflate(R.layout.fragment_filtros, container, false);
 
         inicializar(view);
-        setListeners();
+        configurarListeners();
 
         return view;
     }
 
-    private void setListeners() {
+    /**
+     * Asigna los componentes a la interfaz.
+     */
+    private void inicializar(View view) {
+        etCiudad = view.findViewById(R.id.etFiltroCiudad);
+        etOtraPreferencia = view.findViewById(R.id.etFiltroOtra);
+        cbVegano = view.findViewById(R.id.cbFiltroVegano);
+        cbVegetariano = view.findViewById(R.id.cbFiltroVegetariano);
+        cbSinLactosa = view.findViewById(R.id.cbFiltroLactosa);
+        cbCeliaco = view.findViewById(R.id.cbFiltroCeliaco);
+        btnAplicarManual = view.findViewById(R.id.btnAplicarFiltros);
+        btnUsarMisPreferencias = view.findViewById(R.id.btnMisPreferencias);
+    }
+
+    /**
+     * Configura los listeners de los componentes.
+     */
+    private void configurarListeners() {
         // Aplica filtros personalizados
         btnAplicarManual.setOnClickListener(
                 v -> {
@@ -69,17 +86,6 @@ public class FiltrosBusquedaFragment extends BottomSheetDialogFragment {
                     getParentFragmentManager().setFragmentResult("CLAVE_FILTROS", result);
                     dismiss();
                 });
-    }
-
-    private void inicializar(View view) {
-        etCiudad = view.findViewById(R.id.etFiltroCiudad);
-        etOtraPreferencia = view.findViewById(R.id.etFiltroOtra);
-        cbVegano = view.findViewById(R.id.cbFiltroVegano);
-        cbVegetariano = view.findViewById(R.id.cbFiltroVegetariano);
-        cbSinLactosa = view.findViewById(R.id.cbFiltroLactosa);
-        cbCeliaco = view.findViewById(R.id.cbFiltroCeliaco);
-        btnAplicarManual = view.findViewById(R.id.btnAplicarFiltros);
-        btnUsarMisPreferencias = view.findViewById(R.id.btnMisPreferencias);
     }
 
     @Override

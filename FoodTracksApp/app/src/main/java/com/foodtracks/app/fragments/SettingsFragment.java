@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,15 +26,19 @@ import androidx.fragment.app.Fragment;
 import com.foodtracks.app.R;
 import com.foodtracks.app.activities.MainActivity;
 import com.foodtracks.app.activities.VideoPlayerActivity;
+import com.foodtracks.app.activities.admin.MainAdminActivity;
 import com.foodtracks.app.activities.cliente.EditarPerfilClienteActivity;
+import com.foodtracks.app.activities.cliente.MainClienteActivity;
 import com.foodtracks.app.activities.local.EditarPerfilLocalActivity;
+import com.foodtracks.app.activities.local.MainLocalActivity;
 import com.foodtracks.app.services.ServiceFactory;
 import com.foodtracks.app.services.interfaces.IUsuarioService;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException;
 import com.google.firebase.auth.FirebaseUser;
 
 /**
@@ -75,12 +80,15 @@ public class SettingsFragment extends Fragment {
 
         configTheme();
         inicializar();
-        cargarPreferenciasLocales();
+        cargarPreferencias();
         configurarListeners();
 
         return rootView;
     }
 
+    /**
+     * Asigna los componentes de la interfaz.
+     */
     private void inicializar() {
         mAuth = FirebaseAuth.getInstance();
         usuarioService = ServiceFactory.provideUsuarioService(requireContext());
@@ -88,7 +96,6 @@ public class SettingsFragment extends Fragment {
 
         if (mAuth.getCurrentUser() != null) {
             uidUsuario = mAuth.getCurrentUser().getUid();
-            comprobarRol();
         } else {
             esInvitado = true;
         }
@@ -103,6 +110,18 @@ public class SettingsFragment extends Fragment {
         btnPremium = rootView.findViewById(R.id.btnPlanPremium);
         overlayCarga = rootView.findViewById(R.id.overlayCargaSettings);
 
+        if (getActivity() instanceof MainLocalActivity) {
+            esLocal = true;
+            btnPremium.setVisibility(View.VISIBLE);
+        } else if (getActivity() instanceof MainClienteActivity) {
+            if (!esInvitado) {
+                esCliente = true;
+                btnPremium.setVisibility(View.VISIBLE);
+            }
+        } else if (getActivity() instanceof MainAdminActivity) {
+            esAdmin = true;
+        }
+
         if (esInvitado) {
             btnEditarPerfil.setVisibility(View.GONE);
             btnCambiarPassword.setVisibility(View.GONE);
@@ -112,7 +131,10 @@ public class SettingsFragment extends Fragment {
         }
     }
 
-    private void cargarPreferenciasLocales() {
+    /**
+     * Carga las preferencias guardadas del usuario.
+     */
+    private void cargarPreferencias() {
         boolean notifActivas = sharedPreferences.getBoolean(KEY_NOTIF, true);
         boolean sonidosSilenciados = sharedPreferences.getBoolean(KEY_SOUNDS, false);
 
@@ -120,6 +142,9 @@ public class SettingsFragment extends Fragment {
         switchSonidos.setChecked(sonidosSilenciados);
     }
 
+    /**
+     * Configura los listeners de los componentes.
+     */
     private void configurarListeners() {
         // Guardar cambios en switches
         switchNotificaciones.setOnCheckedChangeListener(
@@ -174,8 +199,11 @@ public class SettingsFragment extends Fragment {
                 });
     }
 
+    /**
+     * Redirección a la activity de Editar Perfil según el rol.
+     */
     private void redirigirAEditarPerfil() {
-        if (uidUsuario == null) return;
+        if (esInvitado) return;
 
         Intent intent;
         if (esLocal) {
@@ -187,6 +215,9 @@ public class SettingsFragment extends Fragment {
         startActivity(intent);
     }
 
+    /**
+     * Muestra el diálogo de confirmación de cierre de sesión.
+     */
     private void mostrarDialogoCerrarSesion() {
         AlertDialog dialog =
                 new MaterialAlertDialogBuilder(requireContext())
@@ -206,85 +237,187 @@ public class SettingsFragment extends Fragment {
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
     }
 
+    /**
+     * Muestra el diálogo de confirmación de eliminación de cuenta con reautenticación.
+     */
     private void mostrarDialogoEliminarCuenta() {
+        final EditText inputPass = new EditText(requireContext());
+        inputPass.setHint(R.string.contrasenia_actual);
+        inputPass.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+
+        LinearLayout container = new LinearLayout(requireContext());
+        container.setOrientation(LinearLayout.VERTICAL);
+        container.setPadding(50, 20, 50, 20);
+        container.addView(inputPass);
+
         AlertDialog dialog =
                 new MaterialAlertDialogBuilder(requireContext())
                         .setTitle(R.string.eliminar_cuenta_warning)
-                        .setMessage(R.string.confirm_eliminar_cuenta)
+                        .setMessage(R.string.reautenticacion_para_eliminar)
+                        .setView(container)
                         .setPositiveButton(
                                 R.string.eliminar_para_siempre,
                                 (dialogInterface, which) -> {
-                                    if (!esInvitado) {
-
-                                        // Bloqueamos la pantalla y aparece la animación de borrado
-                                        overlayCarga.setVisibility(View.VISIBLE);
-
-                                        usuarioService
-                                                .eliminarCuenta(uidUsuario)
-                                                .addOnSuccessListener(
-                                                        unused -> {
-                                                            logOut();
-                                                            Toast.makeText(
-                                                                            requireContext(),
-                                                                            R.string
-                                                                                    .cuenta_eliminada,
-                                                                            Toast.LENGTH_LONG)
-                                                                    .show();
-                                                        })
-                                                .addOnFailureListener(
-                                                        e -> {
-                                                            overlayCarga.setVisibility(View.GONE);
-                                                            Log.e(
-                                                                    "Error al eliminar cuenta",
-                                                                    e.getMessage(),
-                                                                    e);
-                                                            Toast.makeText(
-                                                                            requireContext(),
-                                                                            R.string
-                                                                                    .error_al_eliminar,
-                                                                            Toast.LENGTH_SHORT)
-                                                                    .show();
-                                                        });
+                                    String password = inputPass.getText().toString().trim();
+                                    if (password.isEmpty()) {
+                                        Toast.makeText(
+                                                        requireContext(),
+                                                        R.string.debes_introducir_contrasenia,
+                                                        Toast.LENGTH_SHORT)
+                                                .show();
+                                        return;
                                     }
+
+                                    overlayCarga.setVisibility(View.VISIBLE);
+
+                                    // Reautenticamos
+                                    usuarioService.reautenticarUsuario(
+                                            password,
+                                            new IUsuarioService.OnReauthListener() {
+                                                @Override
+                                                public void onSuccess() {
+                                                    // Borrar datos en base de datos
+                                                    usuarioService
+                                                            .eliminarCuenta(uidUsuario)
+                                                            .addOnSuccessListener(
+                                                                    unused -> {
+                                                                        // Borrar el usuario de
+                                                                        // Firebase Auth
+                                                                        FirebaseUser user =
+                                                                                FirebaseAuth
+                                                                                        .getInstance()
+                                                                                        .getCurrentUser();
+                                                                        if (user != null) {
+                                                                            user.delete()
+                                                                                    .addOnSuccessListener(
+                                                                                            aVoid -> {
+                                                                                                logOut();
+                                                                                                Toast
+                                                                                                        .makeText(
+                                                                                                                requireContext(),
+                                                                                                                R
+                                                                                                                        .string
+                                                                                                                        .cuenta_eliminada,
+                                                                                                                Toast
+                                                                                                                        .LENGTH_LONG)
+                                                                                                        .show();
+                                                                                            })
+                                                                                    .addOnFailureListener(
+                                                                                            e -> {
+                                                                                                overlayCarga
+                                                                                                        .setVisibility(
+                                                                                                                View
+                                                                                                                        .GONE);
+                                                                                                Log
+                                                                                                        .e(
+                                                                                                                "Eliminar usuario",
+                                                                                                                e
+                                                                                                                        .getMessage(),
+                                                                                                                e);
+                                                                                                Toast
+                                                                                                        .makeText(
+                                                                                                                requireContext(),
+                                                                                                                R
+                                                                                                                                .string
+                                                                                                                                .error_al_eliminar
+                                                                                                                        + e
+                                                                                                                                .getMessage(),
+                                                                                                                Toast
+                                                                                                                        .LENGTH_SHORT)
+                                                                                                        .show();
+                                                                                            });
+                                                                        }
+                                                                    })
+                                                            .addOnFailureListener(
+                                                                    e -> {
+                                                                        overlayCarga.setVisibility(
+                                                                                View.GONE);
+                                                                        Log.e(
+                                                                                "Error al borrar datos",
+                                                                                e.getMessage(),
+                                                                                e);
+                                                                        Toast.makeText(
+                                                                                        requireContext(),
+                                                                                        R.string
+                                                                                                .error_al_eliminar,
+                                                                                        Toast
+                                                                                                .LENGTH_SHORT)
+                                                                                .show();
+                                                                    });
+                                                }
+
+                                                @Override
+                                                public void onFailure(Exception e) {
+                                                    overlayCarga.setVisibility(View.GONE);
+                                                    Toast.makeText(
+                                                                    requireContext(),
+                                                                    R.string.contrasenia_incorrecta,
+                                                                    Toast.LENGTH_SHORT)
+                                                            .show();
+                                                }
+                                            });
                                 })
-                        .setNegativeButton(
-                                R.string.cancelar,
-                                (dialogInterface, which) -> dialogInterface.dismiss())
+                        .setNegativeButton(R.string.cancelar, null)
                         .show();
 
-        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.RED);
-        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.BLACK);
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                .setTextColor(ContextCompat.getColor(requireContext(), R.color.eliminar));
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.GRAY);
     }
 
+    /**
+     * Muestra el diálogo de cambio de contraseña con reautenticación.
+     */
     private void mostrarDialogoCambiarPassword() {
         FirebaseUser user = mAuth.getCurrentUser();
-        if (user == null) return;
+        if (user == null || user.getEmail() == null) return;
 
-        // Creamos el campo de texto para la contraseña oculta
-        EditText inputPassword = new android.widget.EditText(requireContext());
-        inputPassword.setHint(R.string.nueva_contrasenia);
-        inputPassword.setInputType(
+        // Layout vertical para los dos campos de texto
+        LinearLayout layout = new LinearLayout(requireContext());
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setPadding(50, 50, 50, 50);
+
+        // Contraseña actual
+        EditText inputPassActual = new EditText(requireContext());
+        inputPassActual.setHint(R.string.contrasenia_actual);
+        inputPassActual.setInputType(
+                InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+        layout.addView(inputPassActual);
+
+        // Nueva contraseña
+        EditText inputPassNueva = new EditText(requireContext());
+        inputPassNueva.setHint(R.string.nueva_contrasenia);
+        inputPassNueva.setInputType(
                 InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
-        // Lo envolvemos para darle márgenes
-        FrameLayout container = new FrameLayout(requireContext());
-        FrameLayout.LayoutParams params =
-                new FrameLayout.LayoutParams(
+        // Margen superior al campo de nueva contraseña
+        LinearLayout.LayoutParams params =
+                new LinearLayout.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.leftMargin = 50;
-        params.rightMargin = 50;
-        inputPassword.setLayoutParams(params);
-        container.addView(inputPassword);
+        params.topMargin = 30;
+        inputPassNueva.setLayoutParams(params);
+        layout.addView(inputPassNueva);
 
         AlertDialog dialog =
                 new MaterialAlertDialogBuilder(requireContext())
                         .setTitle(R.string.cambiar_contrasenia)
-                        .setMessage(R.string.introduce_nueva_contrasenia)
-                        .setView(container)
+                        .setMessage(R.string.confirma_contrasenia_actual)
+                        .setView(layout)
                         .setPositiveButton(
                                 R.string.actualizar,
                                 (dialogInterface, which) -> {
-                                    String nuevaPass = inputPassword.getText().toString().trim();
+                                    String actualPass = inputPassActual.getText().toString().trim();
+                                    String nuevaPass = inputPassNueva.getText().toString().trim();
+
+                                    if (actualPass.isEmpty()) {
+                                        Toast.makeText(
+                                                        requireContext(),
+                                                        R.string
+                                                                .debes_introducir_contrasenia_actual,
+                                                        Toast.LENGTH_SHORT)
+                                                .show();
+                                        return;
+                                    }
 
                                     if (nuevaPass.length() < 8) {
                                         Toast.makeText(
@@ -295,47 +428,61 @@ public class SettingsFragment extends Fragment {
                                         return;
                                     }
 
-                                    // Pantalla de carga
                                     overlayCarga.setVisibility(View.VISIBLE);
 
-                                    // Cambia la contraseña desde Firebase
-                                    user.updatePassword(nuevaPass)
+                                    // Reautenticar al usuario con la contraseña actual
+                                    AuthCredential credential =
+                                            EmailAuthProvider.getCredential(
+                                                    user.getEmail(), actualPass);
+
+                                    user.reauthenticate(credential)
                                             .addOnSuccessListener(
                                                     unused -> {
-                                                        overlayCarga.setVisibility(View.GONE);
-                                                        Toast.makeText(
-                                                                        requireContext(),
-                                                                        R.string
-                                                                                .contrasenia_actualizada,
-                                                                        Toast.LENGTH_SHORT)
-                                                                .show();
+                                                        // Si la contraseña actual es correcta,
+                                                        // actualizamos a la nueva
+                                                        user.updatePassword(nuevaPass)
+                                                                .addOnSuccessListener(
+                                                                        aVoid -> {
+                                                                            overlayCarga
+                                                                                    .setVisibility(
+                                                                                            View
+                                                                                                    .GONE);
+                                                                            Toast.makeText(
+                                                                                            requireContext(),
+                                                                                            R.string
+                                                                                                    .contrasenia_actualizada,
+                                                                                            Toast
+                                                                                                    .LENGTH_SHORT)
+                                                                                    .show();
+                                                                        })
+                                                                .addOnFailureListener(
+                                                                        e -> {
+                                                                            overlayCarga
+                                                                                    .setVisibility(
+                                                                                            View
+                                                                                                    .GONE);
+                                                                            Log.e(
+                                                                                    "Actualizar contraseña",
+                                                                                    e.getMessage(),
+                                                                                    e);
+                                                                            Toast.makeText(
+                                                                                            requireContext(),
+                                                                                            R.string
+                                                                                                    .error_al_actualizar,
+                                                                                            Toast
+                                                                                                    .LENGTH_SHORT)
+                                                                                    .show();
+                                                                        });
                                                     })
                                             .addOnFailureListener(
                                                     e -> {
                                                         overlayCarga.setVisibility(View.GONE);
-
-                                                        // Excepción de protección de sesión antigua
-                                                        if (e
-                                                                instanceof
-                                                                FirebaseAuthRecentLoginRequiredException) {
-                                                            Toast.makeText(
-                                                                            requireContext(),
-                                                                            R.string
-                                                                                    .contrasenia_proteccion_sesion_antigua,
-                                                                            Toast.LENGTH_LONG)
-                                                                    .show();
-                                                        } else {
-                                                            Log.e(
-                                                                    "Actualizar contraseña",
-                                                                    e.getMessage(),
-                                                                    e);
-                                                            Toast.makeText(
-                                                                            requireContext(),
-                                                                            R.string
-                                                                                    .error_al_actualizar,
-                                                                            Toast.LENGTH_SHORT)
-                                                                    .show();
-                                                        }
+                                                        Toast.makeText(
+                                                                        requireContext(),
+                                                                        R.string
+                                                                                .contrasenia_actual_incorrecta,
+                                                                        Toast.LENGTH_LONG)
+                                                                .show();
                                                     });
                                 })
                         .setNegativeButton(
@@ -346,32 +493,6 @@ public class SettingsFragment extends Fragment {
         dialog.getButton(AlertDialog.BUTTON_POSITIVE)
                 .setTextColor(ContextCompat.getColor(requireContext(), R.color.black));
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.GRAY);
-    }
-
-    /**
-     * Consulta el rol del usuario.
-     */
-    private void comprobarRol() {
-        if (uidUsuario == null) return;
-
-        usuarioService
-                .getPerfil(uidUsuario)
-                .addOnSuccessListener(
-                        usuario -> {
-                            if (!isAdded()) return;
-
-                            String rol = usuario.getRol();
-                            if ("local".equals(rol)) {
-                                esLocal = true;
-                                btnPremium.setVisibility(View.VISIBLE);
-                            } else if ("admin".equals(rol)) {
-                                esAdmin = true;
-                            } else {
-                                esCliente = true;
-                                btnPremium.setVisibility(View.VISIBLE);
-                            }
-                        })
-                .addOnFailureListener(e -> Log.e("Settings", "Error al obtener rol", e));
     }
 
     /**
@@ -389,6 +510,9 @@ public class SettingsFragment extends Fragment {
         startActivity(intent);
     }
 
+    /**
+     * Configura el tema de la interfaz.
+     */
     private void configTheme() {
         if (getActivity() != null) {
             getActivity()

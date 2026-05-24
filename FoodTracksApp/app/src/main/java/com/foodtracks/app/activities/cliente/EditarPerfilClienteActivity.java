@@ -54,6 +54,9 @@ public class EditarPerfilClienteActivity extends AppCompatActivity {
         mostrarOtraPreferencia();
     }
 
+    /**
+     * Asigna los componentes de la interfaz.
+     */
     private void inicializar() {
         usuarioService = ServiceFactory.provideUsuarioService(this);
 
@@ -71,6 +74,14 @@ public class EditarPerfilClienteActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressEditarCliente);
         layoutContenido = findViewById(R.id.layoutEditarCliente);
 
+        configurarListeners();
+    }
+
+    /**
+     * Configura los listeners de los componentes.
+     */
+    private void configurarListeners() {
+        // Abre la galería para seleccionar una foto
         imgFoto.setOnClickListener(
                 v ->
                         pickMedia.launch(
@@ -80,10 +91,13 @@ public class EditarPerfilClienteActivity extends AppCompatActivity {
                                                         .INSTANCE)
                                         .build()));
 
-        findViewById(R.id.btnGuardarCambiosCliente).setOnClickListener(v -> guardar());
+        findViewById(R.id.btnGuardarCambiosCliente).setOnClickListener(v -> actualizar());
         findViewById(R.id.btnVolverSettings).setOnClickListener(v -> finish());
     }
 
+    /**
+     * Muestra el campo de texto de otra preferencia.
+     */
     private void mostrarOtraPreferencia() {
         cbOtro.setOnCheckedChangeListener(
                 (buttonView, isChecked) -> {
@@ -96,6 +110,9 @@ public class EditarPerfilClienteActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Carga los datos del usuario logueado.
+     */
     private void cargarDatos() {
         String uid = FirebaseAuth.getInstance().getUid();
         usuarioService
@@ -131,7 +148,10 @@ public class EditarPerfilClienteActivity extends AppCompatActivity {
                         });
     }
 
-    private void guardar() {
+    /**
+     * Proceso de actualización de los nuevos datos del cliente.
+     */
+    private void actualizar() {
         usuarioActual.setNombre(txtNombre.getText().toString());
         usuarioActual.setUsername(txtUsername.getText().toString());
         usuarioActual.setCiudad(txtCiudad.getText().toString());
@@ -173,6 +193,9 @@ public class EditarPerfilClienteActivity extends AppCompatActivity {
                         });
     }
 
+    /**
+     * Configura el URI de la foto seleccionada.
+     */
     private final ActivityResultLauncher<PickVisualMediaRequest> pickMedia =
             registerForActivityResult(
                     new ActivityResultContracts.PickVisualMedia(),

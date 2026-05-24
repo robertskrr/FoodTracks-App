@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="16dp"
@@ -15,6 +16,7 @@
         android:padding="24dp">
 
         <TextView
+            android:id="@+id/tvTituloFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-condensed-medium"
@@ -62,12 +64,16 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:hint="@string/mencionar_a_un_local"
-            android:visibility="gone">
+            android:visibility="gone"
+            tools:visibility="visible">
 
-            <com.google.android.material.textfield.TextInputEditText
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
                 android:id="@+id/txtMencionarLocal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:paddingHorizontal="16dp"
+                android:completionThreshold="1"
                 android:inputType="text" />
         </com.google.android.material.textfield.TextInputLayout>
 

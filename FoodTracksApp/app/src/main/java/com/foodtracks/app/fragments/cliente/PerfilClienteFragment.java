@@ -40,6 +40,7 @@ import com.google.firebase.auth.FirebaseAuth;
  * Mismo comportamiento que {@link PerfilClienteActivity} pero se ve desde
  * {@link MainClienteActivity} para mantener la barra de navegación y
  * no saturar el rendimiento de la app.
+ * Usado por el usuario logueado para ver su perfil.
  * @author Robert
  * @since 08/05
  */
@@ -76,6 +77,9 @@ public class PerfilClienteFragment extends Fragment {
         return rootView;
     }
 
+    /**
+     * Asigna los componentes a la interfaz.
+     */
     private void inicializar() {
         mAuth = FirebaseAuth.getInstance();
         uidCliente = getUidPerfil(mAuth);
@@ -96,6 +100,11 @@ public class PerfilClienteFragment extends Fragment {
         layoutContenido = rootView.findViewById(R.id.layoutContenidoPerfil);
     }
 
+    /**
+     * Obtiene el UID del perfil.
+     * @param mAuth Firebase Auth
+     * @return UID del dueño del perfil.
+     */
     private String getUidPerfil(FirebaseAuth mAuth) {
         // Los fragmentos usan Arguments en vez de Intents para recibir datos
         if (getArguments() != null && getArguments().containsKey("UID_USUARIO")) {
@@ -111,6 +120,9 @@ public class PerfilClienteFragment extends Fragment {
         return null;
     }
 
+    /**
+     * Muestra los datos del cliente.
+     */
     private void mostrarDatosCliente() {
         usuarioService
                 .getPerfil(uidCliente)
@@ -162,6 +174,9 @@ public class PerfilClienteFragment extends Fragment {
                         });
     }
 
+    /**
+     * Inyecta los chips de preferencias basados en los datos del usuario.
+     */
     private void cargarChipsPreferencias(Usuario usuario) {
         chipGroupPreferencias.removeAllViews();
         if (usuario.isEsVegano()) addChip("\uD83C\uDF31" + getString(R.string.vegano));
@@ -176,6 +191,10 @@ public class PerfilClienteFragment extends Fragment {
         }
     }
 
+    /**
+     * Crea un Chip visual y lo añade al ChipGroup de la interfaz.
+     * @param texto Texto de la preferencia.
+     */
     private void addChip(String texto) {
         Chip chip = new Chip(requireContext());
         chip.setText(texto);
@@ -187,6 +206,9 @@ public class PerfilClienteFragment extends Fragment {
         chipGroupPreferencias.addView(chip);
     }
 
+    /**
+     * Carga las publicaciones del usuario.
+     */
     private void cargarPublicaciones() {
         publicacionService
                 .getPublicacionesByUsuario(uidCliente)
@@ -217,6 +239,10 @@ public class PerfilClienteFragment extends Fragment {
                         });
     }
 
+    /**
+     * Comprueba la carga de los procesos para ocultar la barra de progreso
+     * y mostrar la interfaz con los datos.
+     */
     private synchronized void comprobarCargaCompleta() {
         tareasCompletadas++;
         if (tareasCompletadas >= 2) {
@@ -226,7 +252,7 @@ public class PerfilClienteFragment extends Fragment {
     }
 
     /**
-     * Configura la barra de navegación y de estado
+     * Configura la barra de navegación y de estado.
      */
     private void configTheme() {
         if (getActivity() != null) {

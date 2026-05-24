@@ -35,19 +35,19 @@ spotless {
 }
 
 android {
-	namespace 'com.foodtracks.app'
+	namespace = 'com.foodtracks.app'
 	compileSdk {
 		version = release(36)
 	}
 
 	defaultConfig {
-		applicationId "com.foodtracks.app"
-		minSdk 24
-		targetSdk 36
-		versionCode 1
-		versionName "1.0"
+		applicationId = "com.foodtracks.app"
+		minSdk = 24
+		targetSdk = 36
+		versionCode = 1
+		versionName = "1.0"
 
-		testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+		testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
 		Properties properties = new Properties()
 		properties.load(project.rootProject.file('local.properties').newDataInputStream())
@@ -58,21 +58,19 @@ android {
 	}
 
 	buildFeatures {
-		buildConfig true
+		buildConfig = true
+		viewBinding = true
 	}
 
 	buildTypes {
 		release {
-			minifyEnabled false
+			minifyEnabled = false
 			proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 		}
 	}
 	compileOptions {
-		sourceCompatibility JavaVersion.VERSION_21
-		targetCompatibility JavaVersion.VERSION_21
-	}
-	buildFeatures {
-		viewBinding true
+		sourceCompatibility = JavaVersion.VERSION_21
+		targetCompatibility = JavaVersion.VERSION_21
 	}
 }
 
@@ -90,8 +88,11 @@ dependencies {
 	implementation libs.lifecycle.livedata.ktx
 	implementation libs.lifecycle.viewmodel.ktx
 	testImplementation libs.junit
+	testImplementation 'org.mockito:mockito-core:5.23.0'
+	testImplementation 'org.mockito:mockito-inline:5.2.0'
 	androidTestImplementation libs.ext.junit
 	androidTestImplementation libs.espresso.core
+
 
 	/** ==============================================
 	 *                      FIREBASE
@@ -141,4 +142,36 @@ dependencies {
 	 *  ==============================================
 	 */
 	implementation 'com.github.chrisbanes:PhotoView:2.3.0'
+}
+
+// Genera un javadoc que soporte las clases y herramientas de Google, Lombok, etc.
+project.afterEvaluate {
+	tasks.register('generateJavadoc', Javadoc) {
+		dependsOn("compileDebugJavaWithJavac")
+
+		source = android.sourceSets.main.java.srcDirs
+
+		exclude '**/models/**'
+		exclude '**/api/**'
+
+		classpath += files(tasks.getByName("compileDebugJavaWithJavac").classpath)
+
+		classpath += files(tasks.getByName("compileDebugJavaWithJavac").destinationDirectory)
+
+		Properties properties = new Properties()
+		properties.load(project.rootProject.file('local.properties').newDataInputStream())
+		def sdkDir = properties.getProperty('sdk.dir')
+		classpath += project.files(new File(sdkDir, "platforms/android-36/android.jar"))
+
+		destinationDir = new File(project.projectDir, "doc")
+
+		failOnError = false
+		options {
+			encoding = "UTF-8"
+			docEncoding = "UTF-8"
+			charSet = "UTF-8"
+			addStringOption('Xdoclint:none', '-quiet')
+			memberLevel = JavadocMemberLevel.PRIVATE
+		}
+	}
 }

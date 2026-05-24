@@ -53,12 +53,13 @@ public interface IUsuarioRepository {
      *
      * @param field Campo concreto de búsqueda
      * @param query Texto introducido por el usuario.
-     * @return Task con la lista de posibles coincidencias.
+     * @return {@link Task} con el {@link QuerySnapshot} con la lista de posibles coincidencias.
      */
     Task<QuerySnapshot> searchUsuariosByField(String field, String query);
 
     /**
      * Busca locales aplicando filtros de ciudad y preferencias alimenticias.
+     * @return {@link Task} con el {@link QuerySnapshot} con la lista de locales.
      */
     Task<QuerySnapshot> searchLocalesByFiltros(
             String ciudad,
@@ -69,10 +70,25 @@ public interface IUsuarioRepository {
             String otraPreferencia);
 
     /**
+     * Busca locales cuyo nombre de usuario comience por una cadena específica.
+     *
+     * @param username Nombre de usuario.
+     * @return {@link Task} con el {@link QuerySnapshot} con la lista de posibles coincidencias.
+     */
+    Task<QuerySnapshot> searchLocalesByUsername(String username);
+
+    /**
      * Incrementa atómicamente el contador de visitas del perfil de un local.
      *
      * @param uidLocal Identificador del local visitado.
      * @return {@link Task} que representa el éxito o fallo de la operación.
      */
     Task<Void> incrementarVisitasPerfil(String uidLocal);
+
+    /**
+     * Recoge los últimos usuarios registrados en la aplicación.
+     * @param limite Número límite de usuarios.
+     * @return {@link Task} con el {@link QuerySnapshot} con la lista de los usuarios.
+     */
+    Task<QuerySnapshot> getUltimosUsuariosRegistrados(int limite);
 }

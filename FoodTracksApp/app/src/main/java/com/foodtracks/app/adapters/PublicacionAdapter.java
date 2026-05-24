@@ -29,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.foodtracks.app.R;
 import com.foodtracks.app.activities.cliente.PerfilClienteActivity;
 import com.foodtracks.app.activities.local.PerfilLocalActivity;
+import com.foodtracks.app.fragments.SubirPublicacionFragment;
 import com.foodtracks.app.fragments.VisorImagenDialogFragment;
 import com.foodtracks.app.models.LikePublicacion;
 import com.foodtracks.app.models.Publicacion;
@@ -104,6 +105,13 @@ public class PublicacionAdapter
 
         holder.tvContadorLikes.setText(String.valueOf(publicacion.getNumLikes()));
 
+        if (publicacion.isEditada()) {
+            holder.tvFecha.setText(
+                    holder.tvFecha.getText().toString()
+                            + " "
+                            + context.getString(R.string.editado));
+        }
+
         // Cargamos la imagen de la publicación (si existe)
         if (publicacion.getImagen() != null && !publicacion.getImagen().isEmpty()) {
             holder.imgPublicacion.setVisibility(View.VISIBLE);
@@ -129,9 +137,11 @@ public class PublicacionAdapter
         cargarDatosLocalMencionado(holder, publicacion.getUidLocal());
         comprobarLikeInicial(holder, publicacion.getUid());
 
-        // La papelera solo es visible si el usuario actual es el autor
+        // La papelera y edición solo es visible si el usuario actual es el autor
         if (esLogueado && currentUid.equals(publicacion.getUidUsuario())) {
             holder.imgEliminarPublicacion.setVisibility(View.VISIBLE);
+            holder.imgEditarPublicacion.setVisibility(View.VISIBLE);
+
             holder.imgEliminarPublicacion.setOnClickListener(
                     v -> {
                         int adapterPosition = holder.getBindingAdapterPosition();
@@ -139,49 +149,68 @@ public class PublicacionAdapter
                             mostrarDialogoEliminar(publicacion, adapterPosition);
                         }
                     });
-        } else if (esAdmin) { // Si es administrador puede borrarla
-            // Oculta el botón para hacer la siguiente comprobación: Que no sea de otro admin
-            holder.imgEliminarPublicacion.setVisibility(View.GONE);
 
-            // Comprobamos el rol del autor en memoria caché (que no sea admin)
-            if (cacheUsuarios.containsKey(publicacion.getUidUsuario())
-                    && cacheUsuarios.get(publicacion.getUidUsuario()) != null) {
-                Usuario autor = cacheUsuarios.get(publicacion.getUidUsuario());
-                // Si no lo es, activamos la opción de borrar
-                if (!"admin".equals(autor.getRol())) {
-                    holder.imgEliminarPublicacion.setVisibility(View.VISIBLE);
-                    holder.imgEliminarPublicacion.setOnClickListener(
-                            v -> {
-                                int adapterPosition = holder.getBindingAdapterPosition();
-                                if (adapterPosition != RecyclerView.NO_POSITION) {
-                                    mostrarDialogoEliminarByAdmin(publicacion, adapterPosition);
-                                }
-                            });
-                }
-            } else {
-                // Si no está en la memoria caché, lo consultamos en la base de datos
-                usuarioService
-                        .getPerfil(publicacion.getUidUsuario())
-                        .addOnSuccessListener(
-                                autor -> {
-                                    if (autor != null && !"admin".equals(autor.getRol())) {
-                                        holder.imgEliminarPublicacion.setVisibility(View.VISIBLE);
-                                        holder.imgEliminarPublicacion.setOnClickListener(
-                                                v -> {
-                                                    int adapterPosition =
-                                                            holder.getBindingAdapterPosition();
-                                                    if (adapterPosition
-                                                            != RecyclerView.NO_POSITION) {
-                                                        mostrarDialogoEliminarByAdmin(
-                                                                publicacion, adapterPosition);
-                                                    }
-                                                });
-                                    }
-                                });
-            }
+            holder.imgEditarPublicacion.setOnClickListener(
+                    v -> {
+                        if (context instanceof AppCompatActivity) {
+                            SubirPublicacionFragment editFragment =
+                                    SubirPublicacionFragment.newInstance(
+                                            publicacion.getUid(), publicacion.getTexto());
+                            editFragment.show(
+                                    ((AppCompatActivity) context).getSupportFragmentManager(),
+                                    "EditFragment");
+                        }
+                    });
 
         } else {
             holder.imgEliminarPublicacion.setVisibility(View.GONE);
+            holder.imgEditarPublicacion.setVisibility(View.GONE);
+
+            if (esAdmin) { // Si es administrador puede borrarla
+                // Oculta el botón para hacer la siguiente comprobación: Que no sea de otro admin
+                holder.imgEliminarPublicacion.setVisibility(View.GONE);
+
+                // Comprobamos el rol del autor en memoria caché (que no sea admin)
+                if (cacheUsuarios.containsKey(publicacion.getUidUsuario())
+                        && cacheUsuarios.get(publicacion.getUidUsuario()) != null) {
+                    Usuario autor = cacheUsuarios.get(publicacion.getUidUsuario());
+                    // Si no lo es, activamos la opción de borrar
+                    if (!"admin".equals(autor.getRol())) {
+                        holder.imgEliminarPublicacion.setVisibility(View.VISIBLE);
+                        holder.imgEliminarPublicacion.setOnClickListener(
+                                v -> {
+                                    int adapterPosition = holder.getBindingAdapterPosition();
+                                    if (adapterPosition != RecyclerView.NO_POSITION) {
+                                        mostrarDialogoEliminarByAdmin(publicacion, adapterPosition);
+                                    }
+                                });
+                    }
+                } else {
+                    // Si no está en la memoria caché, lo consultamos en la base de datos
+                    usuarioService
+                            .getPerfil(publicacion.getUidUsuario())
+                            .addOnSuccessListener(
+                                    autor -> {
+                                        if (autor != null && !"admin".equals(autor.getRol())) {
+                                            holder.imgEliminarPublicacion.setVisibility(
+                                                    View.VISIBLE);
+                                            holder.imgEliminarPublicacion.setOnClickListener(
+                                                    v -> {
+                                                        int adapterPosition =
+                                                                holder.getBindingAdapterPosition();
+                                                        if (adapterPosition
+                                                                != RecyclerView.NO_POSITION) {
+                                                            mostrarDialogoEliminarByAdmin(
+                                                                    publicacion, adapterPosition);
+                                                        }
+                                                    });
+                                        }
+                                    });
+                }
+
+            } else {
+                holder.imgEliminarPublicacion.setVisibility(View.GONE);
+            }
         }
 
         // Configuramos el evento de Poner / Quitar like
@@ -249,7 +278,7 @@ public class PublicacionAdapter
     }
 
     /**
-     * Método auxiliar para cambiar el color y el estado del botón Like
+     * Método auxiliar para cambiar el color y el estado del botón Like.
      */
     private void marcarComoLike(PublicacionViewHolder holder, boolean isLiked) {
         holder.imgLike.setTag(isLiked);
@@ -279,6 +308,9 @@ public class PublicacionAdapter
         }
     }
 
+    /**
+     * Comprueba si el usuario que ve la publicación es administrador.
+     */
     private void comprobarAdmin() {
         usuarioService
                 .getPerfil(currentUid)
@@ -299,7 +331,7 @@ public class PublicacionAdapter
     }
 
     /**
-     * Consulta Firestore para obtener el username y la foto del autor de una publicación.
+     * Carga los datos del autor de una publicación.
      */
     private void cargarDatosAutor(PublicacionViewHolder holder, String uidAutor) {
         // Si tenemos los datos en la memoria caché
@@ -312,7 +344,7 @@ public class PublicacionAdapter
 
         // Si no los tenemos, ponemos los valores por defecto y hacemos la consulta
         holder.tvUsernameAutor.setText(R.string.cargando);
-        holder.imgAvatarAutor.setImageResource(R.drawable.avatar_default);
+        // holder.imgAvatarAutor.setImageResource(R.drawable.avatar_default);
 
         // Desactivamos los clicks temporalmente para que el usuario no pulse antes de cargar
         holder.imgAvatarAutor.setOnClickListener(null);
@@ -336,15 +368,18 @@ public class PublicacionAdapter
     }
 
     /**
-     * Método auxiliar para pintar el nombre y la foto del usuario
+     * Método auxiliar para pintar el nombre y la foto del usuario.
      */
     private void pintarDatosAutor(PublicacionViewHolder holder, Usuario usuario, String uidAutor) {
         holder.tvUsernameAutor.setText("@" + usuario.getUsername());
 
         if (usuario.getFotoPerfil() != null && !usuario.getFotoPerfil().isEmpty()) {
             Glide.with(context).load(usuario.getFotoPerfil()).into(holder.imgAvatarAutor);
+        } else {
+            Glide.with(context).load(R.drawable.avatar_default).into(holder.imgAvatarAutor);
         }
 
+        // Redirige a la activity según el rol
         View.OnClickListener irAlPerfilListener =
                 v -> {
                     Intent intent;
@@ -400,7 +435,7 @@ public class PublicacionAdapter
     }
 
     /**
-     * Método auxiliar para pintar el username del local y configurar su click
+     * Método auxiliar para pintar el username del local y configurar su click.
      */
     private void pintarDatosLocalMencionado(
             PublicacionViewHolder holder, Usuario local, String uidLocal) {
@@ -594,7 +629,7 @@ public class PublicacionAdapter
     public static class PublicacionViewHolder extends RecyclerView.ViewHolder {
         TextView tvUsernameAutor, tvFecha, tvTexto, tvContadorLikes, tvLocalMencionado;
         ShapeableImageView imgAvatarAutor, imgPublicacion;
-        ImageView imgLike, imgEliminarPublicacion;
+        ImageView imgLike, imgEliminarPublicacion, imgEditarPublicacion;
 
         public PublicacionViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -607,6 +642,7 @@ public class PublicacionAdapter
             tvContadorLikes = itemView.findViewById(R.id.tvContadorLikes);
             tvLocalMencionado = itemView.findViewById(R.id.tvLocalMencionado);
             imgEliminarPublicacion = itemView.findViewById(R.id.imgEliminarPublicacion);
+            imgEditarPublicacion = itemView.findViewById(R.id.imgEditarPublicacion);
         }
     }
 }

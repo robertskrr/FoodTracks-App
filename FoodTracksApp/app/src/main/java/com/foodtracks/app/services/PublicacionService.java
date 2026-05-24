@@ -154,6 +154,21 @@ public class PublicacionService implements IPublicacionService {
     }
 
     @Override
+    public Task<Void> editarPublicacion(String uid, String nuevoTexto) {
+        if (nuevoTexto == null || nuevoTexto.trim().isEmpty()) {
+            return Tasks.forException(
+                    new FoodTracksValidationException(
+                            R.string.publicacion_text_empty_error_message));
+        }
+        if (nuevoTexto.length() > 500) {
+            return Tasks.forException(
+                    new FoodTracksValidationException(R.string.publicacion_too_long_error_message));
+        }
+        return publicacionRepository.editPublicacion(
+                uid, StringUtils.capitalizePrimeraLetra(nuevoTexto.trim()));
+    }
+
+    @Override
     public Task<Void> eliminarPublicacion(String uid) {
         return publicacionRepository
                 .getPublicacionById(uid)

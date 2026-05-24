@@ -53,6 +53,9 @@ public class EditarPerfilLocalActivity extends AppCompatActivity {
         mostrarOtraPreferencia();
     }
 
+    /**
+     * Asigna los componentes de la interfaz.
+     */
     private void inicializar() {
         usuarioService = ServiceFactory.provideUsuarioService(this);
 
@@ -86,6 +89,9 @@ public class EditarPerfilLocalActivity extends AppCompatActivity {
         findViewById(R.id.btnVolverSettingsL).setOnClickListener(v -> finish());
     }
 
+    /**
+     * Muestra el campo de texto de otra preferencia.
+     */
     private void mostrarOtraPreferencia() {
         otro.setOnCheckedChangeListener(
                 (buttonView, isChecked) -> {
@@ -98,6 +104,9 @@ public class EditarPerfilLocalActivity extends AppCompatActivity {
                 });
     }
 
+    /**
+     * Carga los datos del local.
+     */
     private void cargarDatos() {
         String uid = FirebaseAuth.getInstance().getUid();
         usuarioService
@@ -138,6 +147,9 @@ public class EditarPerfilLocalActivity extends AppCompatActivity {
                         });
     }
 
+    /**
+     * Actualización de los datos del local.
+     */
     private void actualizar() {
         String direccionTexto = direccion.getText().toString();
         String ciudadTexto = ciudad.getText().toString();
@@ -197,6 +209,9 @@ public class EditarPerfilLocalActivity extends AppCompatActivity {
                         });
     }
 
+    /**
+     * Configura el URI de la foto seleccionada.
+     */
     private final ActivityResultLauncher<PickVisualMediaRequest> pickMedia =
             registerForActivityResult(
                     new ActivityResultContracts.PickVisualMedia(),
@@ -208,7 +223,7 @@ public class EditarPerfilLocalActivity extends AppCompatActivity {
                     });
 
     /**
-     * Configura el tema de la pantalla.
+     * Configura el tema de la interfaz.
      */
     private void configTheme() {
         getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.fondo_perfil_local));

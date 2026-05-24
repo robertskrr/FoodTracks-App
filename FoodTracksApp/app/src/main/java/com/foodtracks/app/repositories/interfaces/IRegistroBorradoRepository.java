@@ -23,7 +23,7 @@ public interface IRegistroBorradoRepository {
      * @param registro Objeto con los datos del usuario, administrador y motivo del borrado.
      * @return {@link Task} con la referencia al documento creado.
      */
-    public Task<DocumentReference> saveRegistroBorradoUsuario(RegistroBorradoUsuario registro);
+    Task<DocumentReference> saveRegistroBorradoUsuario(RegistroBorradoUsuario registro);
 
     /**
      * Guarda un rastro permanente de una publicación que va a ser eliminada.
@@ -31,18 +31,17 @@ public interface IRegistroBorradoRepository {
      * @param registro Objeto con los datos de la publicación, autor, administrador y motivo del borrado.
      * @return {@link Task} con la referencia al documento creado.
      */
-    public Task<DocumentReference> saveRegistroBorradoPublicacion(
-            RegistroBorradoPublicacion registro);
+    Task<DocumentReference> saveRegistroBorradoPublicacion(RegistroBorradoPublicacion registro);
 
     /**
      * Obtiene todos los registros de borrado de usuarios.
      * @return {@link Task} con el {@link QuerySnapshot} que contiene los resultados (lista).
      */
-    public Task<QuerySnapshot> getAllRegistrosUsuarios();
+    Task<QuerySnapshot> getAllRegistrosUsuarios();
 
     /**
      * Obtiene todos los registros de borrado de publicaciones.
      * @return {@link Task} con el {@link QuerySnapshot} que contiene los resultados (lista).
      */
-    public Task<QuerySnapshot> getAllRegistrosPublicaciones();
+    Task<QuerySnapshot> getAllRegistrosPublicaciones();
 }

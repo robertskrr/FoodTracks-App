@@ -57,6 +57,7 @@ public class VisorImagenDialogFragment extends DialogFragment {
             imageResId = getArguments().getInt(ARG_IMAGE_RES, 0);
         }
         setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+        setCancelable(true);
     }
 
     @Nullable
@@ -74,6 +75,29 @@ public class VisorImagenDialogFragment extends DialogFragment {
         } else if (imageResId != 0) {
             Glide.with(this).load(imageResId).into(imgCompleta);
         }
+
+        // Listener para detectar el deslizamiento hacia abajo o a los lados
+        imgCompleta.setOnSingleFlingListener(
+                (e1, e2, velocityX, velocityY) -> {
+                    if (e1 != null && e2 != null) {
+                        float distanciaY = e2.getY() - e1.getY();
+                        float distanciaX = e2.getX() - e1.getX();
+
+                        // Si el deslizamiento es hacia abajo y con suficiente velocidad
+                        if (distanciaY > 150 && velocityY > 500) {
+                            dismiss();
+                            return true;
+                        }
+
+                        // Si el deslizamiento es lateral (izquierda a derecha) y con suficiente
+                        // velocidad
+                        if (distanciaX > 150 && velocityX > 500) {
+                            dismiss();
+                            return true;
+                        }
+                    }
+                    return false;
+                });
 
         view.findViewById(R.id.btnCerrarVisor).setOnClickListener(v -> dismiss());
         return view;

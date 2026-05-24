@@ -94,14 +94,14 @@ public interface IUsuarioService {
      * @param username Nombre de usuario.
      * @return {@link Task} que contiene el {@link Usuario} resultante.
      */
-    public Task<Usuario> getUsuarioByUsernameExacto(String username);
+    Task<Usuario> getUsuarioByUsernameExacto(String username);
 
     /**
      * Realiza una búsqueda de usuarios basada en los filtros añadidos.
      *
      * @return {@link Task} que contiene una lista de {@link UsuarioLocal} que coinciden con la búsqueda.
      */
-    public Task<List<Usuario>> buscarLocalesPorFiltros(
+    Task<List<Usuario>> buscarLocalesPorFiltros(
             String ciudad,
             boolean vegano,
             boolean vegetariano,
@@ -115,8 +115,15 @@ public interface IUsuarioService {
      * @param ciudadOpcional Ciudad en la que quiere buscar el usuario
      * @return
      */
-    public Task<List<Usuario>> buscarLocalesPorMisPreferencias(
-            String uidUsuario, String ciudadOpcional);
+    Task<List<Usuario>> buscarLocalesPorMisPreferencias(String uidUsuario, String ciudadOpcional);
+
+    /**
+     * Realiza una búsqueda de locales por username.
+     *
+     * @param username Nombre de usuario.
+     * @return {@link Task} que contiene una lista de {@link Usuario} que coinciden con la búsqueda.
+     */
+    Task<List<Usuario>> buscarLocalesPorUsername(String username);
 
     /**
      * Registra una visita en el perfil de un usuario local.
@@ -133,4 +140,25 @@ public interface IUsuarioService {
      * @return @return {@link Task} que contiene una lista de registros {@link RegistroBorradoUsuario}.
      */
     Task<List<RegistroBorradoUsuario>> getAllRegistrosBorradoUsuarios();
+
+    /**
+     * Recupera los últimos usuarios registrados.
+     * @param limite Número límite de usuarios.
+     * @return @return {@link Task} que contiene una lista de usuarios {@link Usuario}.
+     */
+    Task<List<Usuario>> getUltimosUsuariosRegistrados(int limite);
+
+    /**
+     * Reautentica el usuario de Firebase para llevar a cabo diferentes operaciones críticas.
+     * Ej: Cambiar contraseña, eliminar cuenta
+     * @param passwordActual Contraseña del usuario.
+     * @param listener Listener de los casos.
+     */
+    void reautenticarUsuario(String passwordActual, OnReauthListener listener);
+
+    interface OnReauthListener {
+        void onSuccess();
+
+        void onFailure(Exception e);
+    }
 }

@@ -40,7 +40,7 @@ public interface IPublicacionService {
      * Recupera todos los registros de borrado de publicaciones.
      * @return @return {@link Task} que contiene una lista de registros {@link RegistroBorradoPublicacion}.
      */
-    public Task<List<RegistroBorradoPublicacion>> getAllRegistrosBorradoPublicaciones();
+    Task<List<RegistroBorradoPublicacion>> getAllRegistrosBorradoPublicaciones();
 
     /**
      * Recupera todas las publicaciones realizadas por un autor específico.
@@ -67,6 +67,14 @@ public interface IPublicacionService {
      * @return {@link Task} que representa el estado de la operación.
      */
     Task<Void> subirPublicacion(Publicacion publicacion, Uri fotoUri);
+
+    /**
+     * Edita el texto de una publicación ya subida.
+     * @param uid Identificador de la publicación.
+     * @param nuevoTexto Nuevo texto.
+     * @return {@link Task} que representa el estado de la operación.
+     */
+    Task<Void> editarPublicacion(String uid, String nuevoTexto);
 
     /**
      * Gestiona la eliminación de una publicación por parte del usuario dueño.

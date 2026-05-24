@@ -22,7 +22,7 @@ public interface IValoracionLocalRepository {
      * @param valoracionLocal Objeto con los datos de la valoración.
      * @return {@link Task} con la referencia al documento creado.
      */
-    public Task<Void> saveValoracion(ValoracionLocal valoracionLocal);
+    Task<Void> saveValoracion(ValoracionLocal valoracionLocal);
 
     /**
      * Recupera un documento de valoración específica mediante el UID de los implicados.
@@ -30,21 +30,21 @@ public interface IValoracionLocalRepository {
      * @param uid Identificador de la valoración.
      * @return {@link Task} con el {@link DocumentSnapshot} de la valoración encontrada.
      */
-    public Task<DocumentSnapshot> getValoracion(String uid);
+    Task<DocumentSnapshot> getValoracion(String uid);
 
     /**
      * Obtiene todas las valoraciones del usuario cliente.
      * @param uidCliente Identificador del usuario cliente.
      * @return {@link Task} con el {@link QuerySnapshot} que contiene los resultados (lista) de la búsqueda.
      */
-    public Task<QuerySnapshot> getValoracionesByCliente(String uidCliente);
+    Task<QuerySnapshot> getValoracionesByCliente(String uidCliente);
 
     /**
      * Obtiene todas las valoraciones al usuario local.
      * @param uidLocal Identificador del usuario local.
      * @return {@link Task} con el {@link QuerySnapshot} que contiene los resultados (lista) de la búsqueda.
      */
-    public Task<QuerySnapshot> getValoracionesByLocal(String uidLocal);
+    Task<QuerySnapshot> getValoracionesByLocal(String uidLocal);
 
     /**
      * Elimina el documento de una valoración de la colección.
@@ -52,5 +52,5 @@ public interface IValoracionLocalRepository {
      * @param uid Identificador de la valoración a eliminar.
      * @return {@link Task} que representa el estado de la eliminación.
      */
-    public Task<Void> deleteValoracion(String uid);
+    Task<Void> deleteValoracion(String uid);
 }

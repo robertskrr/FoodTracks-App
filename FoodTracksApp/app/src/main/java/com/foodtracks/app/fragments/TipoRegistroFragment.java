@@ -43,6 +43,9 @@ public class TipoRegistroFragment extends DialogFragment {
         btnLocal = v.findViewById(R.id.btnRegistroLocal);
     }
 
+    /**
+     * Configura los botones del tipo de registro.
+     */
     private void configurarBotones() {
         btnCliente.setOnClickListener(
                 v1 -> startActivity(new Intent(getContext(), RegisterClienteActivity.class)));
