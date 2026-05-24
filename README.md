@@ -9,6 +9,14 @@
 ## 🎯 Propósito del Proyecto
 En la actualidad, encontrar opciones gastronómicas seguras para personas con restricciones alimentarias puede ser una tarea frustrante debido a la falta de filtros precisos en plataformas generalistas y a la fragmentación de aplicaciones específicas. **FoodTracks** unifica estas necesidades, permitiendo cruzar múltiples preferencias en una sola búsqueda y aportando una capa de validación de la misma comunidad.
 
+## 🌐 Idiomas Soportados
+
+Para ofrecer una experiencia accesible y global dentro de la comunidad, **FoodTracks** cuenta con un sistema nativo de internacionalización (i18n) que adapta automáticamente toda la interfaz gráfica, alertas y menús del sistema según el idioma del dispositivo. Actualmente está disponible en:
+
+* 🇪🇸 **Español** (Idioma nativo del desarrollo)
+* 🇬🇧 **Inglés** (English)
+* 🇫🇷 **Francés** (Français)
+
 ## 👥 Roles de Usuario
 La plataforma implementa un sistema de gestión multiperfil con 4 niveles de acceso, cada uno con permisos definidos:
 
