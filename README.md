@@ -133,5 +133,15 @@ Una vez completados los pasos anteriores:
 2. Conecta tu dispositivo físico mediante depuración USB o inicia un emulador de Android.
 3. Pulsa el botón **Run** (el icono de "Play" verde) para compilar, instalar y ejecutar la aplicación FoodTracks libre de errores.
 
+## 📱 Instalación Directa en Android (APK)
+
+Si no deseas configurar el entorno de desarrollo y únicamente quieres probar la aplicación en tu dispositivo Android, puedes hacerlo instalando el archivo ejecutable directamente:
+
+1. Descarga el archivo **`foodtracks_v1.0.0.apk`** alojado en la carpeta `apk/` de este repositorio.
+2. Transfiere el archivo a tu teléfono Android o descárgalo directamente desde el navegador de tu móvil.
+3. Abre el archivo descargado para iniciar el proceso de instalación.
+4. **Permisos de seguridad:** Dado que la aplicación se encuentra en fase de desarrollo y aún no ha sido publicada oficialmente en Google Play Store, el sistema operativo mostrará una advertencia de seguridad. Deberás acceder a los ajustes de tu teléfono y habilitar el permiso para **"Instalar aplicaciones de orígenes desconocidos"** (o confiar en la fuente desde la que estás abriendo el archivo, como tu navegador o gestor de archivos).
+5. Completa la instalación y ¡listo! Ya podrás ejecutar FoodTracks en tu dispositivo.
+
 ## 🔗 Enlaces
 * **Repositorio en GitHub:** [FoodTracks-App](https://github.com/robertskrr/FoodTracks-App)
