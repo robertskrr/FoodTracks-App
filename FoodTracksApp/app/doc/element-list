@@ -1,0 +1,15 @@
+com.foodtracks.app.activities
+com.foodtracks.app.activities.admin
+com.foodtracks.app.activities.cliente
+com.foodtracks.app.activities.local
+com.foodtracks.app.adapters
+com.foodtracks.app.fragments
+com.foodtracks.app.fragments.admin
+com.foodtracks.app.fragments.cliente
+com.foodtracks.app.fragments.local
+com.foodtracks.app.repositories
+com.foodtracks.app.repositories.interfaces
+com.foodtracks.app.services
+com.foodtracks.app.services.exceptions
+com.foodtracks.app.services.interfaces
+com.foodtracks.app.utils

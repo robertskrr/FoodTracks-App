@@ -1,0 +1,78 @@
+/** © FoodTracks Project ===robertskrr=== */
+
+package com.foodtracks.app.utils;
+
+/**
+ * Clase que ayudará al formateo y estilo de textos.
+ * @author Robert
+ * @since 02/04
+ */
+public class StringUtils {
+
+    /**
+     * Establece el primer carácter de cada palabra en mayúsculas y el resto en minúsculas.
+     * @param nombre Nombre a modificar.
+     * @return Nombre capitalizado (Nombre y apellidos)
+     */
+    public static String capitalizeNombreCompleto(String nombre) {
+        if (nombre == null || nombre.isEmpty()) {
+            return nombre;
+        }
+
+        String[] palabras = nombre.toLowerCase().trim().split("\\s+");
+        StringBuilder resultado = new StringBuilder();
+
+        for (String palabra : palabras) {
+            if (!palabra.isEmpty()) {
+                resultado
+                        .append(Character.toUpperCase(palabra.charAt(0)))
+                        .append(palabra.substring(1))
+                        .append(" ");
+            }
+        }
+
+        return resultado.toString().trim();
+    }
+
+    /**
+     * Capitaliza solo la primera letra de un string y pone el resto en minúsculas.
+     * @param texto Palabra a capitalizar.
+     * @return Texto formateado (Ej: "sevilla" -> "Sevilla")
+     */
+    public static String capitalize(String texto) {
+        if (texto == null || texto.isEmpty()) {
+            return texto;
+        }
+
+        String minusculas = texto.toLowerCase().trim();
+
+        return Character.toUpperCase(minusculas.charAt(0)) + minusculas.substring(1);
+    }
+
+    /**
+     * Capitaliza la primera letra de un texto largo respetando el resto del formato original.
+     * @param texto Texto a formatear.
+     * @return Texto con la primera letra en mayúscula.
+     */
+    public static String capitalizePrimeraLetra(String texto) {
+        if (texto == null || texto.trim().isEmpty()) {
+            return texto;
+        }
+
+        String t = texto.trim();
+        return Character.toUpperCase(t.charAt(0)) + t.substring(1);
+    }
+
+    /**
+     * Normaliza el texto de un username. (ej: @user name -> username)
+     * @param texto Texto a formatear.
+     * @return Texto sin espacios.
+     */
+    public static String normalizarUsername(String texto) {
+        if (texto == null || texto.trim().isEmpty()) {
+            return texto;
+        }
+
+        return texto.replaceAll("[^a-zA-Z0-9]", "");
+    }
+}

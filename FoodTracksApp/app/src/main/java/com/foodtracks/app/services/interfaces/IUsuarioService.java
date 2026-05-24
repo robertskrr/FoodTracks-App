@@ -1,0 +1,164 @@
+/** © FoodTracks Project ===robertskrr=== */
+
+package com.foodtracks.app.services.interfaces;
+
+import java.util.List;
+
+import android.net.Uri;
+
+import com.foodtracks.app.models.RegistroBorradoUsuario;
+import com.foodtracks.app.models.Usuario;
+import com.foodtracks.app.models.UsuarioLocal;
+
+import com.google.android.gms.tasks.Task;
+
+/**
+ * Lógica de negocio para la gestión de usuarios.
+ * Actúa como intermediario entre la UI y el repositorio de datos.
+ *
+ * @author Robert
+ * @since 30/03
+ */
+public interface IUsuarioService {
+
+    /**
+     * Recupera el perfil completo de un usuario.
+     *
+     * @param uid Identificador único del usuario.
+     * @return {@link Task} que contiene el objeto {@link Usuario}.
+     */
+    Task<Usuario> getPerfil(String uid);
+
+    /**
+     * Registra un nuevo usuario.
+     *
+     * @param usuario Objeto con la información del nuevo registro.
+     * @param fotoUri Uri de la foto de perfil (opcional).
+     * @return {@link Task} que representa el estado de la operación.
+     */
+    Task<Void> registrarUsuario(Usuario usuario, Uri fotoUri);
+
+    /**
+     * Valida las credenciales de registro de un usuario.
+     * @param email Correo a validar.
+     * @param pass Contraseña a validar.
+     * @param confirmPass Contraseña confirmada a validar.
+     * @return 0 si fue todo correcto, en caso contrario el id del error.
+     */
+    int validarCredenciales(String email, String pass, String confirmPass);
+
+    /**
+     * Gestiona la eliminación de una cuenta, registrando previamente el motivo en la auditoría.
+     *
+     * @param uid ID del usuario a eliminar.
+     * @param motivo Razón del borrado.
+     * @param uidAdmin ID del administrador que ejecuta la acción.
+     * @return {@link Task} con el resultado final del proceso.
+     */
+    Task<Void> eliminarCuentaByAdmin(String uid, String motivo, String uidAdmin);
+
+    /**
+     * Gestiona la eliminación de una cuenta por parte del usuario dueño.
+     *
+     * @param uid ID del usuario a eliminar.
+     * @return {@link Task} con el resultado final del proceso.
+     */
+    Task<Void> eliminarCuenta(String uid);
+
+    /**
+     * Verifica si un nombre de usuario está disponible para su uso.
+     *
+     * @param username Nombre de usuario a comprobar.
+     * @return {@link Task} con valor true si está disponible, false si ya existe.
+     */
+    Task<Boolean> esUsernameUnico(String username);
+
+    /**
+     * Actualiza los datos de un usuario existente.
+     *
+     * @param usuario Objeto con los nuevos datos.
+     * @return Task que representa el éxito de la actualización.
+     */
+    Task<Void> actualizarPerfil(Usuario usuario, Uri fotoUri);
+
+    /**
+     * Realiza una búsqueda de usuarios basada en un campo concreto.
+     *
+     * @param query Texto o prefijo a buscar.
+     * @return {@link Task} que contiene una lista de {@link Usuario} que coinciden con la búsqueda.
+     */
+    Task<List<Usuario>> buscarUsuarios(String query);
+
+    /**
+     * Realia una búsqueda basada en el username exacto del usuario.
+     * @param username Nombre de usuario.
+     * @return {@link Task} que contiene el {@link Usuario} resultante.
+     */
+    Task<Usuario> getUsuarioByUsernameExacto(String username);
+
+    /**
+     * Realiza una búsqueda de usuarios basada en los filtros añadidos.
+     *
+     * @return {@link Task} que contiene una lista de {@link UsuarioLocal} que coinciden con la búsqueda.
+     */
+    Task<List<Usuario>> buscarLocalesPorFiltros(
+            String ciudad,
+            boolean vegano,
+            boolean vegetariano,
+            boolean sinLactosa,
+            boolean celiaco,
+            String otraPreferencia);
+
+    /**
+     * Busca locales por las preferencias del usuario autor de la búsqueda.
+     * @param uidUsuario Identificador del usuario
+     * @param ciudadOpcional Ciudad en la que quiere buscar el usuario
+     * @return
+     */
+    Task<List<Usuario>> buscarLocalesPorMisPreferencias(String uidUsuario, String ciudadOpcional);
+
+    /**
+     * Realiza una búsqueda de locales por username.
+     *
+     * @param username Nombre de usuario.
+     * @return {@link Task} que contiene una lista de {@link Usuario} que coinciden con la búsqueda.
+     */
+    Task<List<Usuario>> buscarLocalesPorUsername(String username);
+
+    /**
+     * Registra una visita en el perfil de un usuario local.
+     * La lógica ignora la visita si el usuario que visita es el propio dueño del local.
+     *
+     * @param uidVisitante Identificador del usuario que está viendo el perfil (puede ser null si es invitado).
+     * @param uidLocal Identificador del usuario local que recibe la visita.
+     * @return {@link Task} que representa el estado de la operación.
+     */
+    Task<Void> registrarVisitaPerfil(String uidVisitante, String uidLocal);
+
+    /**
+     * Recupera todos los registros de borrado de usuarios.
+     * @return @return {@link Task} que contiene una lista de registros {@link RegistroBorradoUsuario}.
+     */
+    Task<List<RegistroBorradoUsuario>> getAllRegistrosBorradoUsuarios();
+
+    /**
+     * Recupera los últimos usuarios registrados.
+     * @param limite Número límite de usuarios.
+     * @return @return {@link Task} que contiene una lista de usuarios {@link Usuario}.
+     */
+    Task<List<Usuario>> getUltimosUsuariosRegistrados(int limite);
+
+    /**
+     * Reautentica el usuario de Firebase para llevar a cabo diferentes operaciones críticas.
+     * Ej: Cambiar contraseña, eliminar cuenta
+     * @param passwordActual Contraseña del usuario.
+     * @param listener Listener de los casos.
+     */
+    void reautenticarUsuario(String passwordActual, OnReauthListener listener);
+
+    interface OnReauthListener {
+        void onSuccess();
+
+        void onFailure(Exception e);
+    }
+}

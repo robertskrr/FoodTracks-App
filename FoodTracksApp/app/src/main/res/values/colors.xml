@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="fondo">#788A23</color>
+    <color name="primary">#E7852F</color>
+    <color name="secondary">#9EC438</color>
+    <color name="tertiary">#314357</color>
+    <color name="admin_bottom_nav">#818181</color>
+    <color name="fondo_perfil_cliente">#79B6A4</color>
+    <color name="secondary_perfil_cliente">#88B04B</color>
+    <color name="fondo_perfil_local">#7EB77F</color>
+    <color name="eliminar">#920000</color>
+    <color name="fondo_filtro_busqueda">#B6BAAE</color>
+</resources>
