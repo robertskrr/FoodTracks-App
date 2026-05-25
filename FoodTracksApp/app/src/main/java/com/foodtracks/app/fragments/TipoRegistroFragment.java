@@ -39,7 +39,7 @@ public class TipoRegistroFragment extends DialogFragment {
      * @param v Vista del fragmento
      */
     private void inicializar(View v) {
-        btnCliente = v.findViewById(R.id.btnIniciarSesion);
+        btnCliente = v.findViewById(R.id.btnRegistroCliente);
         btnLocal = v.findViewById(R.id.btnRegistroLocal);
     }
 
