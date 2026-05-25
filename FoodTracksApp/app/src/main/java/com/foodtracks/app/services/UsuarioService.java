@@ -254,7 +254,7 @@ public class UsuarioService implements IUsuarioService {
     public Task<Void> actualizarPerfil(Usuario usuario, Uri fotoUri) {
         // Comprobamos si el username ya existe en otro usuario
         return usuarioRepository
-                .getUsuarioByUsername(usuario.getUsername())
+                .getUsuarioByUsername(StringUtils.normalizarUsername(usuario.getUsername()))
                 .continueWithTask(
                         task -> {
                             if (task.isSuccessful()

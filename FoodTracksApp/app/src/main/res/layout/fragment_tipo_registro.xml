@@ -33,29 +33,41 @@
             android:orientation="horizontal"
             android:weightSum="2">
 
-            <Button
-                android:id="@+id/btnIniciarSesion"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnRegistroCliente"
                 android:layout_width="0dp"
                 android:layout_height="60dp"
                 android:layout_marginEnd="6dp"
                 android:layout_weight="1"
                 android:backgroundTint="@color/primary"
-                android:drawableEnd="@drawable/ic_person"
                 android:text="@string/cliente"
                 android:textAllCaps="false"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                app:icon="@drawable/ic_person"
+                app:iconGravity="end"
+                android:maxLines="1"
+                app:autoSizeTextType="uniform"
+                app:autoSizeMinTextSize="10sp"
+                app:autoSizeMaxTextSize="16sp"
+                app:autoSizeStepGranularity="1sp" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnRegistroLocal"
                 android:layout_width="0dp"
                 android:layout_height="60dp"
                 android:layout_marginStart="6dp"
                 android:layout_weight="1"
                 android:backgroundTint="@color/secondary"
-                android:drawableEnd="@drawable/ic_local"
                 android:text="@string/local"
                 android:textAllCaps="false"
-                android:textSize="16sp" />
+                android:textSize="16sp"
+                app:icon="@drawable/ic_local"
+                app:iconGravity="end"
+                android:maxLines="1"
+                app:autoSizeTextType="uniform"
+                app:autoSizeMinTextSize="10sp"
+                app:autoSizeMaxTextSize="16sp"
+                app:autoSizeStepGranularity="1sp" />
         </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>
